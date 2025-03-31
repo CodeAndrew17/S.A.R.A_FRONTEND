@@ -25,13 +25,10 @@ const TitleText = styled.h1`
 function Revisiones() {
   return (
     <div > 
-      {/* Sidebar a la izquierda */}
       <Sidebar />
-      {/* Contenido principal ajustado */}
       <TitleWrapper>
         <TitleText>Revisiones</TitleText>
       </TitleWrapper>
-
     </div>
   );
 }

@@ -25,9 +25,7 @@ const TitleText = styled.h1`
 function Estadisticas() {
   return (
     <div > 
-      {/* Sidebar a la izquierda */}
       <Sidebar />
-      {/* Contenido principal ajustado */}
       <TitleWrapper>
         <TitleText>Estadísticas</TitleText>
       </TitleWrapper>

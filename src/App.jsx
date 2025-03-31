@@ -1,9 +1,9 @@
 import {BrowserRouter, Routes,Route, Navigate} from 'react-router-dom';
-import {Recuperacontraseña} from './pages/Recuperacontraseña'
-import {Inicio} from './pages/principal'
-import  Login from './components/login_SC'
-import { createGlobalStyle } from 'styled-components'
-import Usuarios from './pages/Usuarios';
+import {Recuperacontrasena} from './pages/recuperaContrasena';
+import {Inicio} from './pages/principal';
+import  Login from './components/login';
+import { createGlobalStyle } from 'styled-components';
+import Usuarios from './pages/usuarios';
 import Administrar from './pages/administrar';
 import Estadisticas from './pages/estadisticas';
 import Convenios from './pages/convenios';
@@ -27,7 +27,6 @@ const GlobalStyle = createGlobalStyle`
 function ProtectedRoute({children}) {
   const token = sessionStorage.getItem('access');
   return token ? children : <Navigate to="/" />;
-
 }
 
 function App(){
@@ -37,7 +36,7 @@ function App(){
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/contraseña" element={<Recuperacontraseña />} />
+      <Route path="/contraseña" element={<Recuperacontrasena />} />
       <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
       <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
       <Route path="/convenios" element={<ProtectedRoute><Convenios/></ProtectedRoute>} />

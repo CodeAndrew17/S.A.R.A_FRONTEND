@@ -7,7 +7,6 @@ const DropdownContainer = styled.div`
 `;
 
 const DropdownButton = styled.button`
-  width: 190px; 
   max-width: 100%;
   background-color: rgb(255, 255, 255);
   color: black;
@@ -17,7 +16,7 @@ const DropdownButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  width: 100px;
+  width: 130px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -94,7 +93,8 @@ function Dropdown({ options, onSelect, defaultOption = "Selecciona" }) {
 
   return (
     <DropdownContainer ref={dropdownRef}>
-      <DropdownButton onClick={toggleDropdown}>{selectedOption}</DropdownButton>
+      <DropdownButton onClick={toggleDropdown}>
+        {selectedOption}</DropdownButton>
       {isOpen && (
         <DropdownMenu $isOpen={isOpen}>
           {options.map((option, index) => (

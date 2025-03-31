@@ -9,7 +9,7 @@ const UserInfo = styled.div`
     position: absolute;  /* Lo posicionamos manualmente */
     top: 18px;          /* Margen desde la parte superior */
     right: 65px;        /* Lo empujamos hacia la derecha */
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     padding: 5px 10px;
     border-radius: 20px;
@@ -21,7 +21,7 @@ const UserIcon = styled(User)`
     position: absolute;
     top: 10px; /* Ajusta el valor para moverlo más abajo */
     right: 20px; /* Ajusta según sea necesario */
-    background-color: #c9cfdf;
+    background-color:rgb(169, 174, 175);
     padding: 8px;
     border-radius: 50%;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
@@ -32,17 +32,14 @@ export function Inicio() {
 
 
     return (
-        <div className="main-page">
+        <div>
             <Sidebar />
-            {/* Ícono de usuario */}
             <UserIcon size={30} />
-            {/* Texto de bienvenida sin fondo */}
             <UserInfo style={{ backgroundColor: "transparent", boxShadow: "none" }}>
                 Bienvenido, {username}
             </UserInfo>
-            <div className="content">
-                <h1>---------- Esta es la página principal</h1>
-                {/* Agrega más contenido aquí */}
+            <div>
+                <h1 style={{marginTop: "20px", marginLeft: "280px"}}> Esta es la pagina principal </h1>
             </div>
         </div>
     );

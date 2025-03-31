@@ -16,6 +16,10 @@ const StyledButton = styled.button`
   align-items: center; 
   justify-content: center;
   gap: 8px; /* Espacio entre el icono y el texto */
+
+    &:hover {
+    background-color: ${(props) => props.$hoverColor || "black"};
+  }
   
   svg {
     width: 20px;

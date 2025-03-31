@@ -3,7 +3,6 @@ import Sidebar from "../components/sidebar";
 import styled from "styled-components";
 
 
-
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
   border-radius: 8px;
@@ -27,9 +26,7 @@ const TitleText = styled.h1`
 function Configuracion() {
   return (
     <div > 
-      {/* Sidebar a la izquierda */}
       <Sidebar />
-      {/* Contenido principal ajustado */}
       <TitleWrapper>
         <TitleText>Configuración</TitleText>
       </TitleWrapper>

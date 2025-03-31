@@ -128,7 +128,7 @@ const LogoutButton = styled.button`
   transition-property: width, border-radius; /* Solo animar estas propiedades */
 
   position: absolute;
-  left: 50%;
+  left: 48%;
   transform: translateX(-50%);
   bottom: 20px;
 

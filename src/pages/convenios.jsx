@@ -4,7 +4,7 @@ import styled from "styled-components";
 //import Dropdown from "../components/Dropdown";
 import SearchBar from "../components/SearchBar";
 import Button from "../components/button";
-import UserForm from "../components/expand"; // Importa el formulario para agregar usuario
+import UserForm from "../components/userForm"; 
 import { Filter, Plus } from "lucide-react";
 
 const TitleWrapper = styled.div`
@@ -106,8 +106,8 @@ const Convenios = () => {
 
         <ButtonContainer>
           <Button
-            $bgColor="#5FB8D6"
-            $hoverColor="#5FA6C7"
+            bgColor="#5FB8D6"
+            hoverColor="#5FA6C7"
             width="130px"
             height="38px"
             onClick={handleFiltrar}
@@ -116,8 +116,8 @@ const Convenios = () => {
           </Button>
 
           <Button
-            $bgColor="#A9A9A9"
-            $hoverColor="#8B8B8B"
+            bgColor="#A9A9A9"
+            hoverColor="#8B8B8B"
             width="180px"
             height="38px"
             onClick={handleCrearConvenio}
@@ -126,8 +126,8 @@ const Convenios = () => {
           </Button>
 
           <Button
-            $bgColor="#5FB8D6"
-            $hoverColor="#5FA6C7"
+            bgColor="#5FB8D6"
+            hoverColor="#5FA6C7"
             width="180px"
             height="38px"
             onClick={handleCrearSucursal}
