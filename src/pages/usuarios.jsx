@@ -143,21 +143,21 @@ const Usuarios = () => {
           getUsers()
         ]);
 
-        const sucursalesMap = {};
+        const sucursalesMap = {}; // tranforma los datos en un objeto para acceder por su id y relaciona cada sucursal a un empleado 
         sucursalesData.forEach(sucursal => {
           sucursalesMap[sucursal.id] = sucursal.nombre;
         });
 
-        const userAccountsMap = {};
+        const userAccountsMap = {}; //lo mismo q arriba pero relaciona empleado con usuario
         userData.forEach(user => {
           userAccountsMap[user.id_empleado] = {id:user.id,
             usuario:user.usuario, 
             rol: user.rol,
             estado: user.estado
-          }; //relaciona usuario con empleado 
+          }; 
         });
 
-        const empleadosConDatos = empleadosData.map(emp => ({
+        const empleadosConDatos = empleadosData.map(emp => ({ //se añaden los campos de sucursal y usuario a empleados
           ...emp,
           sucursal_nombre: sucursalesMap[emp.id_sucursal] || "Sucursal no asignada",
           cuenta_usuario: userAccountsMap[emp.id] || null //si tiene cuenta se la asigna
@@ -229,7 +229,7 @@ const Usuarios = () => {
 };
 
   const handleEditarUsuario = (cuentaUsuario) => {
-    console.log('Datos del usuario a editar:', cuentaUsuario); // Verifica los datos
+    console.log('Datos del usuario a editar:', cuentaUsuario); // Verifica los datos depuracion
     setEditingUser(cuentaUsuario);
     setShowEditUserForm(true);
     };
@@ -614,8 +614,7 @@ const Usuarios = () => {
 
         <StyledTable> 
           <thead>
-            <tr>
-            <TableHeader style={{ flex: '0.5', paddingLeft: '95px' }}>Seleccionar</TableHeader> {/* posicionamiento de los titulos de la tabla*/}
+            <tr><TableHeader style={{ flex: '0.5', paddingLeft: '95px' }}>Seleccionar</TableHeader>
             <TableHeader style={{ flex: '1.5', paddingLeft: '10px' }}>Nombres</TableHeader>
             <TableHeader style={{ flex: '1.5', paddingLeft: '10px' }}>Apellidos</TableHeader>
             <TableHeader style={{ flex: '1.2', paddingLeft: '10px' }}>Cédula</TableHeader>

@@ -6,7 +6,7 @@ const API_URL = 'http://127.0.0.1:8000';
 const login = async (usuario, password) => {
     try {
         //se realiza solicitud post al endpoind
-        const response = await axios.post(`${API_URL}/access/login/`, { usuario, password });
+        const response = await axios.post(`${API_URL}/access/api/login/`, { usuario, password });
         const { access, refresh }= response.data;
 
         //Guardamos ambos tokens en localstorage
@@ -117,7 +117,7 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
 //Funcion para solictar restablecer contraseña mediante correo electronico 
 const solicitarPassword = async (usuario,correo) => {
     try {
-        const response = await axios.post(`${API_URL}/access/solicitarpassword/`, { //endpoind para enviar el correo
+        const response = await axios.post(`${API_URL}/access/api/solicitarpassword/`, { //endpoind para enviar el correo
 
             usuario,
             correo,  //cuerpo de la solicitud en formato json

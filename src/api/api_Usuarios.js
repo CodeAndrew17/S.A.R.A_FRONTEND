@@ -3,7 +3,7 @@ import { axiosWithAuth } from './api_Manager';
 //Funcion para obtener todos los usuarios
 const getEmployees = async () => {
     try {
-        return await axiosWithAuth("/access/api/empleado/get/", "GET");
+        return await axiosWithAuth("/api/empleado/get/", "GET");
     } catch(error) {
         console.error("Error al obtener usuarios:", error);
         throw error;
@@ -12,7 +12,7 @@ const getEmployees = async () => {
 
 const deleteEmployees = async (id) => {
     try {
-        return await axiosWithAuth(`/access/api/empleado/delete/${id}/`, "DELETE");
+        return await axiosWithAuth(`/api/empleado/delete/${id}/`, "DELETE");
     } catch(error) {
         console.error("Error al intentar eliminar usuario",error);
         throw error; 
@@ -21,7 +21,7 @@ const deleteEmployees = async (id) => {
 
 const editEmployees = async (id, updateData) => {
     try{
-        return await axiosWithAuth(`/access/api/empleado/put/${id}/`, "PUT", updateData);
+        return await axiosWithAuth(`/api/empleado/put/${id}/`, "PUT", updateData);
     } catch (error) {
         console.error("error al editar usuario", error);
         throw error;
@@ -30,7 +30,7 @@ const editEmployees = async (id, updateData) => {
 
 const addEmployees = async (newEmployeeData) => {
     try {
-        return await axiosWithAuth("/access/api/empleado/post/","POST", newEmployeeData);
+        return await axiosWithAuth("/api/empleado/post/","POST", newEmployeeData);
     } catch (error) {
         console.error("Error al agregar usuario", error);
         throw error;
@@ -40,7 +40,7 @@ const addEmployees = async (newEmployeeData) => {
 //funcion para solicitar los nombres de las sucursales y mostralos en los empleados 
 const getBranches = async () => {
     try {
-        return await axiosWithAuth("/access/api/sucursal/get/", "GET");
+        return await axiosWithAuth("/api/sucursal/get/", "GET");
     } catch (error) {
         console.error("Error al obtener sucursales:", error);
         throw error;
@@ -49,7 +49,7 @@ const getBranches = async () => {
 
 const getUsers = async () => {
     try{
-        return await axiosWithAuth("/access/api/usuario/get/", "GET");
+        return await axiosWithAuth("/api/usuario/get/", "GET");
     } catch (error) {
         console.error("Error al obtener usuarios", error);
         throw error;
@@ -58,7 +58,7 @@ const getUsers = async () => {
 
 const addUsers = async (UserData) => {
     try{
-        return await axiosWithAuth("/access/api/usuario/post/", "POST", UserData);
+        return await axiosWithAuth("/api/usuario/post/", "POST", UserData);
     } catch (error){
         console.error("error al asignar usuario", error);
         throw error; 
@@ -67,7 +67,7 @@ const addUsers = async (UserData) => {
 
 const deleteUsers = async (id) => {
     try{
-        return await axiosWithAuth(`/access/api/usuario/delete/${id}/`, "DELETE");
+        return await axiosWithAuth(`/api/usuario/delete/${id}/`, "DELETE");
     } catch (error){
         console.error("error al eliminar usuario", error);
         throw error; 

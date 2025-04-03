@@ -50,4 +50,8 @@ function App(){
   );
 }
 
+
+//<Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />  ponerlo en inicio para la proteccion de ruta
+//<Route path="/inicio" element={<Inicio />} /> ponerlo para evitar la proteccion de ruta 
+
 export default App; 
