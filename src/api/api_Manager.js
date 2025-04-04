@@ -97,6 +97,7 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
             url: `${API_URL}${url}`, //Concatenamos la url para armarla
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`,  // Pasamos el token en las cabeceras
             },
             data: body ? body : null,  // Enviamos el cuerpo si tiene

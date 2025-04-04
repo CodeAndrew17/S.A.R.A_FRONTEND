@@ -76,7 +76,7 @@ const deleteUsers = async (id) => {
 
 const editUsers = async (id, updateDataUser) => {
     try{
-        return await axiosWithAuth(`/access/api/usuario/put/${id}/`, "PUT", updateDataUser);
+        return await axiosWithAuth(`/api/usuario/put/${id}/`, "PUT", updateDataUser);
     } catch (error) {
         console.error("error al editar la informacion de usuario", error);
         throw error; 

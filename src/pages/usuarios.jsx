@@ -6,7 +6,7 @@ import SearchBar from "../components/SearchBar";
 import Button from "../components/button";
 import UserForm from "../components/userForm"; 
 import { Compass, Trash, Edit, Plus, Eye, UserPlus, Pencil, UserMinus } from "lucide-react";
-import {getEmployees, deleteEmployees, editEmployees, addEmployees, getBranches, getUsers, addUsers, editUsers} from '../api/api_Usuarios';
+import {getEmployees, deleteEmployees, editEmployees, addEmployees, getBranches, getUsers, addUsers, editUsers, deleteUsers} from '../api/api_Usuarios';
 
 
 const TitleWrapper = styled.div`
@@ -188,8 +188,11 @@ const Usuarios = () => {
             user_permissions: editingUser.user_permissions || []
         };
 
+        console.log("Payload que se está enviando:", payload);
+
         // Guardar cambios en el servidor
         const updatedUser = await editUsers(payload.id, payload);
+        console.log("Payload que se está enviando:", payload);
 
         // Actualizar el estado de empleados
         setEmpleados(prev => prev.map(emp => {
@@ -228,9 +231,13 @@ const Usuarios = () => {
     }
 };
 
-  const handleEditarUsuario = (cuentaUsuario) => {
-    console.log('Datos del usuario a editar:', cuentaUsuario); // Verifica los datos depuracion
-    setEditingUser(cuentaUsuario);
+  const handleEditarUsuario = (emp) => {
+
+    console.log('Datos del usuario a editar:', emp.cuenta_usuario); // Verifica los datos depuracion
+    setEditingUser({
+      ...emp.cuenta_usuario,  // Propiedades del usuario
+      id_empleado: emp.id     // Incluye el id_empleado del empleado
+  });
     setShowEditUserForm(true);
     };
 
@@ -287,6 +294,30 @@ const Usuarios = () => {
 
   const toggleRow = (id) => {
     setExpandRow(expandedRow === id ? null : id);
+  };
+
+  const handleEliminarUsuario = async (id) => {
+    if (!id) {
+      alert("Error: ID de usuario no proporcionado.");
+      return;
+    }
+    const confirmacion = window.confirm("¿Está seguro que desea eliminar el usuario?");
+    if (!confirmacion) return;
+
+    try {
+      await deleteUsers(id);
+      alert("Usuario eliminado con éxito");
+
+      setEmpleados((prev) => prev.map(emp => emp.cuenta_usuario?.id === id ? {
+        ...emp, cuenta_usuario: null} : emp));  // Cuando elimina la cuenta de usuario asegura q no elimine el empleado del renderizado
+
+      setFilteredEmployees((prev) => prev.map(emp => emp.cuenta_usuario?.id === id ? {
+        ...emp, cuenta_usuario: null} : emp
+      ));
+    } catch (error) {
+      console.error("Error al eliminar usuario:", error);
+      alert("Error al eliminar usuario: " + (error.response ? JSON.stringify(error.response.data) : error.message));
+    }
   };
 
   const handleCheckboxChange = (id) => {
@@ -494,7 +525,7 @@ const Usuarios = () => {
       {console.log("Datos de edición:", editingEmployee)} {/*depuracion*/}
       <FormContainer>
         <UserForm
-          title="Editar Usuario"
+          title="Editar Empleado"
           fields={[
             { name: "nombres", placeholder: "Nombres", type: "text", defaultValue: editingEmployee?.nombres },
             { name: "apellidos", placeholder: "Apellidos", type: "text", defaultValue: editingEmployee?.apellidos },
@@ -723,7 +754,7 @@ const Usuarios = () => {
                                 hoverColor="#468BAF"
                                 width="170px"
                                 height="35px"
-                                onClick={() => handleEditarUsuario(usuario.cuenta_usuario)}
+                                onClick={() => handleEditarUsuario(usuario)}
                               >
                                 <Pencil size={16} /> Editar Usuario
                               </Button>
