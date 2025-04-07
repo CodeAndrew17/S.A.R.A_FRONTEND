@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Eye, UserPlus } from "lucide-react";
 import CustomButton from "./button";
-import { getBranches } from "../api/api_Usuarios";
+import { deleteUsers, getBranches } from "../api/api_Usuarios";
 import UpdateForm from "./Form/updateForm";
+import Swal from "sweetalert2";
+import useEmployeeManagement from "../hooks/useEmployeeManagement";
 
 // Estilos generales
 const TableContainer = styled.div`
@@ -193,10 +195,11 @@ const UserTable = ({
                   <CheckBoxCell>
                     <input
                       type="checkbox"
-                      checked={Array.isArray(selectedEmployees) && selectedEmployees.includes(usuario.id)}
-                      onChange={() => handleCheckboxChange(usuario.id)}
+                      checked={selectedEmployees.includes((usuario.id))}
+                      onChange={() => handleCheckboxChange((usuario.id))}
                     />
                   </CheckBoxCell>
+
                   <TableCell>{usuario.nombres}</TableCell>
                   <TableCell>{usuario.apellidos}</TableCell>
                   <TableCell>{usuario.cedula}</TableCell>
