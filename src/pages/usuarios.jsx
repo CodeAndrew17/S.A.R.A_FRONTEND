@@ -5,7 +5,7 @@ import Toolbar from "../components/Toolbar";
 import UserTable from "../components/UserTable";
 import UserForm from "../components/Form/userForm";
 import useEmployeeManagement from "../hooks/useEmployeeManagement";
-import { addEmployees, addUsers, editUsers } from "../api/api_Usuarios"; // Importar función API para creación
+import { addEmployees, addUsers, editUsers, deleteUsers } from "../api/api_Usuarios"; // Importar función API para creación
 import AsignForm from "../components/Form/asignForm"; // Ajusta la ruta según la ubicación del archivo
 import UpdateForm from "../components/Form/updateForm";
 import Swal from "sweetalert2";
