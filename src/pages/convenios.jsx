@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "../components/sidebar";
+import React, { useState } from "react";
+import Sidebar from "../components/sidebar"
 import styled from "styled-components";
 //import Dropdown from "../components/Dropdown";
 import SearchBar from "../components/SearchBar";
 import Button from "../components/button";
-import UserForm from "../components/userForm"; 
+import UserForm from "../components/Form/userForm"; 
 import { Filter, Plus } from "lucide-react";
-import {getConvenios} from "../api/api_Convenios"; 
-import { use } from "react";
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -59,45 +57,15 @@ const ButtonContainer = styled.div`
 `;
 
 const FormContainer = styled.div`
-  display: flex,
-  justify-content: center,
-  align-items: center,
-  flex-direction: column,
-  padding: 20px,
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
 `;
-
-const Th = styled.th`
-  border: 1px solid #ccc,
-  padding: 10px,
-  background-color: #f5f5f5,
-  text-align: left,
-`;
-
-const Td = styled.td`
-  border: 1px solid #ccc;
-  padding: 10px;
-`;
-
 
 const Convenios = () => {
   const [activeForm, setActiveForm] = useState(null); // Estado para mostrar/ocultar el formulario
-  const [convenios, setConvenios] = useState([]); //estado para almacenar convenios 
-
-  useEffect(() => {
-    const fetchConvenios = async () => {
-      try {
-        const response = await getConvenios(); //llama a a la api para obtener convenios
-        console.log("convenios",response);
-        setConvenios(response); //alamacena los convenios en el estado
-      }
-    catch (error) {
-      console.error("Error fetching convenios: ", error);
-    }
-  };
-
-  fetchConvenios(); //llamamos a la funcion para obtener los convenios 
-}, []);
-
 
   const handleFiltrar = () => {
     alert("Filtrando datos...");
@@ -113,7 +81,7 @@ const Convenios = () => {
 
   const handleFormSubmit = (newUserData) => {
     console.log("Datos capturados:", newUserData);
-
+    setShowForm(false); // Cierra el formulario después de capturar los datos
   };
 
   const handleCancelForm = () => {
@@ -123,8 +91,6 @@ const Convenios = () => {
   /*const handleDropdownSelect = (option) => {
     console.log("Opción seleccionada:", option); funcion para el dropdown
   };*/
-
-
 
   return (
     <div>
@@ -204,38 +170,7 @@ const Convenios = () => {
           />
         </FormContainer>
       )}
-
-        {activeForm === null && convenios.length > 0 && (
-          <div style={{ padding: "20px", marginLeft: "240px" }}>
-            <h2>Convenios Registrados</h2>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <Th>Nombre</Th>
-                <Th>NIT</Th>
-                <Th>Teléfono</Th>
-                <Th>Ciudad</Th>
-                <Th>Estado</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {convenios.map((convenio, index) => (
-                <tr key={index}>
-                  <Td>{convenio.nombre}</Td>
-                  <Td>{convenio.nit}</Td>
-                  <Td>{convenio.telefono}</Td>
-                  <Td>{convenio.ciudad}</Td>
-                  <Td>{convenio.estado}</Td>
-                </tr>
-              ))}
-            </tbody>
-
-            </table>
-          </div>
-        )}
-
     </div>
-    
   );
 };
 

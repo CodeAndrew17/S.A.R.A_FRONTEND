@@ -3,7 +3,7 @@ import {Recuperacontrasena} from './pages/recuperaContrasena';
 import {Inicio} from './pages/principal';
 import  Login from './components/login';
 import { createGlobalStyle } from 'styled-components';
-import Usuarios from './pages/Usuarios/usuarios';
+import Usuarios from './pages/usuarios';
 import Administrar from './pages/administrar';
 import Estadisticas from './pages/estadisticas';
 import Convenios from './pages/convenios';
