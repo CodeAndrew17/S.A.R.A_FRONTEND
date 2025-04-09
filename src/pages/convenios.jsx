@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Sidebar from "../components/sidebar"
+import Sidebar from "../components/Sidebar"
 import styled from "styled-components";
 //import Dropdown from "../components/Dropdown";
 import SearchBar from "../components/SearchBar";
 import Button from "../components/button";
-import UserForm from "../components/Form/userForm"; 
+import UserForm from "../components/userForm"; 
 import { Filter, Plus } from "lucide-react";
 
 const TitleWrapper = styled.div`

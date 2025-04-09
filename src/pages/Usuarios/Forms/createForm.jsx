@@ -1,12 +1,13 @@
 import React from "react";
-import UserForm from "./userForm";
+import UserForm from "../../../components/userForm";
 
-const CreateForm = ({ showForm, setShowForm }) => {
+
+const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
     if (!showForm) return null;
 
     return (
         <UserForm
-            title="Crear Nuevo Usuario"
+            title="Crear Nuevo Empleado"
             fields={[
                 { name: "nombres", placeholder: "Nombres", type: "text", required: true },
                 { name: "apellidos", placeholder: "Apellidos", type: "text", required: true },
@@ -24,7 +25,7 @@ const CreateForm = ({ showForm, setShowForm }) => {
                 },
                 { name: "id_sucursal", placeholder: "Sucursal", type: "number", required: true },
             ]}
-            onSubmit={(formData) => console.log("Datos enviados", formData)}
+            onSubmit={handleFormSubmit}
             onCancel={() => {
                 setShowForm(false); // Actualiza el estado directamente
             }}

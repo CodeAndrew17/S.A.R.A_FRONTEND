@@ -1,8 +1,7 @@
 import React from "react";
 import Sidebar from "../components/Sidebar"; 
 import styled from "styled-components";
-import Header from "../components/Header";
-import Toolbar from "../components/Toolbar";
+
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -30,7 +29,6 @@ function Administrar() {
       <TitleWrapper>
         <TitleText>Administrar</TitleText>
       </TitleWrapper>
-      <Toolbar></Toolbar>
     </div>
   );
 }
