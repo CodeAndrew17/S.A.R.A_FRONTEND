@@ -1,7 +1,7 @@
 import React from "react";
 import UserForm from "./userForm";
 
-const CreateForm = ({ showForm, setShowForm }) => {
+const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
     if (!showForm) return null;
 
     return (
@@ -24,7 +24,7 @@ const CreateForm = ({ showForm, setShowForm }) => {
                 },
                 { name: "id_sucursal", placeholder: "Sucursal", type: "number", required: true },
             ]}
-            onSubmit={(formData) => console.log("Datos enviados", formData)}
+            onSubmit={handleFormSubmit}
             onCancel={() => {
                 setShowForm(false); // Actualiza el estado directamente
             }}

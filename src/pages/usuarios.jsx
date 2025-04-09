@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import Toolbar from "../components/Toolbar";
-import UserTable from "../components/UserTable";
+import UserTable from "../components/userTable";
 import UserForm from "../components/Form/userForm";
 import useEmployeeManagement from "../hooks/useEmployeeManagement";
 import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees } from "../api/api_Usuarios"; // Importar función API para creación
