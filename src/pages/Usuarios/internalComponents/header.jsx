@@ -7,7 +7,7 @@ const TitleWrapper = styled.div`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 5px;
   height: 60px;
 `;
 
@@ -16,7 +16,7 @@ const TitleText = styled.h1`
   font-size: 40px;
   margin: 0;
   position: relative;
-  top: 20px;  
+  top: 10px;  
 `;
 
 const Header = () => {

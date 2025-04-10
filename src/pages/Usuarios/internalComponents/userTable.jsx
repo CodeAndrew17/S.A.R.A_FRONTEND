@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Eye, UserPlus } from "lucide-react";
+import { Eye, UserPlus, Pencil, UserMinus } from "lucide-react";
 import CustomButton from "../../../components/button";
 import { deleteUsers, getBranches } from "../../../api/api_Usuarios";
 import UpdateForm from "../Forms/updateForm";
@@ -17,6 +17,7 @@ const TableContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   overflow-x: auto; /* Scroll horizontal si es necesario */
+  margin-top: 5px;
 `;
 
 const StyledTable = styled.table`
@@ -33,16 +34,6 @@ const TableHeader = styled.th`
   text-align: left;
   font-size: 15px;
   border-bottom: 2px solid #ddd;
-  
-  /* Estilos específicos para headers (mantén estos igual) */
-  &:nth-child(1) { padding-left: 140px; } /* Seleccionar */
-  &:nth-child(2) { padding-left: 130px; } /* Nombres */
-  &:nth-child(3) { padding-left: 140px; } /* Apellidos */
-  &:nth-child(4) { padding-left: 140px; } /* Cédula */
-  &:nth-child(5) { padding-left: 150px; } /* Correo */
-  &:nth-child(6) { padding-left: 140px; } /* Estado */
-  &:nth-child(7) { padding-left: 50px; }  /* Sucursal */
-  &:nth-child(8) { padding-left: 30px; }  /* Usuario */
 `;
 
 const TableRow = styled.tr`
@@ -68,7 +59,7 @@ const TableCell = styled.td`
   &.columna-correo     { padding-left: 30px; }  /* Correo */
   &.columna-estado     { padding-left: 15px; }  /* Estado */
   &.columna-sucursal   { padding-right: 70px; }   /* Sucursal */
-  &.columna-usuario    { padding-left: 0px; }   /* Usuario */
+  &.columna-usuario    { padding-right: 30px; }   /* Usuario */
 `;
 
 const CheckBoxCell = styled.td`
@@ -79,15 +70,17 @@ const CheckBoxCell = styled.td`
 `;
 
 const DetailsContainer = styled.div`
-  padding: 20px;
+  padding: 15px 20px 20px;
   background: #f9f9f9;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
+  border-top: none;  // Elimina borde superior
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
+  width: 100%;
+  margin-top: 0;
 `;
 
 const ActionButton = styled.button`
@@ -197,7 +190,7 @@ const UserTable = ({
   const handleEliminarUsuario = async (usuarioId) => {
     try {
       const resultado = await Swal.fire({
-        title: '¿Eliminar usuario?',
+        title: '¿Eliminar cuenta de usuario?', // Texto más específico
         text: "¡Esta acción no se puede deshacer!",
         icon: 'warning',
         showCancelButton: true,
@@ -212,31 +205,23 @@ const UserTable = ({
         await deleteUsers(usuarioId);
         
         // 2. Actualizar el estado local
-        setEmployees((prev) =>
-          prev.map((emp) =>
-            emp.cuenta_usuario?.id === usuarioId
-              ? { ...emp, cuenta_usuario: null } // Solo elimina la cuenta de usuario
-              : emp
-          )
-        );
+        const updateEmployee = (emp) => 
+          emp.cuenta_usuario?.id === usuarioId
+            ? { ...emp, cuenta_usuario: null }
+            : emp;
         
-        setFilteredEmployees((prev) =>
-          prev.map((emp) =>
-            emp.cuenta_usuario?.id === usuarioId
-              ? { ...emp, cuenta_usuario: null } // Actualiza también empleados filtrados
-              : emp
-          )
-        );
+        setEmployees(prev => prev.map(updateEmployee));
+        setFilteredEmployees(prev => prev.map(updateEmployee));
   
         // 3. Cerrar detalles si estaba abierto
         if (expandedRow === usuarioId) {
-          setExpandedRow(null);
+          setExpandedRow(null); // Esta es la línea clave que cierra el viewDetails
         }
   
         // 4. Mostrar confirmación
         Swal.fire(
           '¡Eliminado!',
-          'El usuario ha sido eliminado.',
+          'La cuenta de usuario ha sido eliminada.', // Mensaje más específico
           'success'
         );
       }
@@ -244,11 +229,11 @@ const UserTable = ({
       console.error("Error al eliminar:", error);
       Swal.fire(
         'Error',
-        'No se pudo eliminar el usuario',
+        error.response?.data?.message || 'No se pudo eliminar la cuenta de usuario', // Mensaje más detallado
         'error'
       );
     }
-  };
+};
 
   /*const handleFormActualizarCuenta = async (payload) => {
     try {
@@ -327,7 +312,7 @@ const UserTable = ({
             <TableHeader style= {{paddingLeft: "30px"}}>Correo</TableHeader>
             <TableHeader style= {{paddingLeft: "5px"}}>Estado</TableHeader>
             <TableHeader style= {{paddingLeft: "15px"}}>Sucursal</TableHeader>
-            <TableHeader style= {{paddingLeft: "5px"}}>Usuario</TableHeader>
+            <TableHeader style= {{paddingLeft: "20px"}}>Usuario</TableHeader>
           </tr>
         </thead>
         <tbody>
@@ -374,37 +359,70 @@ const UserTable = ({
                   </TableCell>
                 </TableRow>
   
-                {expandedRow === usuario.id && (
+                {expandedRow === usuario.id && usuario.cuenta_usuario &&(
                   <TableRow>
                     <TableCell colSpan="8">
                       <DetailsContainer>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', justifyContent: 'center', width: '100%',marginLeft: '130px', }}>
                           
                         <div style={{ 
-                            display: 'flex', 
-                            flexDirection: 'column',
-                            alignItems: 'center', // Centra horizontalmente
-                            textAlign: 'center'   // Centra el texto
-                          }}>
-                            <h3 style={{ color: "#5FB8D6", marginBottom: '10px' }}>Información de Usuario</h3>
-                            <p><strong>Sucursal:</strong> {sucursalesMap[usuario.id_sucursal] || "Sin asignar"}</p>
-                            {usuario.cuenta_usuario && (
-                              <>
-                                <p><strong>Usuario:</strong> {usuario.cuenta_usuario.usuario}</p>
-                                <p><strong>Rol:</strong> <RolBadge rol={usuario.cuenta_usuario.rol} /></p>
-                              </>
-                            )}
-                          </div>
-                        </div>
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start', 
+                        width: '100%',
+                        maxWidth: '1000px',
+                        maxHeight: '90px' 
+                      }}>
+                        <h3 style={{ 
+                          color: "#5FB8D6", 
+                          marginBottom: '15px',
+                          fontSize: '18px',
+                          fontWeight: '600',
+                          marginTop: '0px',
+
+                        }}>Información de Usuario: </h3>
                         
-                        <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                          <ActionButton $primary onClick={handleEditingUser}>
-                            Editar Usuario
-                          </ActionButton>
-                          <ActionButton  onClick={() => handleEliminarUsuario(usuario.cuenta_usuario.id)}
->
-                            Eliminar Usuario
-                          </ActionButton>
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                          gap: '15px',
+                          width: '100%',
+                          textAlign: 'left' // Alinea el texto a la izquierda pero mantiene el contenedor centrado
+                        }}>
+                          {usuario.cuenta_usuario && (
+                            <>
+                              <div>
+                                <p><strong>Usuario:</strong> {usuario.cuenta_usuario.usuario}</p>
+                              </div>
+                              <div>
+                                <p><strong>Estado:</strong> <EstadoBadge estado={usuario.cuenta_usuario.estado} /></p>
+                              </div>
+                              <div>
+                                <p><strong>Rol:</strong> <RolBadge rol={usuario.cuenta_usuario.rol} /></p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                        
+                        <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end', gap: '30px', marginRight: '120px' }}>
+                          <CustomButton  bgColor="#5A9AC6"
+                                hoverColor="#468BAF"
+                                width="170px"
+                                height="35px"
+                                onClick={handleEditingUser}>
+                            <Pencil size={16} /> Editar Usuario
+                          </CustomButton>
+                          <CustomButton
+                                bgColor="#FF6B6B"
+                                hoverColor="#D9534F"
+                                width="170px"
+                                height="35px"
+                                onClick={() => handleEliminarUsuario(usuario.cuenta_usuario.id)}
+                              >
+                                <UserMinus size={16} /> Eliminar Usuario
+                              </CustomButton>
                         </div>
                       </DetailsContainer>
                     </TableCell>

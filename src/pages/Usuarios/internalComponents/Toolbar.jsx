@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Dropdown from "../../../components/Dropdown"; // Reutiliza tu componente Dropdown
 import SearchBar from "../../../components/SearchBar"; // Reutiliza tu componente SearchBar
 import CustomButton from "../../../components/button";
-import { Compass, Trash, Edit, Plus } from "lucide-react";
+import { Trash, Edit, Plus } from "lucide-react";
 
 const ToolbarWrapper = styled.div`
   display: flex;
@@ -12,8 +12,8 @@ const ToolbarWrapper = styled.div`
   padding: 10px 20px;
   width: 90%;
   margin: 20px auto;
-  flex-wrap: wrap;
-  gap: 50px;
+  flex-wrap: nowrap;
+  gap: 20px;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -25,6 +25,7 @@ const FilterContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 80px;
+  padding-left: 210px;
 `;
 
 const ButtonContainer = styled.div`
@@ -49,9 +50,6 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
         />
       </FilterContainer>
       <ButtonContainer>
-        <CustomButton bgColor="#5AA9E6" hoverColor="#4682B4" width="130px" height="38px" onClick={onSearch}>
-          <Compass /> Buscar
-        </CustomButton>
         <CustomButton bgColor="#FF6B6B" hoverColor="#D9534F" width="130px" height="38px" onClick={onDelete}>
           <Trash /> Eliminar
         </CustomButton>

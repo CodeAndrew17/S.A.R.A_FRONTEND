@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../components/sidebar";
 import Header from "./internalComponents/header";
 import Toolbar from "./internalComponents/Toolbar";
 import UserTable from "./internalComponents/userTable";
 import UserForm from "../../components/userForm";
 import useEmployeeManagement from "./hooks/useEmployeeManagement";
-import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees } from "../../api/api_Usuarios"; // Importar función API para creación
+import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees, editEmployees } from "../../api/api_Usuarios"; // Importar función API para creación
 import CreateForm from "./Forms/createForm";
 import AsignForm from "./Forms/asignForm"; // Ajusta la ruta según la ubicación del archivo
 import UpdateForm from "./Forms/updateForm";
@@ -40,7 +40,7 @@ const Usuarios = () => {
     if (selectedEmployees.length !== 1) {
       Swal.fire({
         title: "Error",
-        text: "Por favor seleccione exactamente un empleado para editar",
+        text: "Es necesario seleccionar exactamente un empleado para proceder con la edición.",
         icon: "error"
       });
       return;
@@ -52,13 +52,26 @@ const Usuarios = () => {
 
   // Función para guardar cambios
   const handleGuardarEdicion = async (formData) => {
-    const exito = await handleEditarEmpleado(editingEmployee.id, formData);
-    
-    if (exito) {
-      Swal.fire("¡Éxito!", "Empleado actualizado correctamente", "success");
+    try {
+      // 1. Enviar datos al backend
+      const updatedEmployee = await editEmployees(editingEmployee.id, formData);
+      
+      // 2. Actualizar el estado local
+      setEmployees(prev => prev.map(emp => 
+        emp.id === editingEmployee.id ? updatedEmployee : emp
+      ));
+      
+      setFilteredEmployees(prev => prev.map(emp => 
+        emp.id === editingEmployee.id ? updatedEmployee : emp
+      ));
+  
+      // 3. Cerrar y mostrar confirmación
       setEditingEmployee(null);
-    } else {
-      Swal.fire("Error", "No se pudo actualizar el empleado", "error");
+      Swal.fire("¡Actualizado!", "Datos del empleado guardados", "success");
+      
+    } catch (error) {
+      console.error("Error al actualizar:", error);
+      Swal.fire("Error", "No se pudieron guardar los cambios", "error");
     }
   };
 
@@ -150,7 +163,7 @@ const Usuarios = () => {
       console.error("Error al asignar la cuenta:", error);
       Swal.fire({
         title: "Error",
-        text: "No se pudo asignar la cuenta. Verifica los datos ingresados.",
+        text: "La cuenta no pudo ser asignada. El campo de usuario debe contener al menos 4 caracteres. Por favor, ingrese un valor válido y vuelva a intentarlo. ",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
@@ -209,7 +222,14 @@ const Usuarios = () => {
   }
 
   const handleEliminarUser = async () => {
-    if (selectedEmployees.length === 0) return alert("Seleccione al menos un usuario.");
+    if (selectedEmployees.length === 0)  {
+      Swal.fire({
+        title: "Error",
+        text: "Es necesario seleccionar al menos un empleado para proceder con la eliminación. Por favor, realice una selección válida y vuelva a intentarlo.",
+        icon: "error"
+      });
+      return;
+    }
 
     const confirmacion = window.confirm("Está seguro de que desea eliminar los usuarios seleccionados? Esta acción no se puede deshacer");
     if (!confirmacion) return;
@@ -231,8 +251,7 @@ const Usuarios = () => {
       console.error("Hubo un error al eliminar los usuarios.", error);
       alert("Ocurrió un error al eliminar usuarios");
     }
-
-  }
+  };
 
   return (
     <div>
@@ -268,15 +287,6 @@ const Usuarios = () => {
           user={editingUser}
           onSubmit={(formData) => handleFormActualizarCuenta(editingUser.id, formData)}
           onCancel={() => setEditingUser(null)}
-        />
-      )}
-
-      {/* Formulario de edición */}
-      {editingEmployee && (
-        <UpdateForm
-          employee={editingEmployee}
-          onSubmit={handleGuardarEdicion}
-          onCancel={() => setEditingEmployee(null)}
         />
       )}
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { validateCreateUserForm } from "../utils/validaciones";
 import Swal from "sweetalert2";
-import CustomButton from "./button";
+
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -85,7 +85,7 @@ const CancelButton = styled.button`
   }
 `;
 
-const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel }) => {
+const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel, successMessage = "Usuario creado con éxito", successDescription = "El usuario ha sido registrado correctamente"  }) => {
   const [formData, setFormData] = useState(() => {
     const initialData = {};
     fields.forEach((field) => {
@@ -130,8 +130,8 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel }) => 
 
     if (Object.keys(validationErrors).length === 0) {
       const result = await Swal.fire({
-        title: "Usuario creado con éxito",
-        text: "El usuario ha sido registrado correctamente",
+        title: successMessage,
+        text: successMessage,
         icon: "success",
         confirmButtonText: "Aceptar"
       });

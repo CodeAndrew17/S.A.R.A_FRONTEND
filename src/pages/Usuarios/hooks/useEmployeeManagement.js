@@ -1,6 +1,5 @@
     import { useState, useEffect } from "react";
     import { getEmployees, deleteEmployees, editEmployees, addEmployees, getUsers } from "../../../api/api_Usuarios";
-    import { Search } from "lucide-react";
     import { getBranches } from '../../../api/api_Usuarios'
 
     
