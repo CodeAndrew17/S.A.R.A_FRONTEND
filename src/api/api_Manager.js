@@ -14,14 +14,22 @@ const login = async (usuario, password) => {
         sessionStorage.setItem('refresh',refresh);
 
         return response.data;  
-    } catch (error) {
-        // Manejo de errores: Si la respuesta contiene error, lo mostramos
+    }catch (error) {
         if (error.response) {
-            
-            throw new Error(error.response.data.detail || 'Error de autenticación');
+            const { status, data } = error.response;
+            //Lista para los errores
+            const errorMessages = {
+                400: "Usuario y contraseña son requeridos.",
+                401: "Contraseña incorrecta.",
+                403: "Usuario inactivo o no encontrado. Contacta al administrador.",
+                500: "Error interno del servidor. Inténtalo más tarde."
+            };
+            //Crea el nuevo mensaje y valida el status correspodiente 
+            throw new Error(errorMessages[status] || data.error || "Error desconocido.");
+        } else if (error.request) {
+            throw new Error("No se pudo conectar con el servidor. Verifica tu conexión.");
         } else {
-            
-            throw new Error('Error de conexión');
+            throw new Error("Error al configurar la petición.");
         }
     }
 };
