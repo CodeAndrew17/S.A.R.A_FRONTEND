@@ -85,7 +85,7 @@ const CancelButton = styled.button`
   }
 `;
 
-const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel, successMessage = "Usuario creado con éxito", successDescription = "El usuario ha sido registrado correctamente"  }) => {
+const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel, successMessage = "Usuario creado con éxito", successDescription = "El usuario ha sido registrado correctamente" }) => {
   const [formData, setFormData] = useState(() => {
     const initialData = {};
     fields.forEach((field) => {
@@ -166,7 +166,7 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel, succe
                     value={formData[field.name] ?? ""}
                     onChange={handleInputChange}
                     required={field.required}
-                    style={{ borderColor: errors[field.name] ? "red" : "black" }} //Resaltar los errores
+                    style={{ borderColor: errors[field.name] ? "red" : "black" }}
                   >
                     <option value="" disabled>
                       {field.placeholder}
@@ -177,6 +177,12 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel, succe
                       </option>
                     ))}
                   </Select>
+                  {errors[field.name] && <p style={{ color: "red", fontSize: "12px" }}>{errors[field.name]}</p>}
+                </>
+              ) : field.type === "custom" ? (
+                <>
+                  <label style={{ marginTop: "10px", fontWeight: "bold" }}>{field.placeholder}</label>
+                  {field.component}
                   {errors[field.name] && <p style={{ color: "red", fontSize: "12px" }}>{errors[field.name]}</p>}
                 </>
               ) : (
@@ -193,6 +199,7 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel, succe
                   {errors[field.name] && <p style={{ color: "red", fontSize: "12px" }}>{errors[field.name]}</p>}
                 </>
               )}
+
             </div>
           ))}
           <ButtonContainer>
