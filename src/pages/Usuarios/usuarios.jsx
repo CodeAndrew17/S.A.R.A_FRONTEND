@@ -5,7 +5,7 @@ import Toolbar from "./internalComponents/Toolbar";
 import UserTable from "./internalComponents/userTable";
 import UserForm from "../../components/userForm";
 import useEmployeeManagement from "./hooks/useEmployeeManagement";
-import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees, editEmployees } from "../../api/api_Usuarios"; // Importar función API para creación
+import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees, editEmployees ,getUsers} from "../../api/api_Usuarios"; // Importar función API para creación
 import CreateForm from "./Forms/createForm";
 import AsignForm from "./Forms/asignForm"; // Ajusta la ruta según la ubicación del archivo
 import UpdateForm from "./Forms/updateForm";
@@ -35,6 +35,7 @@ const Usuarios = () => {
   const [selectedUser, setSelectedUser] = useState(null); //Usuario seleccionado
   const [editingUser, setEditingUser] = useState(null);
   const [editingEmployee, setEditingEmployee] = useState(null);
+
 
   const handleEditar = () => {
     if (selectedEmployees.length !== 1) {
@@ -222,7 +223,13 @@ const Usuarios = () => {
   }
 
   const handleEliminarUser = async () => {
-    if (selectedEmployees.length === 0)  {
+    const [userList] =  await Promise.all([
+      getUsers()
+    ]);
+
+    let continuar = true;
+  
+    if (selectedEmployees.length === 0) {
       Swal.fire({
         title: "Error",
         text: "Es necesario seleccionar al menos un empleado para proceder con la eliminación. Por favor, realice una selección válida y vuelva a intentarlo.",
@@ -230,28 +237,63 @@ const Usuarios = () => {
       });
       return;
     }
-
-    const confirmacion = window.confirm("Está seguro de que desea eliminar los usuarios seleccionados? Esta acción no se puede deshacer");
-    if (!confirmacion) return;
-
+  
+    // Verificar si alguno tiene cuenta de usuario
+    const empleadosConCuenta = selectedEmployees.filter(id =>
+      userList.some(user => user.id_empleado === id)
+    );    
+    //Validacion de cuenta de usuario
+    const textoDinamico = empleadosConCuenta.length > 0
+      ? `Hay ${empleadosConCuenta.length} empleados con cuenta de usuario. ¿Deseas continuar?`
+      : "¿Deseas eliminar los empleados seleccionados?";
+    //arroja le alerta con el texto dinamico,sin importar el caso si la respuesta Es afirmativa se eliminan los empleados
+    const resultado = await Swal.fire({
+        title: "Revisión",
+        text: textoDinamico,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+      });
+      console.log("ingrese a la validacion")
+      continuar = resultado.isConfirmed;
+      
+    
+  
+    if (!continuar) return;
+  
     try {
+      // Eliminamos a los usuarios seleccionados en el backend
       for (const id of selectedEmployees) {
         await deleteEmployees(id);
       };
+
+      // Actualizamos el estado local para eliminar los empleados
+      setEmployees((prevEmployees) =>
+        prevEmployees.filter((emp) => !selectedEmployees.includes(emp.id)) // Filtramos los empleados eliminados
+      );
+
+      setFilteredEmployees((prevFiltered) =>
+        prevFiltered.filter((emp) => !selectedEmployees.includes(emp.id)) // Filtramos los empleados eliminados en el filtro también
+      );
 
       Swal.fire({
         title: "Usuario(s) eliminado(s).",
         text: "Se eliminaron los usuarios correctamente.",
         icon: "success",
         confirmButtonText: "Aceptar"
-      })
-      window.location.reload();
-
+      });
     } catch (error) {
       console.error("Hubo un error al eliminar los usuarios.", error);
-      alert("Ocurrió un error al eliminar usuarios");
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al eliminar los usuarios. Intenta nuevamente.",
+        icon: "error",
+        confirmButtonText: "Aceptar"
+      });
     }
   };
+
 
   return (
     <div>
