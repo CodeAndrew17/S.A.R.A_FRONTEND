@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { validateCreateUserForm } from "../utils/validaciones";
+import Swal from "sweetalert2";
+
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -49,7 +52,7 @@ const Select = styled.select`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 190px;
+  gap: 180px;
   margin-top: 20px;
   width: 100%;
 `;
@@ -82,7 +85,7 @@ const CancelButton = styled.button`
   }
 `;
 
-const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel }) => {
+const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel, successMessage = "Usuario creado con éxito", successDescription = "El usuario ha sido registrado correctamente" }) => {
   const [formData, setFormData] = useState(() => {
     const initialData = {};
     fields.forEach((field) => {
@@ -91,20 +94,22 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel }) => 
     return initialData;
   });
 
+  const [errors, setErrors] = useState({}); //estado para los errores
+
   // Sincronizar con cambios en defaultValue
   useEffect(() => {
     setFormData(prev => {
-      const updatedData = {...prev};
+      const updatedData = { ...prev };
       let hasChanges = false;
-      
+
       fields.forEach((field) => {
-        if (field.defaultValue !== undefined && 
-            prev[field.name] !== field.defaultValue) {
+        if (field.defaultValue !== undefined &&
+          prev[field.name] !== field.defaultValue) {
           updatedData[field.name] = field.defaultValue;
           hasChanges = true;
         }
       });
-      
+
       return hasChanges ? updatedData : prev;
     });
   }, [fields]);
@@ -112,12 +117,40 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel }) => 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }))
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    const validationErrors = validateCreateUserForm(formData, fields);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      const result = await Swal.fire({
+        title: successMessage,
+        text: successMessage,
+        icon: "success",
+        confirmButtonText: "Aceptar"
+      });
+
+      if (result.isConfirmed) {
+        onSubmit(formData);
+      }
+    } else {
+      Swal.fire({
+        title: "Error al crear el usuario",
+        text: "Por favor, revisa los campos resaltados",
+        icon: "error",
+        confirmButtonText: "Aceptar"
+      });
+
+    }
   };
+
+
 
   return (
     <ModalContainer>
@@ -127,31 +160,46 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel }) => 
           {fields.map((field) => (
             <div key={field.name} style={{ width: "100%", display: "flex", flexDirection: "column" }}>
               {field.type === "select" ? (
-                <Select
-                  name={field.name}
-                  value={formData[field.name] ?? ""}
-                  onChange={handleInputChange}
-                  required={field.required}
-                >
-                  <option value="" disabled>
-                    {field.placeholder}
-                  </option>
-                  {field.options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
+                <>
+                  <Select
+                    name={field.name}
+                    value={formData[field.name] ?? ""}
+                    onChange={handleInputChange}
+                    required={field.required}
+                    style={{ borderColor: errors[field.name] ? "red" : "black" }}
+                  >
+                    <option value="" disabled>
+                      {field.placeholder}
                     </option>
-                  ))}
-                </Select>
+                    {field.options.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                  {errors[field.name] && <p style={{ color: "red", fontSize: "12px" }}>{errors[field.name]}</p>}
+                </>
+              ) : field.type === "custom" ? (
+                <>
+                  <label style={{ marginTop: "10px", fontWeight: "bold" }}>{field.placeholder}</label>
+                  {field.component}
+                  {errors[field.name] && <p style={{ color: "red", fontSize: "12px" }}>{errors[field.name]}</p>}
+                </>
               ) : (
-                <Input
-                  type={field.type || "text"}
-                  name={field.name}
-                  placeholder={field.placeholder}
-                  value={formData[field.name] ?? ""}
-                  onChange={handleInputChange}
-                  required={field.required}
-                />
+                <>
+                  <Input
+                    type={field.type || "text"}
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    value={formData[field.name] ?? ""}
+                    onChange={handleInputChange}
+                    required={field.required}
+                    style={{ borderColor: errors[field.name] ? "red" : "black" }}
+                  />
+                  {errors[field.name] && <p style={{ color: "red", fontSize: "12px" }}>{errors[field.name]}</p>}
+                </>
               )}
+
             </div>
           ))}
           <ButtonContainer>
@@ -161,8 +209,8 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel }) => 
             <SubmitButton type="submit">Confirmar</SubmitButton>
           </ButtonContainer>
         </form>
-      </FormContainer>
-    </ModalContainer>
+      </FormContainer >
+    </ModalContainer >
   );
 };
 

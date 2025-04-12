@@ -16,7 +16,7 @@ const DropdownButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  width: 130px;
+  width: 140px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -83,11 +83,12 @@ function Dropdown({ options, onSelect, defaultOption = "Selecciona" }) {
     };
   }, []);
 
-  const handleSelectedOption = (option) => {
+  const handleSelectedOption = (option, event) => {
+    event.preventDefault(); // Esto evita que se envíe el formulario
     setSelectedOption(option);
     setIsOpen(false);
     if (onSelect) {
-      onSelect(option); // Llamamos la función externa si existe
+      onSelect(option);
     }
   };
 
@@ -98,7 +99,7 @@ function Dropdown({ options, onSelect, defaultOption = "Selecciona" }) {
       {isOpen && (
         <DropdownMenu $isOpen={isOpen}>
           {options.map((option, index) => (
-            <DropdownItem key={index} onClick={() => handleSelectedOption(option)}>
+            <DropdownItem key={index} onClick={(event) => handleSelectedOption(option, event)}>
               {option}
             </DropdownItem>
           ))}

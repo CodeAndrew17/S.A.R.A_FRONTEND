@@ -1,9 +1,9 @@
 import {BrowserRouter, Routes,Route, Navigate} from 'react-router-dom';
-import {Recuperacontrasena} from './pages/recuperaContrasena';
+import RestorePassword from './pages/restorePassword';
 import {Inicio} from './pages/principal';
-import  Login from './components/login';
+import  Login from './pages/login';
 import { createGlobalStyle } from 'styled-components';
-import Usuarios from './pages/usuarios';
+import Usuarios from './pages/Usuarios/usuarios';
 import Administrar from './pages/administrar';
 import Estadisticas from './pages/estadisticas';
 import Convenios from './pages/convenios';
@@ -36,7 +36,7 @@ function App(){
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/contraseña" element={<Recuperacontrasena />} />
+      <Route path="/contraseña" element={<RestorePassword />} />
       <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
       <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
       <Route path="/convenios" element={<ProtectedRoute><Convenios/></ProtectedRoute>} />
