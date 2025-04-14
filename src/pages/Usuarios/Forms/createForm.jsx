@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import UserForm from "../../../components/userForm";
-
+import axios from "axios";
+import {axiosWithAuth} from "../../../api/api_Manager"
 
 const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
+    const [sucursales, setSucursales] = useState([]);
+
+    useEffect(() => {
+        axios.get(`http://127.0.0.1:8000/api/sucursal/get/`) // o la ruta correcta que tengas
+            .then((response) => {
+                setSucursales(response.data);
+            })
+            .catch((error) => {
+                console.error("Error al cargar sucursales:", error);
+            });
+    }, []);
+
     if (!showForm) return null;
+
+
+    const onSubmit = (formData) => {
+        handleFormSubmit(formData);
+    };
 
     return (
         <UserForm
@@ -23,12 +41,17 @@ const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
                     ],
                     required: true,
                 },
-                { name: "id_sucursal", placeholder: "Sucursal", type: "number", required: true },
+                {
+                    name: "id_sucursal",
+                    placeholder: "Sucursal",
+                    type: "select",
+                    options: sucursales.map(s => ({ value: s.id, label: s.nombre })),
+                    required: true,
+                  }
+                  
             ]}
-            onSubmit={handleFormSubmit}
-            onCancel={() => {
-                setShowForm(false); // Actualiza el estado directamente
-            }}
+            onSubmit={onSubmit}
+            onCancel={() => setShowForm(false)}
         />
     );
 };

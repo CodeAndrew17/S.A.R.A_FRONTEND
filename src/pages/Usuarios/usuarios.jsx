@@ -45,7 +45,7 @@ const Usuarios = () => {
       });
       return;
     }
-    
+
     const empleadoAEditar = employees.find(emp => emp.id === selectedEmployees[0]);
     setEditingEmployee(empleadoAEditar);
   };
@@ -55,20 +55,20 @@ const Usuarios = () => {
     try {
       // 1. Enviar datos al backend
       const updatedEmployee = await editEmployees(editingEmployee.id, formData);
-      
+
       // 2. Actualizar el estado local
-      setEmployees(prev => prev.map(emp => 
+      setEmployees(prev => prev.map(emp =>
         emp.id === editingEmployee.id ? updatedEmployee : emp
       ));
-      
-      setFilteredEmployees(prev => prev.map(emp => 
+
+      setFilteredEmployees(prev => prev.map(emp =>
         emp.id === editingEmployee.id ? updatedEmployee : emp
       ));
-  
+
       // 3. Cerrar y mostrar confirmación
       setEditingEmployee(null);
       Swal.fire("¡Actualizado!", "Datos del empleado guardados", "success");
-      
+
     } catch (error) {
       console.error("Error al actualizar:", error);
       Swal.fire("Error", "No se pudieron guardar los cambios", "error");
@@ -222,7 +222,7 @@ const Usuarios = () => {
   }
 
   const handleEliminarUser = async () => {
-    if (selectedEmployees.length === 0)  {
+    if (selectedEmployees.length === 0) {
       Swal.fire({
         title: "Error",
         text: "Es necesario seleccionar al menos un empleado para proceder con la eliminación. Por favor, realice una selección válida y vuelva a intentarlo.",
@@ -235,23 +235,37 @@ const Usuarios = () => {
     if (!confirmacion) return;
 
     try {
+      // Eliminamos a los usuarios seleccionados en el backend
       for (const id of selectedEmployees) {
         await deleteEmployees(id);
       };
+
+      // Actualizamos el estado local para eliminar los empleados
+      setEmployees((prevEmployees) =>
+        prevEmployees.filter((emp) => !selectedEmployees.includes(emp.id)) // Filtramos los empleados eliminados
+      );
+
+      setFilteredEmployees((prevFiltered) =>
+        prevFiltered.filter((emp) => !selectedEmployees.includes(emp.id)) // Filtramos los empleados eliminados en el filtro también
+      );
 
       Swal.fire({
         title: "Usuario(s) eliminado(s).",
         text: "Se eliminaron los usuarios correctamente.",
         icon: "success",
         confirmButtonText: "Aceptar"
-      })
-      window.location.reload();
-
+      });
     } catch (error) {
       console.error("Hubo un error al eliminar los usuarios.", error);
-      alert("Ocurrió un error al eliminar usuarios");
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al eliminar los usuarios. Intenta nuevamente.",
+        icon: "error",
+        confirmButtonText: "Aceptar"
+      });
     }
   };
+
 
   return (
     <div>
@@ -310,8 +324,8 @@ const Usuarios = () => {
         handleCrearCuenta={handleCrearCuenta}
         handleVerUsuario={handleVerUsuario}
         editingUser={editingUser}
-        setEditingUser={setEditingUser} 
-        setEmployees={setEmployees}      
+        setEditingUser={setEditingUser}
+        setEmployees={setEmployees}
         employees={employees}
         setFilteredEmployees={setFilteredEmployees} // Pasar la lista de empleados al componente UserTable
       />
