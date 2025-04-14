@@ -16,7 +16,7 @@ const DropdownButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  width: 140px;
+  width: 120px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;

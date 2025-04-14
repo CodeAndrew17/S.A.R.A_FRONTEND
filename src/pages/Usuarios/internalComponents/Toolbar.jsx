@@ -39,12 +39,12 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
     <ToolbarWrapper>
       <FilterContainer>
         <Dropdown
-          options={["Admin.", "Perito", "Recepcionista", "Ad. Convenio", "Cons. Convenio", "Todos"]}
+          options={["Activo", "Inactivo", "Todos"]}
           onSelect={(option) => console.log("Dropdown seleccionado:", option)}
-          defaultOption="Rol"
+          defaultOption="Estado"
         />
         <SearchBar
-          placeholder="Cédula"
+          placeholder="Cédula, Nombre o Convenio"
           width="280px"
           onSearch={onSearch}
         />
