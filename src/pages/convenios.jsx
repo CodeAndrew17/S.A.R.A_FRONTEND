@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar"
+import Sidebar from "../components/sidebar"
 import styled from "styled-components";
 //import Dropdown from "../components/Dropdown";
 import SearchBar from "../components/SearchBar";

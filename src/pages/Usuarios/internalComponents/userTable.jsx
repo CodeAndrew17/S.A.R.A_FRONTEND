@@ -17,7 +17,7 @@ const TableContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   overflow-x: auto; /* Scroll horizontal si es necesario */
-  margin-top: 5px;
+  margin-top: -20px;
 `;
 
 const StyledTable = styled.table`
@@ -58,7 +58,7 @@ const TableCell = styled.td`
   &.columna-cedula     { padding-left: 40px; }  /* Cédula */
   &.columna-correo     { padding-left: 30px; }  /* Correo */
   &.columna-estado     { padding-left: 15px; }  /* Estado */
-  &.columna-sucursal   { padding-right: 70px; }   /* Sucursal */
+  &.columna-sucursal   { padding-right: 45px; }   /* Sucursal */
   &.columna-usuario    { padding-right: 30px; }   /* Usuario */
 `;
 
@@ -306,13 +306,13 @@ const UserTable = ({
         <thead>
           <tr>
             <TableHeader style= {{paddingLeft: "175px"}}>Seleccionar</TableHeader>
-            <TableHeader style= {{paddingLeft: "50px"}}>Nombres</TableHeader>
+            <TableHeader style= {{paddingLeft: "60px"}}>Nombres</TableHeader>
             <TableHeader style= {{paddingLeft: "60px"}}>Apellidos</TableHeader>
-            <TableHeader style= {{paddingLeft: "40px"}}>Cédula</TableHeader>
-            <TableHeader style= {{paddingLeft: "30px"}}>Correo</TableHeader>
-            <TableHeader style= {{paddingLeft: "5px"}}>Estado</TableHeader>
+            <TableHeader style= {{paddingLeft: "38px"}}>Cédula</TableHeader>
+            <TableHeader style= {{paddingLeft: "28px"}}>Correo</TableHeader>
+            <TableHeader style= {{paddingLeft: "2px"}}>Estado</TableHeader>
             <TableHeader style= {{paddingLeft: "15px"}}>Sucursal</TableHeader>
-            <TableHeader style= {{paddingLeft: "20px"}}>Usuario</TableHeader>
+            <TableHeader style= {{paddingLeft: "25px"}}>Usuario</TableHeader>
           </tr>
         </thead>
         <tbody>
