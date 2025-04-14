@@ -6,6 +6,7 @@ import SearchBar from "../components/SearchBar";
 import Button from "../components/button";
 import UserForm from "../components/userForm"; 
 import { Filter, Plus } from "lucide-react";
+import Table from "../components/table";
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
