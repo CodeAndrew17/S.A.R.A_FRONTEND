@@ -44,7 +44,7 @@ const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
                 },
                 {
                     name: "id_sucursal",
-                    placeholder: "Sucursal",
+                    placeholder: "Seleccionar sucursal",
                     type: "select",
                     options: sucursales.map(s => ({ value: s.id, label: s.nombre })),
                     required: true,

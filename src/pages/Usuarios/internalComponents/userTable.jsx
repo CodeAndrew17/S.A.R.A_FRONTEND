@@ -56,7 +56,7 @@ const TableCell = styled.td`
   
   /* Clases para mover columnas individualmente */
   /* AJUSTA ESTOS VALORES SEGÚN NECESITES */
-  &.columna-seleccionar { padding-left: 100px; }  /* Checkbox */
+  &.columna-seleccionar { padding-left: 50px; }  /* Checkbox */
   &.columna-nombres    { padding-left: 60px; }  /* Nombres */
   &.columna-apellidos  { padding-left: 60px; }  /* Apellidos */
   &.columna-cedula     { padding-left: 40px; }  /* Cédula */
@@ -69,7 +69,7 @@ const TableCell = styled.td`
 const CheckBoxCell = styled.td`
   text-align: center;
   padding: 14px 12px;
-  padding-left: 130px; /* Aumenta este valor para mover a la derecha */
+  padding-left: 110px; /* Aumenta este valor para mover a la derecha */
   position: relative;
 `;
 
@@ -299,7 +299,7 @@ const UserTable = ({
       <StyledTable>
         <thead>
           <tr>
-            <TableHeader style= {{paddingLeft: "175px"}}>Seleccionar</TableHeader>
+            <TableHeader style= {{paddingLeft: "165px"}}>Seleccionar</TableHeader>
             <TableHeader style= {{paddingLeft: "60px"}}>Nombres</TableHeader>
             <TableHeader style= {{paddingLeft: "60px"}}>Apellidos</TableHeader>
             <TableHeader style= {{paddingLeft: "38px"}}>Cédula</TableHeader>

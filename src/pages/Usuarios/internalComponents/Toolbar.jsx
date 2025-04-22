@@ -26,6 +26,12 @@ const FilterContainer = styled.div`
   align-items: center;
   gap: 80px;
   padding-left: 210px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+    padding-left: 0;
+  }
 `;
 
 const ButtonContainer = styled.div`
