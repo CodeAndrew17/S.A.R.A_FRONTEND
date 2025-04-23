@@ -122,8 +122,7 @@ const Login = () => {
       // Almacena los tokens en sessionStorage
       sessionStorage.setItem('access', result.access);
       sessionStorage.setItem('refresh', result.refresh);
-
-      sessionStorage.setItem('username', data.usuario); // almacena el nombre de usuario en sessionStorage
+      sessionStorage.setItem('username', result.usuario);
 
       // Navega a la página de inicio
       navigate('/inicio');
@@ -140,7 +139,7 @@ const Login = () => {
           <LogoContainer>
             <Logo src={logo} alt="Logo" />
           </LogoContainer>
-          <GradientText>Bienvenido!</GradientText>
+          <GradientText>Ingreso</GradientText>
           <Separator />
           <form onSubmit={handleSubmit(onSubmit)}>
             <InputGroup>
@@ -148,7 +147,7 @@ const Login = () => {
               <Input
                 type="text"
                 id="username"
-                placeholder="Ingrese su usuario"
+                placeholder="Ingrese su nombre de usuario"
                 {...register('usuario', { required: 'El campo usuario es obligatorio' })} //validacion para llenar campos obligatorios
               />
               {errors.usuario && <Message>{errors.usuario.message}</Message>} {/*imprimimos el mensaje de error si hay*/}

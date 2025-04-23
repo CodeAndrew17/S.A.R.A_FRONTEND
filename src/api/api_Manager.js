@@ -24,12 +24,17 @@ const login = async (usuario, password) => {
                 403: "Usuario inactivo o no encontrado. Contacta al administrador.",
                 500: "Error interno del servidor. Inténtalo más tarde."
             };
+
             //Crea el nuevo mensaje y valida el status correspodiente 
             throw new Error(errorMessages[status] || data.error || "Error desconocido.");
+
         } else if (error.request) {
+
             throw new Error("No se pudo conectar con el servidor. Verifica tu conexión.");
+
         } else {
-            throw new Error("Error al configurar la petición.");
+            
+            throw new Error('Error de conexión');
         }
     }
 };

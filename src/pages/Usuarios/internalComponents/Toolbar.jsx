@@ -26,6 +26,12 @@ const FilterContainer = styled.div`
   align-items: center;
   gap: 80px;
   padding-left: 210px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+    padding-left: 0;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -39,12 +45,15 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
     <ToolbarWrapper>
       <FilterContainer>
         <Dropdown
-          options={["Admin.", "Perito", "Recepcionista", "Ad. Convenio", "Cons. Convenio", "Todos"]}
-          onSelect={(option) => console.log("Dropdown seleccionado:", option)}
-          defaultOption="Rol"
+          options={{
+              "AC": "Activo", 
+              "IN": "Inactivo",
+              "": "Todos"
+            }}
+          onSelect={onSearch}
         />
         <SearchBar
-          placeholder="Cédula"
+          placeholder="Cédula, Nombre o Convenio"
           width="280px"
           onSearch={onSearch}
         />

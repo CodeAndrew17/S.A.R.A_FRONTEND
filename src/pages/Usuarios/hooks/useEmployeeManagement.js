@@ -48,15 +48,27 @@
 
         const handleBuscar = (search) => {
             if (!search.trim()) {
-                setFilteredEmployees(employees);
+                setFilteredEmployees(employees); 
                 return;
             }
-            const filtered = employees.filter((emp) =>
-                emp.cedula.toString().includes(search.trim())
-            );
-            setFilteredEmployees(filtered);
+          
+            
+        
+            const sanitizedSearch = search.trim().toLowerCase(); 
+        
+        
+            const filtered = employees.filter((emp) => {
+                const cedulaMatch = emp.cedula?.toString().includes(sanitizedSearch);
+                const nombreMatch = emp.nombres?.toLowerCase().includes(sanitizedSearch);
+                const sucursalMatch = emp.id_sucursal &&
+                                    sucursalesMap[emp.id_sucursal]?.toLowerCase().includes(sanitizedSearch);
+                const estadoMatch= emp.estado?.toLowerCase().includes(sanitizedSearch)
+                
+                return cedulaMatch || nombreMatch || sucursalMatch || estadoMatch; 
+            });
+        
+            setFilteredEmployees(filtered); 
         };
-
         
         const handleEliminar = async () => {
             if (selectedEmployees.length === 0) {

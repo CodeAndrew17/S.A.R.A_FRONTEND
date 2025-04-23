@@ -6,7 +6,7 @@ import { createGlobalStyle } from 'styled-components';
 import Usuarios from './pages/Usuarios/usuarios';
 import Administrar from './pages/administrar';
 import Estadisticas from './pages/estadisticas';
-import Convenios from './pages/convenios';
+import Convenios from './pages/Convenios/convenios';
 import Revisiones from './pages/revisiones';
 import Configuracion from './pages/configuracion';
 

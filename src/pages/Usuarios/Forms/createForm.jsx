@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import UserForm from "../../../components/userForm";
-
+import {getBranches} from "../../../api/api_Usuarios"
 
 const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
+    const [sucursales, setSucursales] = useState([]);
+
+    useEffect(() => {
+        const fetchSucursales = async () => {
+            try{
+                const data = await getBranches();
+                setSucursales(data)
+            } catch (error){
+                console.error("Error al obtener sucursales", error);
+            }
+        };
+        fetchSucursales();
+    }, []);
+
     if (!showForm) return null;
+
+
+    const onSubmit = (formData) => {
+        handleFormSubmit(formData);
+    };
 
     return (
         <UserForm
@@ -23,12 +42,17 @@ const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
                     ],
                     required: true,
                 },
-                { name: "id_sucursal", placeholder: "Sucursal", type: "number", required: true },
+                {
+                    name: "id_sucursal",
+                    placeholder: "Seleccionar sucursal",
+                    type: "select",
+                    options: sucursales.map(s => ({ value: s.id, label: s.nombre })),
+                    required: true,
+                  }
+                  
             ]}
-            onSubmit={handleFormSubmit}
-            onCancel={() => {
-                setShowForm(false); // Actualiza el estado directamente
-            }}
+            onSubmit={onSubmit}
+            onCancel={() => setShowForm(false)}
         />
     );
 };

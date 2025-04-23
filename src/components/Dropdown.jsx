@@ -16,7 +16,7 @@ const DropdownButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  width: 140px;
+  width: 120px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -60,15 +60,16 @@ const DropdownItem = styled.button`
     background-color: #f1f1f1;
   }
 `;
-
-function Dropdown({ options, onSelect, defaultOption = "Selecciona" }) {
+function Dropdown({ 
+  options = {},   // Recibimos un objeto {valor: label}
+  onSelect, 
+  defaultOption = "Todos"
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(defaultOption);
+  const [selectedLabel, setSelectedLabel] = useState(defaultOption);
   const dropdownRef = useRef(null);
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -78,35 +79,37 @@ function Dropdown({ options, onSelect, defaultOption = "Selecciona" }) {
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelectedOption = (option) => {
-    setSelectedOption(option);
+  const handleSelectedOption = (value, label, event) => {
+    event.preventDefault();
+    setSelectedLabel(label);
     setIsOpen(false);
-    if (onSelect) {
-      onSelect(option); // Llamamos la función externa si existe
-    }
+    onSelect?.(value);
   };
+
+  const optionsArray = Object.entries(options);
 
   return (
     <DropdownContainer ref={dropdownRef}>
       <DropdownButton onClick={toggleDropdown}>
-        {selectedOption}</DropdownButton>
+        {selectedLabel}
+      </DropdownButton>
       {isOpen && (
         <DropdownMenu $isOpen={isOpen}>
-          {options.map((option, index) => (
-            <DropdownItem key={index} onClick={() => handleSelectedOption(option)}>
-              {option}
+          {optionsArray.map(([value, label]) => (
+            <DropdownItem 
+              key={value} 
+              onClick={(event) => handleSelectedOption(value, label, event)}
+            >
+              {label}
             </DropdownItem>
           ))}
         </DropdownMenu>
       )}
     </DropdownContainer>
   );
-}
+};
 
 export default Dropdown;
-

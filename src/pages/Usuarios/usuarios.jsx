@@ -5,7 +5,7 @@ import Toolbar from "./internalComponents/Toolbar";
 import UserTable from "./internalComponents/userTable";
 import UserForm from "../../components/userForm";
 import useEmployeeManagement from "./hooks/useEmployeeManagement";
-import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees, editEmployees ,getUsers} from "../../api/api_Usuarios"; // Importar función API para creación
+import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees, editEmployees ,getUsers} from "../../api/api_Usuarios"; 
 import CreateForm from "./Forms/createForm";
 import AsignForm from "./Forms/asignForm"; // Ajusta la ruta según la ubicación del archivo
 import UpdateForm from "./Forms/updateForm";
@@ -28,6 +28,7 @@ const Usuarios = () => {
     setFilteredEmployees, // Agregado para actualizar empleados filtrados
     handleEditarEmpleado,
     sucursalesMap,
+    handleFilter
   } = useEmployeeManagement(); // Hook personalizado para la lógica de empleados
 
   const [showCreateForm, setShowForm] = useState(false); // Estado para mostrar/ocultar el formulario
@@ -46,7 +47,7 @@ const Usuarios = () => {
       });
       return;
     }
-    
+
     const empleadoAEditar = employees.find(emp => emp.id === selectedEmployees[0]);
     setEditingEmployee(empleadoAEditar);
   };
@@ -56,20 +57,20 @@ const Usuarios = () => {
     try {
       // 1. Enviar datos al backend
       const updatedEmployee = await editEmployees(editingEmployee.id, formData);
-      
+
       // 2. Actualizar el estado local
-      setEmployees(prev => prev.map(emp => 
+      setEmployees(prev => prev.map(emp =>
         emp.id === editingEmployee.id ? updatedEmployee : emp
       ));
-      
-      setFilteredEmployees(prev => prev.map(emp => 
+
+      setFilteredEmployees(prev => prev.map(emp =>
         emp.id === editingEmployee.id ? updatedEmployee : emp
       ));
-  
+
       // 3. Cerrar y mostrar confirmación
       setEditingEmployee(null);
       Swal.fire("¡Actualizado!", "Datos del empleado guardados", "success");
-      
+
     } catch (error) {
       console.error("Error al actualizar:", error);
       Swal.fire("Error", "No se pudieron guardar los cambios", "error");
@@ -237,33 +238,11 @@ const Usuarios = () => {
       });
       return;
     }
-  
-    // Verificar si alguno tiene cuenta de usuario
-    const empleadosConCuenta = selectedEmployees.filter(id =>
-      userList.some(user => user.id_empleado === id)
-    );    
-    //Validacion de cuenta de usuario
-    const textoDinamico = empleadosConCuenta.length > 0
-      ? `Hay ${empleadosConCuenta.length} empleados con cuenta de usuario. ¿Deseas continuar?`
-      : "¿Deseas eliminar los empleados seleccionados?";
-    //arroja le alerta con el texto dinamico,sin importar el caso si la respuesta Es afirmativa se eliminan los empleados
-    const resultado = await Swal.fire({
-        title: "Revisión",
-        text: textoDinamico,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "Cancelar"
-      });
-      console.log("ingrese a la validacion")
-      continuar = resultado.isConfirmed;
-      
-    
-  
-    if (!continuar) return;
-  
+
+    const confirmacion = window.confirm("Está seguro de que desea eliminar los usuarios seleccionados? Esta acción no se puede deshacer");
+    if (!confirmacion) return;
+
     try {
-      // Eliminamos a los usuarios seleccionados en el backend
       for (const id of selectedEmployees) {
         await deleteEmployees(id);
       };
@@ -282,7 +261,9 @@ const Usuarios = () => {
         text: "Se eliminaron los usuarios correctamente.",
         icon: "success",
         confirmButtonText: "Aceptar"
-      });
+      })
+      window.location.reload();
+
     } catch (error) {
       console.error("Hubo un error al eliminar los usuarios.", error);
       Swal.fire({
@@ -304,6 +285,9 @@ const Usuarios = () => {
         onDelete={handleEliminarUser} // Eliminar
         onEdit={handleEditar} // Placeholder para editar
         onCreate={handleCreateNew} // Crear nuevo empleado
+        
+        onfilter={handleFilter}
+        
       />
       {/* Formulario de creación, visible cuando showForm es true */}
       {showCreateForm && (
@@ -352,8 +336,8 @@ const Usuarios = () => {
         handleCrearCuenta={handleCrearCuenta}
         handleVerUsuario={handleVerUsuario}
         editingUser={editingUser}
-        setEditingUser={setEditingUser} 
-        setEmployees={setEmployees}      
+        setEditingUser={setEditingUser}
+        setEmployees={setEmployees}
         employees={employees}
         setFilteredEmployees={setFilteredEmployees} // Pasar la lista de empleados al componente UserTable
       />

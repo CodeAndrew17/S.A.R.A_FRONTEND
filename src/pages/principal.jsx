@@ -2,35 +2,25 @@
 import React from 'react';
 import Sidebar from '../components/sidebar';
 import styled from 'styled-components'; 
-import { User } from 'lucide-react';
 import CustomButton from '../components/button';
+import iconForm from '../assets/images/iconForm.png';
 
 // CSS para el texto de bienvenida
 const UserInfo = styled.div`
-    position: absolute;  /* Lo posicionamos manualmente */
-    top: 50px;          /* Margen desde la parte superior */
-    right: 65px;        /* Lo empujamos hacia la derecha */
-    font-size: 20px;
+    justify-content: center;
+    margin-top: -680px;
+    font-size: 25px;
     font-weight: bold;
     padding: 5px 10px;
     border-radius: 20px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 `;
 
-// CSS para el icono de usuario
-const UserIcon = styled(User)`
-    position: absolute;
-    top: 50px; /* Ajusta el valor para moverlo más abajo */
-    right: 20px; /* Ajusta según sea necesario */
-    background-color:rgb(169, 174, 175);
-    padding: 8px;
-    border-radius: 50%;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-`;
-
-const Principal = styled.div`
-    justify-content: center;
-    display: flex;
+const StyledIconForm = styled.img`
+    width: 50px;
+    height: 50px;
+    border-radius: 5%; /* Ejemplo: hazla circular */
+    margin-top: -680px;
 `;
 
 
@@ -41,13 +31,12 @@ export function Inicio() {
     return (
         <div>
             <Sidebar />
-            <UserIcon size={30} />
-            <UserInfo style={{ backgroundColor: "transparent", boxShadow: "none" }}>
-                Bienvenido, {username}
-            </UserInfo>
-                <Principal>
-                <h1> Esta es la pagina principal </h1>
-                </Principal>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+                <StyledIconForm src={iconForm} alt="Logo" />
+                <UserInfo style={{ backgroundColor: "transparent", boxShadow: "none" }}>
+                    ¡Bienvenido a SARA, {username}!
+                </UserInfo>
+            </div>
         </div>
     );
 }

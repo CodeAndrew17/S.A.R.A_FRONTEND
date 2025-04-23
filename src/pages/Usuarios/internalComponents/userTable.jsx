@@ -6,18 +6,20 @@ import { deleteUsers, getBranches } from "../../../api/api_Usuarios";
 import UpdateForm from "../Forms/updateForm";
 import Swal from "sweetalert2";
 import { editUsers } from "../../../api/api_Usuarios";
-import useEmployeeManagement from "../hooks/useEmployeeManagement";
+
 
 // Estilos generales
 const TableContainer = styled.div`
   width: 100%;
   margin: 30px 0; /* Elimina margen horizontal */
   background-color: #fff;
-  padding: 20px 0; /* Elimina padding horizontal */
+  padding: 20px 0 0 0; /* Elimina padding horizontal */
   border-radius: 12px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   overflow-x: auto; /* Scroll horizontal si es necesario */
-  margin-top: 5px;
+  margin-top: -20px;
+  overflow: hidden;
+  margin-bottom: 0;
 `;
 
 const StyledTable = styled.table`
@@ -37,8 +39,10 @@ const TableHeader = styled.th`
 `;
 
 const TableRow = styled.tr`
-  &:nth-child(even) {
-    background-color: #f6fafd;
+  &:last-child {
+    td {
+      border-bottom: 1px solid #e0e0e0;
+    }
   }
 `;
 
@@ -52,20 +56,20 @@ const TableCell = styled.td`
   
   /* Clases para mover columnas individualmente */
   /* AJUSTA ESTOS VALORES SEGÚN NECESITES */
-  &.columna-seleccionar { padding-left: 100px; }  /* Checkbox */
+  &.columna-seleccionar { padding-left: 50px; }  /* Checkbox */
   &.columna-nombres    { padding-left: 60px; }  /* Nombres */
   &.columna-apellidos  { padding-left: 60px; }  /* Apellidos */
   &.columna-cedula     { padding-left: 40px; }  /* Cédula */
   &.columna-correo     { padding-left: 30px; }  /* Correo */
   &.columna-estado     { padding-left: 15px; }  /* Estado */
-  &.columna-sucursal   { padding-right: 70px; }   /* Sucursal */
+  &.columna-sucursal   { padding-right: 45px; }   /* Sucursal */
   &.columna-usuario    { padding-right: 30px; }   /* Usuario */
 `;
 
 const CheckBoxCell = styled.td`
   text-align: center;
   padding: 14px 12px;
-  padding-left: 130px; /* Aumenta este valor para mover a la derecha */
+  padding-left: 110px; /* Aumenta este valor para mover a la derecha */
   position: relative;
 `;
 
@@ -83,19 +87,10 @@ const DetailsContainer = styled.div`
   margin-top: 0;
 `;
 
-const ActionButton = styled.button`
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-right: ${(props) => (props.primary ? "10px" : "0")};
-  color: white;
-  background-color: ${(props) => (props.$primary ? "#5FB8D6" : "#da2209")};
-
-  &:hover {
-    background-color: ${(props) => (props.primary ? "#4CAAC9" : "#d9534f")};
-  }
+const CenteredCell = styled(TableCell)`
+  text-align: center;
+  color: #ff0000;
+  font-weight: bold;
 `;
 
 const EstadoBadge = ({ estado }) => {
@@ -273,13 +268,12 @@ const UserTable = ({
       setSelectedDetails(usuario);
       setExpandedRow(expandedRow === usuarioId ? null : usuarioId);
       
-      // Precarga los datos para edición si existe cuenta de usuario
       if (usuario.cuenta_usuario) {
         setEditingUser({
-          ...usuario.cuenta_usuario,  // Datos de la cuenta (usuario, rol, estado)
-          id_empleado: usuario.id,     // Relación con el empleado
-          nombres: usuario.nombres,    // Para mostrar en el título del formulario
-          apellidos: usuario.apellidos // Para mostrar en el título del formulario
+          ...usuario.cuenta_usuario,  
+          id_empleado: usuario.id,     
+          nombres: usuario.nombres,    
+          apellidos: usuario.apellidos 
         });
       } else {
         setEditingUser(null); // Limpia si no tiene cuenta
@@ -305,14 +299,14 @@ const UserTable = ({
       <StyledTable>
         <thead>
           <tr>
-            <TableHeader style= {{paddingLeft: "175px"}}>Seleccionar</TableHeader>
-            <TableHeader style= {{paddingLeft: "50px"}}>Nombres</TableHeader>
+            <TableHeader style= {{paddingLeft: "165px"}}>Seleccionar</TableHeader>
+            <TableHeader style= {{paddingLeft: "60px"}}>Nombres</TableHeader>
             <TableHeader style= {{paddingLeft: "60px"}}>Apellidos</TableHeader>
-            <TableHeader style= {{paddingLeft: "40px"}}>Cédula</TableHeader>
-            <TableHeader style= {{paddingLeft: "30px"}}>Correo</TableHeader>
-            <TableHeader style= {{paddingLeft: "5px"}}>Estado</TableHeader>
+            <TableHeader style= {{paddingLeft: "38px"}}>Cédula</TableHeader>
+            <TableHeader style= {{paddingLeft: "28px"}}>Correo</TableHeader>
+            <TableHeader style= {{paddingLeft: "2px"}}>Estado</TableHeader>
             <TableHeader style= {{paddingLeft: "15px"}}>Sucursal</TableHeader>
-            <TableHeader style= {{paddingLeft: "20px"}}>Usuario</TableHeader>
+            <TableHeader style= {{paddingLeft: "25px"}}>Usuario</TableHeader>
           </tr>
         </thead>
         <tbody>
@@ -432,7 +426,9 @@ const UserTable = ({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan="8">No hay usuarios disponibles</TableCell>
+              <CenteredCell colSpan="8">
+                Usuario no encontrado
+                </CenteredCell>
             </TableRow>
             
           )}
