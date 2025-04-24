@@ -16,7 +16,7 @@ const DropdownButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  width: 140px;
+  width: 120px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -88,6 +88,7 @@ function Dropdown({ options, onSelect, defaultOption = "Selecciona" }) {
     setSelectedOption(option);
     setIsOpen(false);
     if (onSelect) {
+      onSelect(option); // Llamamos la función externa si existe
       onSelect(option);
     }
   };

@@ -105,12 +105,12 @@ const RestorePassword = () => {
                     <Header>
                         <h1>Recuperar Contraseña</h1>
                     </Header>
-                    <hr style={{ border: '1px solid #ccc', marginTop: '-30px', width: 350 }} />
+                    <hr style={{ border: '1px solid #ccc', marginTop: '-30px', width: 395 }} />
                     <article>
-                        <h3>Ingrese su usuario y correo electrónico:</h3>
+                        <center><h3>Complete los campos para recuperar su acceso</h3></center>
                     </article>
                     <InputGroup>
-                        <label htmlFor="username">Usuario</label>
+                        <strong><label htmlFor="username">Usuario</label></strong>
                         <StyledInput
                             type="text"
                             id="username"
@@ -120,7 +120,7 @@ const RestorePassword = () => {
                         />
                         {errors.usuario && <ErrorText>{errors.usuario.message}</ErrorText>}
                         
-                        <label htmlFor="email">Correo electrónico</label>
+                        <strong><label htmlFor="email">Correo electrónico</label></strong>
                         <StyledInput
                             type="email"
                             placeholder="Ingrese su correo electrónico"
