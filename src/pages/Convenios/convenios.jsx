@@ -81,9 +81,20 @@ const TableContainer = styled.div`
 `;
 
 const ContainerToolbar = styled.div`
-  margin-left: 280px; 
-  margin-top: 20px; 
+  max-width: 80%; /* Define el ancho máximo */
+  margin: auto; /* Centra el contenedor automáticamente */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 10px;
+  flex-wrap: wrap; 
+
+  @media (max-width: 768px) {
+    max-width: 100%; /* En pantallas pequeñas, ocupa todo el ancho */
+  }
 `;
+
 
 const Convenios = () => {
   const [activeForm, setActiveForm] = useState(null); // Estado para mostrar/ocultar el formulario
@@ -146,7 +157,7 @@ const Convenios = () => {
 {/* Ejemplo de uso del toolbar solo colocan la funcion para cada uno de crear eliminar y editar son los de por default, si nececitan otro lo añaden controlan el gap de cada uno con buttonsGap */}
       <ContainerToolbar>
       <Toolbar
-        onCreate={handleCreate}
+        onCreate={handleCrearConvenio}
         onEdit={handleEdit}
         onDelete={handleDelete}
         buttonsGap="40px" //ejemplo de uso

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/sidebar";
 import Header from "./internalComponents/header";
-import Toolbar from "./internalComponents/Toolbar";
+import Toolbar from "./internalComponents/UserToolbar";
 import UserTable from "./internalComponents/userTable";
 import UserForm from "../../components/userForm";
 import useEmployeeManagement from "./hooks/useEmployeeManagement";
@@ -163,7 +163,7 @@ const Usuarios = () => {
       console.error("Error al asignar la cuenta:", error);
       Swal.fire({
         title: "Error",
-        text: "La cuenta no pudo ser asignada. El campo de usuario debe contener al menos 4 caracteres. Por favor, ingrese un valor válido y vuelva a intentarlo. ",
+        text: "La cuenta no pudo ser asignada. El campo de usuario debe contener al menos 8 caracteres. Por favor, ingrese un valor válido y vuelva a intentarlo. ",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
@@ -242,7 +242,7 @@ const Usuarios = () => {
     );    
     //Validacion de cuenta de usuario
     const textoDinamico = empleadosConCuenta.length > 0
-      ? `Hay ${empleadosConCuenta.length} empleados con cuenta de usuario. ¿Deseas continuar?`
+      ? `Hay ${empleadosConCuenta.length} empleado(s) con cuenta de usuario. ¿Deseas continuar?`
       : "¿Deseas eliminar los empleados seleccionados?";
     //arroja le alerta con el texto dinamico,sin importar el caso si la respuesta Es afirmativa se eliminan los empleados
     const resultado = await Swal.fire({

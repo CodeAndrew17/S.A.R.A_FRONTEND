@@ -45,9 +45,12 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
     <ToolbarWrapper>
       <FilterContainer>
         <Dropdown
-          options={["Activo", "Inactivo", "Todos"]}
-          onSelect={(option) => console.log("Dropdown seleccionado:", option)}
-          defaultOption="Estado"
+          options={{
+            "AC": "Activo", 
+            "IN": "Inactivo",
+            "": "Todos"
+          }}
+        onSelect={onSearch}
         />
         <SearchBar
           placeholder="Cédula, Nombre o Convenio"

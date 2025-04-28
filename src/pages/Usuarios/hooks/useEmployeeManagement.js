@@ -59,8 +59,8 @@
                 const nombreMatch = emp.nombres?.toLowerCase().includes(sanitizedSearch);
                 const sucursalMatch = emp.id_sucursal &&
                                     sucursalesMap[emp.id_sucursal]?.toLowerCase().includes(sanitizedSearch);
-                
-                return cedulaMatch || nombreMatch || sucursalMatch; 
+                const estadoMatch= emp.estado?.toLowerCase().includes(sanitizedSearch)
+                return cedulaMatch || nombreMatch || sucursalMatch || estadoMatch; 
             });
         
             setFilteredEmployees(filtered); 
