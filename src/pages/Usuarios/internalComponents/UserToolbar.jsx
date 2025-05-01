@@ -46,11 +46,11 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
       <FilterContainer>
         <Dropdown
           options={{
-              "AC": "Activo", 
-              "IN": "Inactivo",
-              "": "Todos"
-            }}
-          onSelect={onSearch}
+            "AC": "Activo", 
+            "IN": "Inactivo",
+            "": "Todos"
+          }}
+        onSelect={onSearch}
         />
         <SearchBar
           placeholder="Cédula, Nombre o Convenio"

@@ -9,5 +9,18 @@ const getConvenios = async () => {
     }
 };
 
+const addConvenios =async(newEmployeeData)=>{
+    try{
+        const response=await axiosWithAuth("/api/convenio/post/", "POST",newEmployeeData);
+        console.log("Respuesta del baclend", response.data);  // Verifica la respuesta
 
-export {getConvenios};
+        return response
+
+
+    }catch (error){
+        console.error("Eror al crear convenio : ", error);
+        throw error;
+    }
+}
+
+export {getConvenios, addConvenios};

@@ -22,6 +22,7 @@ const deleteEmployees = async (id) => {
 const editEmployees = async (id, updateData) => {
     try{
         return await axiosWithAuth(`/api/empleado/put/${id}/`, "PUT", updateData);
+        
     } catch (error) {
         console.error("error al editar usuario", error);
         throw error;

@@ -1,6 +1,8 @@
 import React from "react";
 import Sidebar from "../components/sidebar"; 
 import styled from "styled-components";
+import CustomButton from "../components/button"; // Asegúrate de que la ruta sea correcta
+import { AppWindow, Square } from "lucide-react"; // Asegúrate de que la ruta sea correcta
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -21,13 +23,29 @@ const TitleText = styled.h1`
   top: 20px; /* Ajusta el texto sin afectar el fondo */
 `;
 
+const ContainerTrash = styled.div`
+  display: inline-block; /* Mantiene el tamaño del botón */
+  margin-left: 5px;
+  margin-top: 250px; /* Espaciado del fondo */
+`;
+
 
 function Estadisticas() {
+
+  const onDelete = () => {
+    console.log("eliminar clickeado");
+  };
+
   return (
     <div > 
       <Sidebar />
       <TitleWrapper>
         <TitleText>Estadísticas</TitleText>
+        <ContainerTrash>
+        <CustomButton bgColor="#003366" hoverColor="#005C4B" width="130px" height="38px" onClick={onDelete}>
+          <Square /> Button
+        </CustomButton>
+        </ContainerTrash>
       </TitleWrapper>
 
     </div>

@@ -6,7 +6,7 @@ import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipb
 
 const SidebarContainer = styled.div`
   width: ${({ $isOpen }) => ($isOpen ? "250px" : "80px")};
-  height: 100vh;
+  height: 100%;
   background: #1e1e2f;
   color: white;
   display: flex;

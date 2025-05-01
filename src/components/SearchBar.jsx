@@ -32,6 +32,7 @@ const SearchInput = styled.input`
   border: none;
   outline: none;
   background: transparent;
+
 `;
 
 const SearchBar = ({ placeholder, width, onSearch }) => {

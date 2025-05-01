@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/sidebar";
 import Header from "./internalComponents/header";
-import Toolbar from "./internalComponents/Toolbar";
+import Toolbar from "./internalComponents/UserToolbar";
 import UserTable from "./internalComponents/userTable";
 import UserForm from "../../components/userForm";
 import useEmployeeManagement from "./hooks/useEmployeeManagement";
@@ -165,7 +165,7 @@ const Usuarios = () => {
       console.error("Error al asignar la cuenta:", error);
       Swal.fire({
         title: "Error",
-        text: "La cuenta no pudo ser asignada. El campo de usuario debe contener al menos 4 caracteres. Por favor, ingrese un valor válido y vuelva a intentarlo. ",
+        text: "La cuenta no pudo ser asignada. El campo de usuario debe contener al menos 8 caracteres. Por favor, ingrese un valor válido y vuelva a intentarlo. ",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
@@ -239,8 +239,28 @@ const Usuarios = () => {
       return;
     }
 
-    const confirmacion = window.confirm("Está seguro de que desea eliminar los usuarios seleccionados? Esta acción no se puede deshacer");
-    if (!confirmacion) return;
+    const empleadosConCuenta = selectedEmployees.filter(id =>
+      userList.some(user => user.id_empleado === id)
+    );    
+    //Validacion de cuenta de usuario
+    const textoDinamico = empleadosConCuenta.length > 0
+      ? `Hay ${empleadosConCuenta.length} empleado(s) con cuenta de usuario. ¿Deseas continuar?`
+      : "¿Deseas eliminar los empleados seleccionados?";
+    //arroja le alerta con el texto dinamico,sin importar el caso si la respuesta Es afirmativa se eliminan los empleados
+    const resultado = await Swal.fire({
+        title: "Revisión",
+        text: textoDinamico,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+      });
+      console.log("ingrese a la validacion")
+      continuar = resultado.isConfirmed;
+      
+    
+  
+    if (!continuar) return;
 
     try {
       for (const id of selectedEmployees) {

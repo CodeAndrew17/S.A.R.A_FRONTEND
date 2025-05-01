@@ -60,6 +60,7 @@ const DropdownItem = styled.button`
     background-color: #f1f1f1;
   }
 `;
+
 function Dropdown({ 
   options = {},   // Recibimos un objeto {valor: label}
   onSelect, 
@@ -91,19 +92,21 @@ function Dropdown({
 
   const optionsArray = Object.entries(options);
 
+
   return (
     <DropdownContainer ref={dropdownRef}>
       <DropdownButton onClick={toggleDropdown}>
-        {selectedLabel}
-      </DropdownButton>
+        {selectedLabel}</DropdownButton>
+
       {isOpen && (
+
         <DropdownMenu $isOpen={isOpen}>
-          {optionsArray.map(([value, label]) => (
-            <DropdownItem 
-              key={value} 
-              onClick={(event) => handleSelectedOption(value, label, event)}
-            >
-              {label}
+           {optionsArray.map(([value, label]) => (
+             <DropdownItem 
+               key={value} 
+               onClick={(event) => handleSelectedOption(value, label, event)}
+             >
+               {label}
             </DropdownItem>
           ))}
         </DropdownMenu>

@@ -63,7 +63,6 @@
                 const sucursalMatch = emp.id_sucursal &&
                                     sucursalesMap[emp.id_sucursal]?.toLowerCase().includes(sanitizedSearch);
                 const estadoMatch= emp.estado?.toLowerCase().includes(sanitizedSearch)
-                
                 return cedulaMatch || nombreMatch || sucursalMatch || estadoMatch; 
             });
         
