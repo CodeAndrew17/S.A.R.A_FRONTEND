@@ -118,7 +118,9 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
       <ModalContainer >
         <FormContainer>
           <h1>{title}</h1>
-          <Toolbar onCreate={handleForm} />
+          <Toolbar 
+          onCreate={handleForm} 
+          />
           <Table 
             containerStyle={{ marginLeft: '10px' }}
             selectable={true}
