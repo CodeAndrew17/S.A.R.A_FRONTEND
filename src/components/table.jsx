@@ -128,8 +128,8 @@ const Table = ({
       <StyledTable>
         <thead>
           <tr>
-            {selectable && <TableHeader style={{ width: '10px' }}></TableHeader>} 
-            {expandable && <TableHeader style={{ width: '10px' }}></TableHeader>}
+            {selectable && <TableHeader style={{ width: '30px' }}></TableHeader>} 
+            {expandable && <TableHeader style={{ width: '30px' }}></TableHeader>}
             {columns.map((column) => (
               <TableHeader key={column.key}>{column.title}</TableHeader>
             ))}
