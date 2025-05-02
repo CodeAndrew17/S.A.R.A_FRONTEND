@@ -158,7 +158,7 @@ const Button = ({ children, icon: Icon, ...props }) => {
 const Toolbar = ({ 
     children,
     onCreate,
-    onEdit,
+    onEdit, // ! condion para que cada uno de los botones se renderice 
     onDelete,
     showDefaultButtons = true,
     createLabel = "Crear Nuevo",
@@ -180,14 +180,8 @@ const Toolbar = ({
               >
                 {createLabel}
               </Button>
-              <Button 
-                icon={Edit} 
-                onClick={onEdit}
-                $bgColor="#5A9AC6"
-                $hoverColor="#468BAF"
-              >
-                {editLabel}
-              </Button>
+              {/* { edit && (Renderice el boton )} */ }
+
               <Button 
                 icon={Trash2} 
                 onClick={onDelete}
@@ -195,6 +189,16 @@ const Toolbar = ({
                 $bgColor="#FF6B6B"
               >
                 {deleteLabel}
+              </Button>
+
+              <Button 
+                icon={Edit} 
+                onClick={onEdit}
+                $width="auto"
+                $bgColor="#5A9AC6"
+                $hoverColor="#468BAF"
+              >
+                {editLabel}
               </Button>
             </>
           )}

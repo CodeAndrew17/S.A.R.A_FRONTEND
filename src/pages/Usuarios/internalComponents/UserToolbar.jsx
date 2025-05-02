@@ -114,7 +114,7 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
           onSelect={onSearch}
         />
         <SearchBar
-          placeholder="Cédula, Nombre o Convenio"
+          placeholder="Cédula, Nombre o Sucursal"
           width="280px"
           maxWidth="400px"
           responsiveWidth={isLandscape ? "70%" : "50%"}

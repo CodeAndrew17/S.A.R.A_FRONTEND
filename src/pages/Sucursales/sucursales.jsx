@@ -202,6 +202,7 @@ const Sucursales = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         buttonsGap="40px" //ejemplo de uso
+        editLabel="Gestionar Convenios"
       >
         <Toolbar.Search placeholder="Buscar..." 
         //onSearch={handleSearch} prop para recibir la funcion a ejecutar del search tambien pueden manejar el width
@@ -234,9 +235,7 @@ const Sucursales = () => {
           columns={columnsBranches}
           selectable={true}
           onSelectionChange={handleSelectionChange} //! Aquie envia los Datos selecionados 
-          onRowClick={(convenio) => {
-            console.log('Sucursal seleccionada:', convenio);
-          }}
+         
         />
       )}
 
