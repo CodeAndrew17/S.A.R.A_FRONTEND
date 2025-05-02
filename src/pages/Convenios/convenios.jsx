@@ -8,7 +8,7 @@ import UserForm from "../../components/userForm";
 import { Trash, Filter, Plus, Edit, Settings, Building, Map} from "lucide-react";
 import Table from "../../components/table";
 import {getConvenios} from "../../api/api_Convenios"; 
-import columns from "./TableAgreement/columns"; 
+import columnsBranch from "./TableAgreement/columns"; 
 import Toolbar from "../../components/Toolbar";
 import CustomButton from "../../components/button";
 
@@ -230,7 +230,7 @@ const Convenios = () => {
       ) : (
         <Table
           data={convenios}
-          columns={columns}
+          columns={columnsBranch}
           selectable={true}
           onSelectionChange={handleSelectionChange} //! Aquie envia los Datos selecionados 
           onRowClick={(convenio) => {
