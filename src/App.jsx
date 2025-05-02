@@ -6,7 +6,7 @@ import { createGlobalStyle } from 'styled-components';
 import Usuarios from './pages/Usuarios/usuarios';
 import Administrar from './pages/administrar';
 import Estadisticas from './pages/estadisticas';
-import Convenios from './pages/Convenios/convenios';
+import Sucursales from './pages/Sucursales/sucursales';
 import Revisiones from './pages/revisiones';
 import Configuracion from './pages/configuracion';
 
@@ -39,7 +39,7 @@ function App(){
       <Route path="/contraseña" element={<RestorePassword />} />
       <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
       <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
-      <Route path="/convenios" element={<ProtectedRoute><Convenios/></ProtectedRoute>} />
+      <Route path="/sucursales" element={<ProtectedRoute><Sucursales/></ProtectedRoute>} />
       <Route path="/estadisticas" element={<ProtectedRoute><Estadisticas /></ProtectedRoute>} />
       <Route path="/administrar" element={<ProtectedRoute><Administrar /></ProtectedRoute>} />
       <Route path="/revisiones" element={<ProtectedRoute><Revisiones /></ProtectedRoute>} />

@@ -48,8 +48,7 @@ const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
                     type: "select",
                     options: sucursales.map(s => ({ value: s.id, label: s.nombre })),
                     required: true,
-                  }
-                  
+                }
             ]}
             onSubmit={onSubmit}
             onCancel={() => setShowForm(false)}

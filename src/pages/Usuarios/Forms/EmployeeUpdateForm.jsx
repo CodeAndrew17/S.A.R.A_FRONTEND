@@ -60,11 +60,25 @@ const EmployeeEditForm = ({
 
   // Manejador de envío usando tu formulario original
   const handleSubmit = (formData) => {
-    onSubmit({
-      ...employee, // Mantenemos todos los datos originales
-      ...formData  // Sobreescribimos con los datos del formulario
-    });
+    // Aquí manejamos los cambios correctamente
+    const updatedFields = Object.keys(formData).reduce((acc, key) => {
+      if (formData[key] !== employee[key]) {
+        acc[key] = formData[key];
+      }
+      return acc;
+    }, {});
+  
+    // Si hay cambios, actualizamos el estado
+    if (Object.keys(updatedFields).length > 0) {
+      // Actualiza el estado del empleado y expande la fila
+      onSubmit(updatedFields);
+      setExpandedRow(usuario.id);  // Asegúrate de actualizar el expandedRow después de editar
+    } else {
+      console.log("No se realizaron cambios.");
+    }
   };
+  
+  
 
   return (
     <UserForm
