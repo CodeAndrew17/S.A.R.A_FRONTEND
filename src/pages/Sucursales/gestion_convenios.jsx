@@ -1,11 +1,10 @@
 import Table from "../../components/table";
 import Toolbar from "../../components/Toolbar";
 import styled from "styled-components";
-import columns from "./TableAgreement/columnsAgreement"; 
+import columnsAgreement from "./TableAgreement/columnsAgreement";
 import UserForm from "../../components/userForm";
 import React, { useState, useEffect } from "react";
 import {getConvenios,addConvenios} from "../../api/api_Convenios"; 
-import CustomButton from "../../components/button";
 
 import Swal from "sweetalert2";
 import { Await } from "react-router-dom";
@@ -30,13 +29,15 @@ const FormContainer = styled.div`
   background-color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  width: 800px; /* Ajusta según el tamaño que desees */
-  height: auto; /* Se adapta al contenido */
+  width: 80%;
+  max-height: 90vh; /* Máximo 90% del alto de la pantalla */
+  overflow-y: auto; /* Scroll vertical cuando se excede */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Alinea el contenido al principio */
 `;
+
 
 
 
@@ -124,17 +125,10 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
             containerStyle={{ marginLeft: '10px' }}
             selectable={true}
             data={convenios}
-            columns={columns}
+            columns={columnsAgreement}
             onRowClick={(convenio) => console.log('Convenio seleccionado:', convenio)}
           />
-          <CustomButton 
-          onClick={onCerrar}
-bgColor="#8A8A8A"  /* Gris más claro y neutro */
-hoverColor="#747474"
-          width="120px" 
-          height="30px"
-
-          >Cerrar</CustomButton>
+          <button onClick={onCerrar}>Cancelar</button>
           
           {activeForm && (
             <UserForm
