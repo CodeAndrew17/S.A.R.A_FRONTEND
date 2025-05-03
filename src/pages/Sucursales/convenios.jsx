@@ -121,7 +121,9 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
         <FormContainer>
           <h1>{title}</h1>
           <Toolbar 
-            onCreate={handleForm} 
+            onCreate={handleForm}
+            onActiveButton={false}
+            style={{margin:'3px solid #07f53d'}}
 
 
           >

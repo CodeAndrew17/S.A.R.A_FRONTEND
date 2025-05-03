@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
  import styled from "styled-components";
  import SearchBar from "./SearchBar";
- import { Search, Plus, Edit, Trash2 } from "lucide-react";
+ import {  Plus, Edit, Trash2 } from "lucide-react";
  
  const ContainerToolbar = styled.div`
  max-width: 80%;
@@ -16,54 +16,6 @@ import React, { useState, useEffect, useRef } from "react";
  @media (max-width: 768px) {
    max-width: 100%;
  }
-`;
-
-const SearchContainer = styled.div`
-  width: 50%; /* ← valor por defecto para pantallas medianas */
-  height: clamp(20px, 3vh, 30px);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 clamp(4px, 1vw, 8px);
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background: #e6e3e3;
-  box-sizing: border-box;
-
-  @media (min-width: 1025px) {
-    width: 100%; /* ← En pantallas grandes ocupa el ancho completo */
-  }
-
-  @media (max-width: 768px) {
-    width: 100%; /* ← En móviles también ocupa todo el ancho */
-  }
-`;
-
-const StyledButton = styled.button`
-  background-color: ${(props) => props.$bgColor || "#5FB8D6"};
-  border: none;
-  color: white;
-  width: ${(props) => props.width || "120px"};
-  height: ${(props) => props.height || "30px"};
-  padding: 10px;
-  font-size: 16px;
-  font-family: Helvetica, Arial, sans-serif;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  gap: 8px;
-
-  &:hover {
-    background-color: ${(props) => props.$hoverColor || "black"};
-  }
-  
-  svg {
-    width: 20px;
-    height: 20px;
-  }
 `;
 
 const BaseButton = styled.button`
@@ -92,21 +44,6 @@ const BaseButton = styled.button`
    height: 20px;
  }
 `;
- const SearchIcon = styled(Search)`
-   flex-shrink: 0;
-   width: 60px;
-   height: 400px;
- `;
- 
- const SearchInput = styled.input`
-   flex: 2 1 0;
-   min-width: 0;
-   border: none;
-   background: transparent;
-   outline: none;
-   font-size: clamp(12px, 1.5vw, 16px);
-   padding: 4px 0;
- `;
  
  const DropdownContainer = styled.div`
    position: relative;

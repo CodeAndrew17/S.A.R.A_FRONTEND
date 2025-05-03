@@ -5,27 +5,49 @@ import { Search } from "lucide-react";
 const SearchContainer = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 10px;
+  gap: 8px; 
+  padding: 12px 15px; /* Más padding para mejor tacto */
   border: 2px solid #ccc;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   background: rgb(230, 227, 227);
-  height: 15px;
+  height: 10px; /* Altura flexible */
+  min-height: auto; /*
   transition: all 0.3s ease;
-  width: ${props => props.$width || "100%"};
-  max-width: ${props => props.$maxWidth || "400px"};
+  width: ${props => props.$width || "10%"};
+  max-width: ${props => props.$maxWidth || "100px"};
 
-  /* Estilos responsivos */
-  @media (max-width: 768px) {
-    width: ${props => props.$responsiveWidth || "300px"};
-    max-width: ${props => props.$responsiveMaxWidth || "100%"};
+}  &:hover {
+    border-color: #aaa;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  @media (max-width: 480px) {
-    width: ${props => props.$mobileWidth || "100%"};
+}  &:focus-within {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
+  }
+
+}  @media (max-width: 768px) {
+    width: ${props => props.$responsiveWidth || "10%"};
+    max-width: ${props => props.$responsiveMaxWidth || "10%"};
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+}  @media (max-width: 480px) {
+    width: ${props => props.$mobileWidth || "20%"};
     min-width: 0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    
+    /* Opcional: full-width en móviles muy pequeños */
+    @media (max-width: 320px) {
+      border-radius: 4px;
+      padding: 8px 10px;
+    }
   }
+
 `;
 
 const SearchIcon = styled(Search)`
