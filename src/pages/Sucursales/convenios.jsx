@@ -120,9 +120,22 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
       <ModalContainer >
         <FormContainer>
           <h1>{title}</h1>
-          <Toolbar onCreate={handleForm} />
+          <Toolbar 
+            onCreate={handleForm} 
+
+
+          >
+            <Toolbar.Search placeholder="Buscar..." 
+              //onSearch={handleSearch} prop para recibir la funcion a ejecutar del search tambien pueden manejar el width
+              />
+              <Toolbar.Dropdown 
+                options={["Todos", "Activos"]} // manjean las choices desde aca 
+                onSelect={(opt) => console.log(opt)} // funcion a ajecutar dependiendo del select
+              />
+          </Toolbar>
+
           <Table 
-            containerStyle={{ marginLeft: '10px' }}
+            containerStyle={{   margin: "5px 10px 5px 5px"}}
             selectable={true}
             data={convenios}
             columns={columnsAgreement}
