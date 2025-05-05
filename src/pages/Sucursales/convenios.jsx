@@ -135,11 +135,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
 
            />
           <Toolbar.Dropdown
-            options={{
-              "AC": "Activo", 
-              "IN": "Inactivo",
-              "": "Todos"
-            }}
+            options={["Todos", "Activo"]}
             onSelect={ConsultSearch}
           />
         </Toolbar>
@@ -151,7 +147,6 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
           selectable={true}
           data={filteredAgreement} // Usamos los convenios que vienen del hook
           columns={columnsAgreement}
-          onRowClick={(convenio) => console.log("Convenio seleccionado:", convenio)}
           onSelectionChange={handleSelected}
         />
         <button onClick={onCerrar}>Cancelar</button>
