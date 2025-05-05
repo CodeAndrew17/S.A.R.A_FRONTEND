@@ -3,13 +3,33 @@ import Toolbar from "../../components/Toolbar";
 import styled from "styled-components";
 import columnsAgreement from "./TableAgreement/columnsAgreement";
 import UserForm from "../../components/userForm";
-import React, { useState, useEffect } from "react";
-import {getConvenios,addConvenios} from "../../api/api_Convenios"; 
+import React, { useState, useEffect, useRef } from "react";
+import { getAgreement } from "../../api/api_Convenios";
+
+//!importacion de Funciona CRUD de Convenios 
+import useAgreementManagement from "./TableAgreement/convenioEmployeeManagement";
 
 import Swal from "sweetalert2";
-import { Await } from "react-router-dom";
 
+const TitleWrapper = styled.div`
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  margin: 0 -30px;
+  padding-left: 30px;
+  padding-right: 30px;
+  box-sizing: border-box;
+`;
 
+const TitleText = styled.h1`
+  color: #000;
+  font-size: 40px;
+  margin: 0;
+  position: relative;
+`;
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -17,7 +37,7 @@ const ModalContainer = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Oscurece el fondo */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,136 +50,128 @@ const FormContainer = styled.div`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   width: 80%;
-  max-height: 90vh; /* Máximo 90% del alto de la pantalla */
-  overflow-y: auto; /* Scroll vertical cuando se excede */
+  max-height: 90vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Alinea el contenido al principio */
+  justify-content: flex-start;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
 `;
 
 
-
-
 const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
-    //*Varibles globales de Estados
-    const [convenios, setConvenios] = useState([]);
-    const [activeForm, setActiveForm] = useState(false);
-    const [loading, setLoading] = useState(true);
+  const [activeForm, setActiveForm] = useState(false); // Para mostrar el formulario
+  const [selected, setSelected] = useState([]); // Para los convenios seleccionados
+  const modalRef = useRef(null); // Referencia al modal
 
+  const {
+    agreements, // Los convenios
+    loading, // Estado de carga
+    filteredAgreement,// Datos con Filtro
+    fetchAgreementData, // Funcion para cargar los convenios
+    createAgreement, // Funcion para crear un convenio
+    removeAgreement, // Funcion para eliminar convenios
+    ConsultSearch, //Funcion Para buscar
+  } = useAgreementManagement();
 
-    //*Funciones para la Activacion de hoosk
-    const handleForm = () => setActiveForm(true);
-    const closeForm = () => setActiveForm(false);
+  useEffect(() => {
+    fetchAgreementData(); 
+  }, []); 
 
-    //*Funciones para CRUD de Convenios 
+  const handleForm = () => setActiveForm(true); 
+  const closeForm = () => setActiveForm(false); 
 
-    //?Funcion para la Creacion de Convenios 
-    
-    const handleFormSubmit = async (formData) => {
-        try {
-            const telefono = parseInt(formData.telefono, 10);  
-        
-            if (isNaN(telefono)) {
-                throw new Error("El teléfono no es válido.");
-            }
-    
-            const dataToSend = { 
-                ...formData, 
-                telefono
-            };
-            console.log("Datos enviados al backend", dataToSend);
-    
-            await addConvenios(dataToSend);
-    
-            // Mostrar éxito
-            Swal.fire({
-                title: "Éxito",
-                text: "El convenio se ha creado correctamente.",
-                icon: "success",
-                confirmButtonText: "Aceptar"
-            });
-    
-            closeForm(); // Cierra el formulario
-    
-            // Actualiza la tabla
-            const updatedConvenios = await getConvenios();
-            setConvenios(updatedConvenios);
-            
-        } catch (error) {
-            console.error("Error al crear el usuario:", error);
-            Swal.fire({
-                title: "Error",
-                text: "No se pudo crear el usuario. Verifica los datos ingresados.",
-                icon: "error",
-                confirmButtonText: "Aceptar"
-            });
-        }
-    };
-    
-
-
-    //*Funcion para Cargar los Datos en la table 
-    useEffect(() => {
-        const fetchConvenios = async () => { 
-          try {
-            setLoading(true); //iniica la carga de datos 
-            const data = await getConvenios();
-            setConvenios(data)
-            setLoading(false); 
-          } catch (error) {
-            setLoading(false);
-          }
-        };
-
-        fetchConvenios();
-    }, []);
-
-  
-    return (
-      <ModalContainer >
-        <FormContainer>
-          <h1>{title}</h1>
-          <Toolbar 
-            onCreate={handleForm}
-            onActiveButton={false}
-            style={{margin:'3px solid #07f53d'}}
-
-
-          >
-            <Toolbar.Search placeholder="Buscar..." 
-              //onSearch={handleSearch} prop para recibir la funcion a ejecutar del search tambien pueden manejar el width
-              />
-              <Toolbar.Dropdown 
-                options={["Todos", "Activos"]} // manjean las choices desde aca 
-                onSelect={(opt) => console.log(opt)} // funcion a ajecutar dependiendo del select
-              />
-          </Toolbar>
-
-          <Table 
-            containerStyle={{   margin: "5px 10px 5px 5px"}}
-            selectable={true}
-            data={convenios}
-            columns={columnsAgreement}
-            onRowClick={(convenio) => console.log('Convenio seleccionado:', convenio)}
-          />
-          <button onClick={onCerrar}>Cancelar</button>
-          
-          {activeForm && (
-            <UserForm
-              title="Crear Convenio"
-              fields={[ 
-                { name: "nombre", placeholder: "Nombre", type: "text" },
-                { name: "nit", placeholder: "NIT", type: "number" },
-                { name: "telefono", placeholder: "Teléfono", type: "tel" },
-              ]}
-              onCancel={closeForm} 
-              onSubmit={handleFormSubmit}
-            />
-          )}
-        </FormContainer>
-      </ModalContainer>
-    );
+  // * Crear un convenio
+  const handlecreate = (form) => {
+    if (createAgreement(form)) {
+      closeForm(); 
+    }
   };
+
+  // Gestionar selección de convenios
+  const handleSelected = (ids) => {
+    setSelected(ids);
+  };
+
+  // Eliminar convenios seleccionados
+  const handleDelete = async () => {
+    const success = await removeAgreement(selected);
+    if (success) {
+      setSelected([]); // Limpia la selección
+      fetchAgreementData(); // Refresca la lista de convenios después de eliminar
+    }
+  };
+
+  return (
+    <ModalContainer>
+      <FormContainer ref={modalRef}>
+        <TitleWrapper>
+          <TitleText>{title}</TitleText>
+        </TitleWrapper>
+
+        <Toolbar
+          onCreate={handleForm}
+          onActiveButton={false}
+          onDelete={handleDelete}
+          style={{ margin: "3px solid #07f53d" }}
+        >
+          <Toolbar.Search 
+          placeholder="Buscar..."
+          onSearch={ConsultSearch} 
+
+           />
+          <Toolbar.Dropdown
+            options={{
+              "AC": "Activo", 
+              "IN": "Inactivo",
+              "": "Todos"
+            }}
+            onSelect={ConsultSearch}
+          />
+        </Toolbar>
+
+        {/* Mostrar tabla con los convenios */}
+
+        <Table
+          containerStyle={{ margin: "5px 10px 5px 5px", width: "98%", overflow: "auto" }}
+          selectable={true}
+          data={filteredAgreement} // Usamos los convenios que vienen del hook
+          columns={columnsAgreement}
+          onRowClick={(convenio) => console.log("Convenio seleccionado:", convenio)}
+          onSelectionChange={handleSelected}
+        />
+        <button onClick={onCerrar}>Cancelar</button>
+
+        {/* Mostrar el formulario si es necesario */}
+        {activeForm && (
+          <UserForm
+            title="Crear Convenio"
+            fields={[
+              { name: "nombre", placeholder: "Nombre", type: "text", required: true },
+              { name: "nit", placeholder: "NIT", type: "number", required: true },
+              { name: "telefono", placeholder: "Teléfono", type: "tel", required: true },
+            ]}
+            onCancel={closeForm}
+            onSubmit={handlecreate}
+          />
+        )}
+      </FormContainer>
+    </ModalContainer>
+  );
+};
 
 export default GestionConvenios;

@@ -292,9 +292,7 @@ const Usuarios = () => {
 
     try {
       // Eliminamos a los usuarios seleccionados en el backend
-      for (const id of selectedEmployees) {
-        await deleteEmployees(id);
-      };
+      await Promise.all(selectedEmployees.map((id) => deleteAgreement(id)));
 
       // Actualizamos el estado local para eliminar los empleados
       setEmployees((prevEmployees) =>

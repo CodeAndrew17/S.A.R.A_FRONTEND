@@ -1,6 +1,7 @@
 import { axiosWithAuth } from "./api_Manager";
 
-const getConvenios = async () => {    
+//* Funciones CRUD para Convenion 
+const getAgreement = async () => {    
     try {
         return await axiosWithAuth("/api/convenio/get/", "GET");
     } catch (error) {
@@ -9,7 +10,7 @@ const getConvenios = async () => {
     }
 };
 
-const addConvenios =async(newEmployeeData)=>{
+const addAgreement =async(newEmployeeData)=>{
     try{
         const response=await axiosWithAuth("/api/convenio/post/", "POST",newEmployeeData);
         console.log("Respuesta del backend", response.data);  // Verifica la respuesta
@@ -20,7 +21,20 @@ const addConvenios =async(newEmployeeData)=>{
     }
 };
 
-const getSucursales = async () => {
+const deleteAgreement= async(id)=>{ 
+    try{
+        const reponse = await axiosWithAuth(`/api/convenio/delete/${id}/`, "DELETE")
+
+    }catch (errors){
+        throw errors
+    }
+
+}
+
+
+//* Funciones CRUD para Sucursales  
+
+const getBranches = async () => {
     try{
         return await axiosWithAuth("/api/sucursal/get/", "GET");
     } catch (error) {
@@ -29,4 +43,4 @@ const getSucursales = async () => {
     }
 };
 
-export {getConvenios, addConvenios, getSucursales};
+export {getAgreement,addAgreement, deleteAgreement, getBranches };

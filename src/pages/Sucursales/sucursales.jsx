@@ -7,7 +7,7 @@ import Button from "../../components/button";
 import UserForm from "../../components/userForm"; 
 import { Trash, Filter, Plus, Edit, Settings, Building, Map} from "lucide-react";
 import Table from "../../components/table";
-import {getSucursales} from "../../api/api_Convenios"; 
+import {getBranches} from "../../api/api_Convenios"; 
 import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de los convenios
 import columnsBranches from "./TableBranches/columnsBranches"; // columnas de las sucursales
 import Toolbar from "../../components/Toolbar";
@@ -22,8 +22,7 @@ const TitleWrapper = styled.div`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
-  margin-top: 5px;
-  height: 60px;
+  height: 70px;
 `;
 
 const TitleText = styled.h1`
@@ -42,10 +41,15 @@ const FormContainer = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 20px;
-    border:3px solid #07f53d;
+  border: 3px solid #07f53d;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 
+  @media (max-width: 480px) {
+    padding: 10px;
+  }
 `;
-
 
 
 
@@ -60,7 +64,7 @@ const Sucursales = () => {
           const fetchConvenios = async () => { 
             try {
               setLoading(true); //inica la carga de datos 
-              const data = await getSucursales();
+              const data = await getBranches();
               setConvenios(data)
               setLoading(false); 
             } catch (error) {

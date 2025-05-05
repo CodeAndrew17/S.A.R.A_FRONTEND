@@ -19,6 +19,7 @@ const TableContainer = styled.div`
   @media (max-width: 768px) {
     width: 85%;
   }
+
 `;
 
 const StyledTable = styled.table`
@@ -32,6 +33,7 @@ const TableHeader = styled.th`
   padding: 12px 15px;
   text-align: left;
   font-weight: 500;
+  
 `;
 
 const TableRow = styled.tr`

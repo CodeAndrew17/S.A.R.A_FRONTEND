@@ -20,8 +20,26 @@ const GlobalStyle = createGlobalStyle`
         height: 100%;
         font-family: Helvetica, Arial, sans-serif;
         font-size: 12px;
-    }
+              
+        /* Scroll suave */
+        scroll-behavior: smooth;
+
+        /* Estilos personalizados para scrollbar */
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+        }
 `;
+    
+
 
 //Funcion para la proteccion de rutas
 function ProtectedRoute({children}) {
