@@ -5,31 +5,27 @@ import columnsAgreement from "./TableAgreement/columnsAgreement";
 import UserForm from "../../components/userForm";
 import React, { useState, useEffect, useRef } from "react";
 import { getAgreement } from "../../api/api_Convenios";
+import CustomButton from "../../components/button";
 
 //!importacion de Funciona CRUD de Convenios 
-import useAgreementManagement from "./TableAgreement/convenioEmployeeManagement";
+import useAgreementManagement from "./TableAgreement/convenioManagement";
 
 import Swal from "sweetalert2";
 
-const TitleWrapper = styled.div`
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  text-align: center;
-  width: 100%;
-  margin: 0 -30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  box-sizing: border-box;
-`;
 
 const TitleText = styled.h1`
   color: #000;
-  font-size: 40px;
-  margin: 0;
-  position: relative;
+  font-size: 20px;
+  margin: 2px 0;           
+  padding: 5px 10px;       /* Padding vertical reducido (antes: 10px 15px) */
+  background-color: rgb(230, 230, 230);
+  border-radius: 6px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.15);
+  text-align: left;
+  display: inline-block;
+  width: auto;             /* Evita que ocupe todo el ancho */
 `;
+
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -45,32 +41,18 @@ const ModalContainer = styled.div`
 `;
 
 const FormContainer = styled.div`
-  padding: 30px;
+  padding: 15px 30px;
   background-color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   width: 80%;
-  max-height: 90vh;
-  overflow-y: auto;
+  height: 80vh; /* Altura fija en viewport height */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  scroll-behavior: smooth;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-  }
+  align-items: flex-start;
 `;
+
+
 
 
 const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
@@ -119,9 +101,8 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
   return (
     <ModalContainer>
       <FormContainer ref={modalRef}>
-        <TitleWrapper>
+
           <TitleText>{title}</TitleText>
-        </TitleWrapper>
 
         <Toolbar
           onCreate={handleForm}
@@ -133,7 +114,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
           placeholder="Buscar..."
           onSearch={ConsultSearch} 
 
-           />
+          />
           <Toolbar.Dropdown
             options={["Todos", "Activo"]}
             onSelect={ConsultSearch}
@@ -149,7 +130,17 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
           columns={columnsAgreement}
           onSelectionChange={handleSelected}
         />
-        <button onClick={onCerrar}>Cancelar</button>
+        <div style={{ alignSelf: 'center', marginTop: '20px' }}>
+          <CustomButton 
+            bgColor="#6F6F6F"
+            hoverColor="#898989" 
+            width="130px" 
+            height="38px"
+            onClick={onCerrar}>
+            Cerrar
+          </CustomButton>
+        </div>
+
 
         {/* Mostrar el formulario si es necesario */}
         {activeForm && (

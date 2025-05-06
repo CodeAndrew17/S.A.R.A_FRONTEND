@@ -86,7 +86,7 @@ const EmployeeEditForm = ({
       fields={fields}
       onSubmit={handleSubmit}
       onCancel={onCancel}
-      successMessage="¡Empleado actualizado con éxito!"  // 🔥 Mensaje personalizado
+      successMessage="¡Empleado actualizado con éxito!"  //  Mensaje personalizado
       successDescription="Los cambios se han guardado correctamente."
     />
   );

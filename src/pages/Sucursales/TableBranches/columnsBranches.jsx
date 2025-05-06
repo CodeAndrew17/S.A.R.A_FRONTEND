@@ -4,23 +4,23 @@ import { Edit } from "lucide-react";
 const columnsBranch = [
     {
       key: 'nombre',
-      title: 'Nombre',
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Nombre</span>,
     },
     {
       key: 'ciudad',
-      title: 'Ciudad',
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Ciudad</span>,
     },
     {
       key: 'direccion',
-      title: 'Dirección',
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Dirección</span>,
     },
     {
         key: 'telefono',
-        title: 'Teléfono',
+        title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Teléfono</span>,
       },
     {
       key: 'estado',
-      title: 'Estado',
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Estado</span>,
       render: (estado) => (
         <span style={{
         backgroundColor: estado === 'Activo' ? '#f8d7da' : '#d4edda',
@@ -35,12 +35,13 @@ const columnsBranch = [
     )
     },
     {
-        key: 'convenio',
-        title: 'Convenio',
+      key: 'convenio',
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Convenio</span>,
+      render: (convenio) => convenio ?? "Sin convenio"
     },
     {
         key: 'actions',
-        title: 'Acciones',
+        title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Modificar</span>,
         render: (_, record) => (
             <CustomButton
             bgColor="#5FB8D6" 
