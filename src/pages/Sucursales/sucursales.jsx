@@ -120,9 +120,33 @@ const Sucursales = () => {
 
   const handleFormSubmit = async (newData) => {
     if (activeForm === "sucursal") {
-      await handleSucursalSubmit(newData, setConvenios, setActiveForm);
+      try {
+        // Crear la nueva sucursal
+        await handleSucursalSubmit(newData, setConvenios, setActiveForm, setSucursalesConvenios); // Añadir setSucursalesConvenios
+    
+        // Traer las sucursales y convenios actualizados
+        const sucursales = await getBranches();
+        const convenios = await getAgreement();
+    
+        // Relacionamos las sucursales con sus convenios
+        const sucursalesConConvenios = sucursales.map(sucursal => {
+          const convenio = convenios.find(c => c.id === sucursal.convenio);
+          return {
+            ...sucursal,
+            convenio: convenio ? convenio.nombre : "Sin convenio" // Relacionamos por nombre
+          };
+        });
+    
+        // Actualizamos el estado de las sucursales y los convenios
+        setSucursalesConvenios(sucursalesConConvenios);
+        setConvenios(convenios); // Si es necesario también actualizar los convenios
+      } catch (error) {
+        console.error("Error al crear la sucursal:", error);
+      }
     }
   };
+  
+  
 
   const handleCancelForm = () => {
     setActiveForm(null); // Cierra el formulario sin guardar nada

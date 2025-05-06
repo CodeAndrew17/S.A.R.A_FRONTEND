@@ -1,22 +1,42 @@
-import { addBranches, getBranches, deleteBranches } from "../../../api/api_Convenios";
-import Swal from "sweetalert2";
+import { addBranches, getBranches, deleteBranches, getAgreement, 
+    editBranches //funcion para editarsucursales 
+} from "../../../api/api_Convenios";
+import Swal from "sweetalert2"; 
 
 
-//funcion para enviar los datos del formulario al backend y actualizar la tabla 
-const handleSucursalSubmit = async (newData,setConvenios,setActiveForm) => {
-    try{
-        await addBranches(newData);
-        const updateData = await getBranches();
-        setConvenios(updateData);
-        setActiveForm(false);
-        return { success: true};
+
+const handleSucursalSubmit = async (newData, setConvenios, setActiveForm, setSucursalesConvenios) => {
+    try {
+
+      await addBranches(newData); 
+  
+      // Traer las sucursales y convenios actualizados
+      const sucursales = await getBranches();
+      const convenios = await getAgreement();
+  
+      // Relacionamos las sucursales con sus convenios
+      const sucursalesConConvenios = sucursales.map(sucursal => {
+        const convenio = convenios.find(c => c.id === sucursal.convenio);
+        return {
+          ...sucursal,
+          convenio: convenio ? convenio.nombre : "Sin convenio" 
+        };
+      });
+  
+      // Actualizamos el estado de las sucursales y los convenios
+      setSucursalesConvenios(sucursalesConConvenios); // Usamos setSucursalesConvenios
+      setConvenios(convenios); // Si es necesario también actualizar los convenios
+      setActiveForm(null); // Cierra el formulario
+  
     } catch (error) {
-        console.error("Error al crear la sucursal", error);
-        return {success:false, error};
+      console.error("Error al crear la sucursal:", error);
     }
-};
+  };
+  
+  
+  
 
-//funcion para actualizar los datos de la tabla brnaches 
+//funcion para actualizar los datos de la tabla brnaches (no esta lista)
 const refreshData = async (setConvenios) => {
     try {
         const updateData = await getBranches();

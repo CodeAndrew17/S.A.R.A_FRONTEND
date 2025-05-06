@@ -61,4 +61,15 @@ const deleteBranches = async (id) => {
     }
 };
 
-export {getAgreement,addAgreement, deleteAgreement, getBranches, addBranches, deleteBranches };
+const editBranches = async (id, newBranchData) => {
+    try {
+        return await axiosWithAuth(`/api/sucursal/patch/${id}/`, "PATCH", newBranchData);
+    } catch (error) {
+        console.error("Error al editar sucursal:", error);
+        throw error;
+    }
+};
+
+
+
+export {getAgreement,addAgreement, deleteAgreement, getBranches, addBranches, deleteBranches, editBranches};
