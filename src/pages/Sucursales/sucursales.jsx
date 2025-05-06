@@ -7,11 +7,13 @@ import Button from "../../components/button";
 import UserForm from "../../components/userForm"; 
 import { Trash, Filter, Plus, Edit, Settings, Building, Map} from "lucide-react";
 import Table from "../../components/table";
-import {getBranches} from "../../api/api_Convenios"; 
+import {getBranches, getAgreement} from "../../api/api_Convenios"; 
 import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de los convenios
 import columnsBranches from "./TableBranches/columnsBranches"; // columnas de las sucursales
 import Toolbar from "../../components/Toolbar";
 import CustomButton from "../../components/button";
+
+import {handleSucursalSubmit, handleDeleteBranches} from "./TableBranches/sucursalManagement"; //funciones tipo crud de sucursales
 
 //!importaciones de gestor de Convenios 
 import GestionConvenios from "./convenios";
@@ -43,7 +45,7 @@ const FormContainer = styled.div`
   padding: 20px;
   border: 3px solid #07f53d;
   width: 100%;
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
 
   @media (max-width: 480px) {
@@ -57,30 +59,54 @@ const CustomButtonContainer = styled.div `
 
 
 
-
-
-
 const Sucursales = () => {
-  const [activeForm, setActiveForm] = useState(null); // Estado para mostrar/ocultar el formulario
-  const [convenios, setConvenios] = useState([]); //estado para los convenios 
-  const [loading, setLoading] = useState(true); // estado de la carga de datos 
-  const [activeCon, setActiveCon] = useState(null)
-  const [selectedConvenios, setSelectedConvenios] = useState([]); //!Prueba de checbox 
-        useEffect(() => {
-          const fetchConvenios = async () => { 
-            try {
-              setLoading(true); //inica la carga de datos 
-              const data = await getBranches();
-              setConvenios(data)
-              setLoading(false); 
-            } catch (error) {
-              console.error("Error al cargar convenios; ", error);
-              setLoading(false);
-            }
-          };
+  const [activeForm, setActiveForm] = useState(null);
+  const [convenios, setConvenios] = useState([]); // Sucursales
+  const [conveniosOptions, setConveniosOptions] = useState([]); // Opciones para el dropdown
+  const [loading, setLoading] = useState(true);
+  const [loadingConvenios, setLoadingConvenios] = useState(false); // Estado de carga específico para convenios
 
-          fetchConvenios();
-      }, []);
+  const [activeCon, setActiveCon] = useState(null);
+  const [selectedConvenios, setSelectedConvenios] = useState([]);
+  const [sucursalesConvenios, setSucursalesConvenios] = useState([]);
+
+  //effect para cargar las sucursales relacionadas con sus convenios al renderizar el componente 
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        setLoading(true);
+        setLoadingConvenios(true);
+  
+        // carga de sucursales y convenios 
+        const [sucursales, convenios] = await Promise.all([
+          getBranches(),
+          getAgreement()
+        ]);
+  
+        // proceso para relacionar las sucursales con sus convenios para mostrarlos en la tabla
+        const sucursalesConNombreConvenio = sucursales.map(sucursal => {
+          const convenio = convenios.find(c => c.id === sucursal.convenio);
+          return {
+            ...sucursal,
+            convenio: convenio?.nombre || "Sin convenio" // si no tiene convenio muestra q no tiene
+          };
+        });
+  
+        // actualizamos todos los estados 
+        setSucursalesConvenios(sucursalesConNombreConvenio);
+        setConvenios(sucursalesConNombreConvenio);
+        setConveniosOptions(convenios); // usamos los convenios anteriormente cargados para mostrarlos en el dropdown
+  
+      } catch (error) {
+        console.error("Error cargando datos:", error);
+      } finally {
+        setLoading(false);
+        setLoadingConvenios(false);
+      }
+    };
+  
+    fetchAllData();
+  }, []);
 
     const handleSelectionChange = (selectedIds) => {  //!Prueba de checbox 
         setSelectedConvenios(selectedIds);
@@ -98,10 +124,35 @@ const Sucursales = () => {
     setActiveForm("sucursal"); // Mostrar el formulario cuando se hace clic en "Crear Nuevo"
   };
 
-  const handleFormSubmit = (newUserData) => {
-    console.log("Datos capturados:", newUserData);
-    setShowForm(false); // Cierra el formulario después de capturar los datos
+  const handleFormSubmit = async (newData) => {
+    if (activeForm === "sucursal") {
+      try {
+        // Crear la nueva sucursal
+        await handleSucursalSubmit(newData, setConvenios, setActiveForm, setSucursalesConvenios); // Añadir setSucursalesConvenios
+    
+        // Traer las sucursales y convenios actualizados
+        const sucursales = await getBranches();
+        const convenios = await getAgreement();
+    
+        // Relacionamos las sucursales con sus convenios
+        const sucursalesConConvenios = sucursales.map(sucursal => {
+          const convenio = convenios.find(c => c.id === sucursal.convenio);
+          return {
+            ...sucursal,
+            convenio: convenio ? convenio.nombre : "Sin convenio" // Relacionamos por nombre
+          };
+        });
+    
+        // Actualizamos el estado de las sucursales y los convenios
+        setSucursalesConvenios(sucursalesConConvenios);
+        setConvenios(convenios); // Si es necesario también actualizar los convenios
+      } catch (error) {
+        console.error("Error al crear la sucursal:", error);
+      }
+    }
   };
+  
+  
 
   const handleCancelForm = () => {
     setActiveForm(null); // Cierra el formulario sin guardar nada
@@ -113,7 +164,15 @@ const Sucursales = () => {
 
   const handleCreate = () => alert("Creando nuevo elemento");
   const handleEdit = () => alert("Editando elemento seleccionado");
-  const handleDelete = () => alert("Eliminando elemento");
+
+
+  const handleDelete = async () => {
+    const result = await handleDeleteBranches(selectedConvenios);
+
+    if (result.succes) {
+
+    }
+  };
 
   const handlegestorCon=()=>{
     setActiveCon(true); // Activar la visualización de la tabla de convenios
@@ -129,14 +188,14 @@ const Sucursales = () => {
       </TitleWrapper>
 
 {/* Ejemplo de uso del toolbar solo colocan la funcion para cada uno de crear eliminar y editar son los de por default, si nececitan otro lo añaden controlan el gap de cada uno con buttonsGap */}
-<Toolbar
-        onCreate={handleCrearConvenio}
+    <Toolbar
+        onCreate={handleCrearSucursal}
         onEdit={handlegestorCon}
         onDelete={handleDelete}
         buttonsGap="40px" //ejemplo de uso
         editLabel="Gestionar Convenios"
         onActiveButton= {true}
-      >
+        >
         <Toolbar.Search placeholder="Buscar..." 
         //onSearch={handleSearch} prop para recibir la funcion a ejecutar del search tambien pueden manejar el width
         />
@@ -152,45 +211,47 @@ const Sucursales = () => {
           Cargando convenios...
         </div>
       ) : (
+      <div style={{ fontSize: "13px" }}>
         <Table
-          data={convenios}
+          data={sucursalesConvenios}
           columns={columnsBranches}
           selectable={true}
           onSelectionChange={handleSelectionChange} //! Aquie envia los Datos selecionados 
-         
+        
         />
+      </div>
       )}
 
       {activeForm === "sucursal" && (
         <FormContainer>
           <UserForm
-            title="Crear Sucursal"
+            title="Crear Nueva Sucursal"
             fields={[
-              { name: "name", placeholder: "Nombre", type: "text" },
-              { name: "city", placeholder: "Ciudad", type: "text" },
-              { name: "address", placeholder: "Dirección", type: "text" },
-              { name: "phone", placeholder: "Teléfono", type: "tel" },
-              { name: "convenio", placeholder: "Convenio", type: "text" },//esto es una llave foranea el back tiene q pasar las choices
-            ]}
+              { name: "nombre", placeholder: "Nombre", type: "text" },
+              { name: "ciudad", placeholder: "Ciudad", type: "text" },
+              { name: "direccion", placeholder: "Dirección", type: "text" },
+              { name: "telefono", placeholder: "Teléfono", type: "tel" },
+              { 
+                name: "estado",
+                type: "select",
+                options: [
+                {value: "AC", label:"Activo"},
+                {value: "IN", label:"Inactivo"}
+                ],
+                defaultValue: "AC",
+                placeholder: "Estado",
+              },
+              { 
+                name: "convenio",
+                type: "select",
+                options: conveniosOptions.map((c) => ({value: c.id, label: c.nombre})),
+                placeholder: loadingConvenios ? "Cargando..." : "Seleccione Convenio",
+                disabled: loadingConvenios
+              }
+            ]
+          }
             onSubmit={handleFormSubmit}
             onCancel={handleCancelForm}
-          />
-        </FormContainer>
-      )}
-
-      {activeForm === "convenio" && (
-        <FormContainer>
-          <UserForm
-          title="Crear Convenio"
-          fields={[ 
-            { name: "name", placeholder: "Nombre", type: "text" },
-            { name: "nit", placeholder: "NIT", type: "text" },
-            { name: "phone", placeholder: "Teléfono", type: "tel" },
-            { name: "city", placeholder: "Ciudad", type: "text" },
-          ]}
-
-          onSubmit={handleFormSubmit}
-          onCancel={handleCancelForm}
           />
         </FormContainer>
       )}
@@ -199,11 +260,7 @@ const Sucursales = () => {
           <GestionConvenios
           onCerrar={handleGestionCancelar}
           />
-
-      
-    
         )}
-  
         <center><Button onClick={() => { //! prueba De Funcionacion de traer datos 
             const datosSeleccionados = convenios.filter(c => selectedConvenios.includes(c.id));
             console.log("Datos seleccionados:", datosSeleccionados);
@@ -214,5 +271,6 @@ const Sucursales = () => {
     
   );
 };
+
 
 export default Sucursales;

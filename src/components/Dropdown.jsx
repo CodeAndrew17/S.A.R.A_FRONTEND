@@ -103,11 +103,11 @@ function Dropdown({
 
         <DropdownMenu $isOpen={isOpen}>
            {optionsArray.map(([value, label]) => (
-             <DropdownItem 
-               key={value} 
-               onClick={(event) => handleSelectedOption(value, label, event)}
-             >
-               {label}
+            <DropdownItem 
+              key={value} 
+              onClick={(event) => handleSelectedOption(value, label, event)}
+            >
+              {label}
             </DropdownItem>
           ))}
         </DropdownMenu>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { getAgreement, addAgreement, deleteAgreement, getBranches } from "../../../api/api_Convenios";
 import Swal from "sweetalert2";
@@ -34,6 +35,7 @@ const useAgreementManagement = () => {
     const filtered = agreements.filter((con) => {
       const nitMatch = con.nit?.toString().toLowerCase().includes(sanitizedSearch);
       const nombreMatch = con.nombre?.toLowerCase()?.includes(sanitizedSearch);
+      const estadoMatch = con.estado?.toLowerCase()?.includes(sanitizedSearch)
       
       return nitMatch || nombreMatch;
     });

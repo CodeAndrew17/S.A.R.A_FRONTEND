@@ -4,32 +4,26 @@ import styled from "styled-components";
 import columnsAgreement from "./TableAgreement/columnsAgreement";
 import UserForm from "../../components/userForm";
 import React, { useState, useEffect, useRef } from "react";
-import { getAgreement } from "../../api/api_Convenios";
+import CustomButton from "../../components/button";
 
 //!importacion de Funciona CRUD de Convenios 
-import useAgreementManagement from "./TableAgreement/convenioEmployeeManagement";
+import useAgreementManagement from "./TableAgreement/convenioManagement";
 
-import Swal from "sweetalert2";
 
 const TitleWrapper = styled.div`
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  text-align: center;
-  width: 100%;
-  margin: 0 -30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  box-sizing: border-box;
+  align-self: flex-start;
+  margin-bottom: 0px;
 `;
+
 
 const TitleText = styled.h1`
   color: #000;
-  font-size: 40px;
+  font-size: 20px;
   margin: 0;
-  position: relative;
+  padding: 0;
+  text-align: left;
 `;
+
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -71,7 +65,6 @@ const FormContainer = styled.div`
     border-radius: 3px;
   }
 `;
-
 
 const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
   const [activeForm, setActiveForm] = useState(false); // Para mostrar el formulario
@@ -119,23 +112,29 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
   return (
     <ModalContainer>
       <FormContainer ref={modalRef}>
-        <TitleWrapper>
-          <TitleText>{title}</TitleText>
-        </TitleWrapper>
+      <TitleWrapper>
+        <TitleText>{title}</TitleText>
+      </TitleWrapper>
 
         <Toolbar
+        
           onCreate={handleForm}
           onActiveButton={false}
           onDelete={handleDelete}
           style={{ margin: "3px solid #07f53d" }}
         >
+
           <Toolbar.Search 
           placeholder="Buscar..."
           onSearch={ConsultSearch} 
 
-           />
+          />
           <Toolbar.Dropdown
-            options={["Todos", "Activo"]}
+            options={{
+              "AC": "Activo", 
+              "IN": "Inactivo",
+              "": "Todos"
+            }}            
             onSelect={ConsultSearch}
           />
         </Toolbar>
@@ -149,7 +148,17 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
           columns={columnsAgreement}
           onSelectionChange={handleSelected}
         />
-        <button onClick={onCerrar}>Cancelar</button>
+        <div style={{ alignSelf: 'center', marginTop: '20px' }}>
+          <CustomButton 
+            bgColor="#6F6F6F"
+            hoverColor="#898989" 
+            width="130px" 
+            height="38px"
+            onClick={onCerrar}>
+            Cerrar
+          </CustomButton>
+        </div>
+
 
         {/* Mostrar el formulario si es necesario */}
         {activeForm && (
