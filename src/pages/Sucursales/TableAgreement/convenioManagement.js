@@ -145,6 +145,7 @@ const useAgreementManagement = () => {
         confirmButtonText: "Aceptar",
       });
       return true;
+      
     } catch (error) {
       console.error("Hubo un error al eliminar los convenios.", error);
       await Swal.fire({
