@@ -7,7 +7,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { getAgreement } from "../../api/api_Convenios";
 
 //!importacion de Funciona CRUD de Convenios 
-import useAgreementManagement from "./TableAgreement/convenioEmployeeManagement";
+import useAgreementManagement from "./TableAgreement/convenioManagement";
 
 import Swal from "sweetalert2";
 

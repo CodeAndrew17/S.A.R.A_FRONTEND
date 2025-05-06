@@ -7,79 +7,37 @@ import { Trash, Edit, Plus } from "lucide-react";
 
 const ToolbarWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 10px 20px;
-  width: 90%;
-  margin: 20px auto;
-  flex-wrap: wrap;
-  gap: 20px;
-
-  @media (max-width: 1024px) {
-    gap: 15px;
-    width: 95%;
-    flex-direction: ${props => props.$isLandscape ? "column" : "row"};
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 15px;
-    padding: 10px;
-    width: 100%;
-  }
+  padding: 20px 0;
+  width: 100%;
+  margin-bottom: 20px; 
+  margin-top: 20px; 
 `;
 
-const FilterContainer = styled.div`
+
+const ToolbarContent = styled.div`
   display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-grow: 1;
-  min-width: 300px;
-  flex-wrap: wrap;
-
-  @media (min-width: 1025px) {
-    padding-left: 210px;
-    gap: 80px;
-  }
-
-  @media (max-width: 1024px) {
-    gap: ${props => props.$isLandscape ? "15px" : "40px"};
-    padding-left: ${props => props.$isLandscape ? "0" : "100px"};
-    justify-content: ${props => props.$isLandscape ? "center" : "flex-start"};
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 15px;
-    padding-left: 0;
-    width: 100%;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
   flex-wrap: wrap;
   justify-content: center;
-
-  @media (min-width: 1025px) {
-    gap: 50px;
-  }
-
-  @media (max-width: 1024px) {
-    gap: ${props => props.$isLandscape ? "10px" : "15px"};
-    width: ${props => props.$isLandscape ? "100%" : "auto"};
-  }
+  align-items: center;
+  gap: 20px;
+  max-width: 1000px;
 
   @media (max-width: 768px) {
-    width: 100%;
+    flex-direction: column;
+    gap: 15px;
   }
 `;
 
 const ResponsiveButton = styled(CustomButton).withConfig({
   shouldForwardProp: (prop) => prop !== 'isLandscape',
 })`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
   @media (max-width: 1024px) {
     width: ${props => props.isLandscape ? "30%" : props.width} !important;
   }
@@ -103,36 +61,17 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
   }, []);
 
   return (
-    <ToolbarWrapper $isLandscape={isLandscape}>
-      <FilterContainer $isLandscape={isLandscape}>
-        <Dropdown
-          options={{
-            "AC": "Activo", 
-            "IN": "Inactivo",
-            "": "Todos"
-          }}
-          onSelect={onSearch}
-        />
-        <SearchBar
-          placeholder="Cédula, Nombre o Sucursal"
-          width="280px"
-          maxWidth="400px"
-          responsiveWidth={isLandscape ? "70%" : "50%"}
-          responsiveMaxWidth="300px"
-          mobileWidth="90%"
-          onSearch={onSearch}
-        />
-      </FilterContainer>
-      <ButtonContainer $isLandscape={isLandscape}>
+    <ToolbarWrapper>
+      <ToolbarContent>
         <ResponsiveButton 
-          bgColor="#FF6B6B" 
-          hoverColor="#D9534F" 
-          width="130px" 
+          bgColor="#5FB8D6" 
+          hoverColor="#519CB2" 
+          width="160px" 
           height="38px" 
-          onClick={onDelete}
+          onClick={onCreate}
           isLandscape={isLandscape}
         >
-          <Trash /> Eliminar
+          <Plus /> Crear Nuevo
         </ResponsiveButton>
         <ResponsiveButton 
           bgColor="#5A9AC6" 
@@ -145,16 +84,33 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
           <Edit /> Editar
         </ResponsiveButton>
         <ResponsiveButton 
-          bgColor="#5FB8D6" 
-          hoverColor="#519CB2" 
-          width="160px" 
+          bgColor="#FF6B6B" 
+          hoverColor="#D9534F" 
+          width="130px" 
           height="38px" 
-          onClick={onCreate}
+          onClick={onDelete}
           isLandscape={isLandscape}
         >
-          <Plus /> Crear Nuevo
+          <Trash /> Eliminar
         </ResponsiveButton>
-      </ButtonContainer>
+        <SearchBar
+          placeholder="Cédula,Nombre o Sucursal"
+          width="280px"
+          maxWidth="400px"  
+          responsiveWidth={isLandscape ? "70%" : "50%"}
+          responsiveMaxWidth="300px"
+          mobileWidth="90%"
+          onSearch={onSearch}
+        />
+        <Dropdown
+          options={{
+            "AC": "Activo", 
+            "IN": "Inactivo",
+            "": "Todos"
+          }}
+          onSelect={onSearch}
+        />
+      </ToolbarContent>
     </ToolbarWrapper>
   );
 };

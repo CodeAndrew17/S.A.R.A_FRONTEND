@@ -1,6 +1,6 @@
 import { axiosWithAuth } from "./api_Manager";
 
-//* Funciones CRUD para Convenion 
+//* Funciones CRUD para Convenios
 const getAgreement = async () => {    
     try {
         return await axiosWithAuth("/api/convenio/get/", "GET");
@@ -43,4 +43,22 @@ const getBranches = async () => {
     }
 };
 
-export {getAgreement,addAgreement, deleteAgreement, getBranches };
+const addBranches = async (newBranchesData) => {
+    try {
+        return await axiosWithAuth("/api/sucursal/post/", "POST", newBranchesData)
+    }  catch (error) {
+        console.error("Error al crear sucursal:", error);
+        throw error;
+    }
+};
+
+const deleteBranches = async (id) => {
+    try{
+        return await axiosWithAuth(`/api/sucursal/delete/${id}/`, "DELETE");
+    } catch (error) {
+        console.error("Error al eliminar sucursale(s):", error);
+        throw error;
+    }
+};
+
+export {getAgreement,addAgreement, deleteAgreement, getBranches, addBranches, deleteBranches };
