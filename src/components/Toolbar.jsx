@@ -27,28 +27,25 @@ import React, { useState, useEffect, useRef } from "react";
  `;
  
  const BaseButton = styled.button`
-   flex: 0 1 auto;
-   min-width: fit-content;
-   max-width: 100%;
-   height: clamp(30px, 4vh, 40px);
-   padding: clamp(4px, 1vw, 8px);
-   font-size: clamp(12px, 1.5vw, 16px);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   gap: 4px;
- 
-   background-color: ${(p) => p.$bgColor || "#5FB8D6"};
-   color: white;
-   border: none;
-   border-radius: 4px;
-   cursor: pointer;
-   transition: background-color 0.3s;
-   white-space: nowrap;
- 
-   &:hover {
-     background-color: ${(p) => p.$hoverColor || "black"};
-   }
+ background-color: ${(props) => props.$bgColor || "#5FB8D6"};
+ border: none;
+ color: white;
+ width: ${(props) => props.$width || "120px"};
+ height: ${(props) => props.$height || "38px"};
+ padding: 10px;
+ font-size: 16px;
+ font-family: Helvetica, Arial, sans-serif;
+ border-radius: 4px;
+ cursor: pointer;
+ transition: background-color 0.3s ease;
+ display: flex; 
+ align-items: center; 
+ justify-content: center;
+ gap: 8px;
+
+ &:hover {
+   background-color: ${(props) => props.$hoverColor || "black"};
+ }
  
  svg {
    width: 20px;

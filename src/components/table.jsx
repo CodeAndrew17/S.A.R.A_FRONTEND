@@ -20,22 +20,23 @@ const TableContainer = styled.div`
     width: 85%;
   }
 
+          /* Scroll suave */
+        scroll-behavior: smooth;
 
-  /* Scroll suave */
-  scroll-behavior: smooth;
+        /* Estilos personalizados para scrollbar */
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
 
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+        }
 
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-  }  
 `;
 
 const StyledTable = styled.table`
@@ -145,7 +146,8 @@ const Table = ({
       <StyledTable>
         <thead>
           <tr>
-            {expandable && <TableHeader style={{ width: '50px' }}></TableHeader>}
+            {selectable && <TableHeader style={{ width: '10px' }}></TableHeader>} 
+            {expandable && <TableHeader style={{ width: '10px' }}></TableHeader>}
             {columns.map((column) => (
               <TableHeader key={column.key}>{column.title}</TableHeader>
             ))}
