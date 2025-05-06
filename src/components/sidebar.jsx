@@ -6,7 +6,7 @@ import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipb
 
 const SidebarContainer = styled.div`
   width: ${({ $isOpen }) => ($isOpen ? "250px" : "80px")};
-  height: 100%;
+  height: 100vh;
   background: #1e1e2f;
   color: white;
   display: flex;
@@ -16,7 +16,7 @@ const SidebarContainer = styled.div`
   left: 0;
   top: 0;
   padding-top: 20px;
-  overflow-y: auto;
+  overflow: hidden; 
   z-index: 1000;
 `;
 
@@ -39,11 +39,33 @@ const UserIcon = styled(FaUser)`
 `;
 
 const Username = styled.span`
-  font-size: 16px;
+  font-size: 15px;
+  color:rgb(219, 219, 219); /* Azul pastel con un toque de blanco para suavizar */
   visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   transition: opacity 0.3s ease-in-out;
+  margin-right: 5px;
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.5;
 `;
+
+const Rol = styled.span`
+  font-size: 15px;
+  color: #FFFFFF; /* Verde pastel mezclado con blanco, relajado y armonioso */
+  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  transition: opacity 0.3s ease-in-out;
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  
+  &::before {
+    content: "•";
+    margin: 0 8px;
+    color: #B7A8D5; /* Violeta pastel con blanco, equilibrio entre los tonos */
+    font-weight: bold;
+  }
+`;
+
 
 const ToggleButton = styled.button`
   background: none;
@@ -72,10 +94,8 @@ const MenuItem = styled.li`
   align-items: center;
   padding: 15px;
   cursor: pointer;
-  position: absolute;
-  left: 0;
+  position: relative;  // Cambiado de absolute a relative
   width: 100%;
-  top: ${({ $position }) => $position}px;
 
   &:hover {
     background: #29293d;
@@ -111,56 +131,60 @@ const Tooltip = styled.div`
   pointer-events: none;
 `;
 
+const LogoutWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 18px; /* Misma altura que el botón de menú */
+  right: ${({ $isOpen }) => ($isOpen ? '25px' : '-40px')}; /* Se esconde fuera del sidebar */
+  z-index: 1001;
+  transition: right 0.3s ease;
+`;
+
 const LogoutButton = styled.button`
-  background: #ff4b5c;
-  color: white;
+  background: transparent;
+  color: #ff4b5c;
   border: none;
-  padding: 12px;
-  border-radius: ${({ $isOpen }) => ($isOpen ? "5px" : "50%")};
-  font-size: 16px;
+  padding: 8px;
+  border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $isOpen }) => ($isOpen ? "calc(100% - 40px)" : "50px")};
-  height: 50px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Mejor timing function */
-  transition-property: width, border-radius; /* Solo animar estas propiedades */
-
-  position: absolute;
-  left: 48%;
-  transform: translateX(-50%);
-  bottom: 20px;
-
+  width: 40px;
+  height: 40px;
+  transition: all 0.3s ease;
+  
   &:hover {
-    background: #d43f4a;
+    background: rgba(255, 75, 92, 0.1);
+    transform: scale(1.1);
   }
 
   svg {
-    font-size: 20px;
+    font-size: 18px;
   }
 `;
 
-const LogoutText = styled.span`
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: ${({ $isOpen }) => ($isOpen ? "100px" : "0")};
-  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
-  transform: translateX(${({ isOpen }) => (isOpen ? "0" : "-10px")});
-  transition: 
-    max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.2s 0.1s ease-in-out, /* Delay en la aparición */
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-left: ${({ $isOpen }) => ($isOpen ? "15px" : "")};
-  will-change: transform, opacity; /* Mejorar performance */
-`;
+
+
+const getRolName = (rolCode) => {
+  const roles = {
+    'AD': 'Administrador',
+    'PR': 'Perito',
+    'RC': 'Recepcionista',
+    'CA': 'Administrador Convenio',
+    'CC': 'Consultor Convenio'
+  };
+  return roles[rolCode] || "Invitado";
+};
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(sessionStorage.getItem("sidebarOpen") === "true");
   const [hoveredItem, setHoveredItem] = useState(null);
   const navigate = useNavigate();
   const username = sessionStorage.getItem("username") || "Invitado";
+  const rolCode = sessionStorage.getItem("rol");
+  const rol = getRolName(rolCode) || "inivitado";
   const sidebarRef = useRef(null);
 
   // Actualizar sessionStorage cuando isOpen cambia
@@ -184,7 +208,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { icon: <FaHome />, text: "Inicio", path: "/inicio" },
-    { icon: <FaFileAlt />, text: "Convenios", path: "/convenios" },
+    { icon: <FaFileAlt />, text: "Sucursales", path: "/sucursales" },
     { icon: <FaTools />, text: "Revisiones", path: "/revisiones" },
     { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
     { icon: <FaChartBar />, text: "Estadísticas", path: "/estadisticas" },
@@ -203,6 +227,7 @@ const Sidebar = () => {
       <UserContainer $isOpen={isOpen}>
         <UserIcon $isOpen={isOpen} />
         <Username $isOpen={isOpen}>{username}</Username>
+        <Rol $isOpen={isOpen}>{rol}</Rol>
       </UserContainer>
 
       <Menu>
@@ -225,10 +250,12 @@ const Sidebar = () => {
         ))}
       </Menu>
 
-      <LogoutButton $isOpen={isOpen} onClick={logout}>
-        <FaSignOutAlt />
-        <LogoutText $isOpen={isOpen}>Cerrar sesión</LogoutText>
-      </LogoutButton>
+      <LogoutWrapper $isOpen={isOpen}>
+  <LogoutButton onClick={logout}>
+    <FaSignOutAlt />
+  </LogoutButton>
+</LogoutWrapper>
+
     </SidebarContainer>
   );
 };

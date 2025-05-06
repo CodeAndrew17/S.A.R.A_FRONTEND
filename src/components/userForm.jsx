@@ -127,30 +127,11 @@ const UserForm = ({ title = "Formulario", fields = [], onSubmit, onCancel, succe
     e.preventDefault();
     const validationErrors = validateCreateUserForm(formData, fields);
     setErrors(validationErrors);
-
+  
     if (Object.keys(validationErrors).length === 0) {
-      const result = await Swal.fire({
-        title: successMessage,
-        text: successMessage,
-        icon: "success",
-        confirmButtonText: "Aceptar"
-      });
-
-      if (result.isConfirmed) {
-        onSubmit(formData);
-      }
-    } else {
-      Swal.fire({
-        title: "Error al crear el usuario",
-        text: "Por favor, revisa los campos resaltados",
-        icon: "error",
-        confirmButtonText: "Aceptar"
-      });
-
+      await onSubmit(formData); // Ejecuta directamente la función onSubmit
     }
   };
-
-
 
   return (
     <ModalContainer>

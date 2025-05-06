@@ -36,6 +36,7 @@ const Usuarios = () => {
   const [selectedUser, setSelectedUser] = useState(null); //Usuario seleccionado
   const [editingUser, setEditingUser] = useState(null);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  const [showUpdateForm, setShowUpdateForm] = useState(false); // Añade esto con los otros estados
 
 
   const handleEditar = () => {
@@ -74,6 +75,31 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al actualizar:", error);
       Swal.fire("Error", "No se pudieron guardar los cambios", "error");
+    }
+  };
+
+  const handleViewDetails = (usuarioId) => {
+    const usuario = filteredEmployees.find(u => u.id == usuarioId);
+    if (usuario) {
+      setExpandedRow(expandedRow === usuarioId ? null : usuarioId);
+      setEditingUser(usuario.cuenta_usuario ? {
+        ...usuario.cuenta_usuario,
+        id_empleado: usuario.id,
+        nombres: usuario.nombres,
+        apellidos: usuario.apellidos
+      } : null);
+    }
+  };
+
+  const handleEditingUser = () => {
+    if (editingUser) {
+      setShowUpdateForm(true);
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "El usuario no tiene una cuenta asignada para editar",
+        icon: "error"
+      });
     }
   };
 
@@ -174,34 +200,38 @@ const Usuarios = () => {
 
   const handleFormActualizarCuenta = async (id, formData) => {
     try {
-      console.log("Enviando datos para editar usuario:", id, formData);
-
-      const response = await editUsers(id, formData);
-      console.log("Usuario editado con éxito", response);
-
-      setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === id ? { ...emp, cuenta_usuario: { ...formData } } : emp
-        )
-      );
-
-      Swal.fire({
-        title: "¡Éxito!",
-        text: "El usuario ha sido editado correctamente.",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
-
-      setEditingUser(null); //Liberar el usuario y cerrar el formulario;
+      const payload = {
+        id,
+        ...formData,
+        id_empleado: editingUser.id_empleado
+      };
+  
+      const updatedUser = await editUsers(id, payload);
+      
+      // Actualizar editingUser con los nuevos datos
+      setEditingUser(updatedUser);
+  
+      // Función para actualizar empleados
+      const updateEmployee = (emp) => {
+        if (emp.id === payload.id_empleado) {
+          return {
+            ...emp,
+            cuenta_usuario: updatedUser
+          };
+        }
+        return emp;
+      };
+  
+      // Actualizar ambos estados
+      setEmployees(prev => prev.map(updateEmployee));
+      setFilteredEmployees(prev => prev.map(updateEmployee));
+  
+      // Cerrar formulario y mostrar éxito
+      setShowUpdateForm(false);
+      Swal.fire("¡Éxito!", "Cambios guardados", "success");
+      
     } catch (error) {
-      console.error("Error al editar el usuario", error);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo editar el usuario. Verifica los datos ingresados.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-
-      });
+      Swal.fire("Error", "No se pudieron guardar los cambios", "error");
     }
   };
 
@@ -328,13 +358,18 @@ const Usuarios = () => {
         />
       )}
 
-      {editingUser && (
-        <UpdateForm
-          user={editingUser}
-          onSubmit={(formData) => handleFormActualizarCuenta(editingUser.id, formData)}
-          onCancel={() => setEditingUser(null)}
-        />
-      )}
+{editingUser && (
+  <UpdateForm
+    showForm={showUpdateForm}
+    selectedUser={editingUser}
+    handleFormActualizarCuenta={handleFormActualizarCuenta}
+    setShowForm={setShowUpdateForm}
+    onCancel={() => {
+      setShowUpdateForm(false);
+      setEditingUser(null);
+    }}
+  />
+)}
 
       {editingEmployee && (
         <EmployeeUpdateForm
@@ -355,6 +390,8 @@ const Usuarios = () => {
         handleCrearUsuario={handleCrearUsuario}
         handleCrearCuenta={handleCrearCuenta}
         handleVerUsuario={handleVerUsuario}
+        handleViewDetails={handleViewDetails} // Pasa el manejador
+        handleEditingUser={handleEditingUser} // Pasa el manejador
         editingUser={editingUser}
         setEditingUser={setEditingUser}
         setEmployees={setEmployees}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
  import styled from "styled-components";
  import SearchBar from "./SearchBar";
- import { Search, Plus, Edit, Trash2 } from "lucide-react";
+ import {  Plus, Edit, Trash2 } from "lucide-react";
  
  const ContainerToolbar = styled.div`
  max-width: 80%;
@@ -13,36 +13,19 @@ import React, { useState, useEffect, useRef } from "react";
  margin-top: 20px;
  padding: 16px;
  flex-wrap: wrap;
-
  @media (max-width: 768px) {
    max-width: 100%;
- }
-`;
-
-const SearchContainer = styled.div`
-  width: 50%; /* ← valor por defecto para pantallas medianas */
-  height: clamp(30px, 4vh, 40px);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 clamp(4px, 1vw, 8px);
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background: #e6e3e3;
-  box-sizing: border-box;
-
-  @media (min-width: 1025px) {
-    width: 100%; /* ← En pantallas grandes ocupa el ancho completo */
-  }
-
-  @media (max-width: 768px) {
-    width: 100%; /* ← En móviles también ocupa todo el ancho */
-  }
-`;
-
-
+   height: clamp(30px, 4vh, 40px);
+   display: flex;
+   align-items: center;
+   gap: 4px;
+   padding: 0 clamp(4px, 1vw, 8px);
+   border: 2px solid #ccc;
+   border-radius: 8px;
+   background: #e6e3e3;
+   box-sizing: border-box;
+ `;
  
-
  const BaseButton = styled.button`
    flex: 0 1 auto;
    min-width: fit-content;
@@ -67,39 +50,24 @@ const SearchContainer = styled.div`
      background-color: ${(p) => p.$hoverColor || "black"};
    }
  
-   svg {
-     flex-shrink: 0;
-     width: clamp(14px, 2vw, 20px);
-     height: clamp(14px, 2vw, 20px);
-   }
- `;
- 
- const SearchIcon = styled(Search)`
-   flex-shrink: 0;
+ svg {
    width: 20px;
    height: 20px;
- `;
- 
- const SearchInput = styled.input`
-   flex: 2 1 0;
-   min-width: 0;
-   border: none;
-   background: transparent;
-   outline: none;
-   font-size: clamp(12px, 1.5vw, 16px);
-   padding: 4px 0;
- `;
+ }
+`;
  
  const DropdownContainer = styled.div`
    position: relative;
    display: inline-block;
+   
  `;
  
  const DropdownButton = styled.button`
    flex: 0 1 auto;
    min-width: fit-content;
    max-width: 100%;
-   height: clamp(30px, 4vh, 40px);
+   width:120px;
+   height: clamp(38px, 4vh, 40px);
    padding: 0 clamp(6px, 1vw, 10px);
    font-size: clamp(12px, 1.5vw, 16px);
    display: flex;
@@ -130,7 +98,7 @@ const SearchContainer = styled.div`
    display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
    position: absolute;
    background-color: #f9f9f9;
-   min-width: 30px;
+   min-width: 60px;
    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
    z-index: 1000;
  `;
@@ -173,7 +141,9 @@ const SearchContainer = styled.div`
    editLabel = "Editar",
    deleteLabel = "Eliminar",
    style,
+   onActiveButton=true
  }) => {
+  const boton= onActiveButton
    return (
      <ContainerToolbar>
        {showDefaultButtons && (
@@ -183,17 +153,11 @@ const SearchContainer = styled.div`
              onClick={onCreate}
              $bgColor="#5FB8D6"
              $hoverColor="#519CB2"
+             $width= "auto"
            >
              {createLabel}
            </Button>
-           <Button
-             icon={Edit}
-             onClick={onEdit}
-             $bgColor="#5A9AC6"
-             $hoverColor="#468BAF"
-           >
-             {editLabel}
-           </Button>
+
            <Button
              icon={Trash2}
              onClick={onDelete}
@@ -202,6 +166,20 @@ const SearchContainer = styled.div`
            >
              {deleteLabel}
            </Button>
+
+           {boton &&(
+            <Button
+              icon={Edit}
+              onClick={onEdit}
+              $bgColor="#5A9AC6"
+              $hoverColor="#468BAF"
+              $width="auto"
+          
+              >
+                {editLabel}
+              </Button> // ← Esta línea debe estar dentro del bloque condicional
+           )}
+
            
          </>
        )}

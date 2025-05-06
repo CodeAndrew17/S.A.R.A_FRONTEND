@@ -53,6 +53,7 @@ const DropdownItem = styled.button`
   background: none;
   border: none;
   width: 100%;
+  height:50px;
   text-align: left;
   cursor: pointer;
 

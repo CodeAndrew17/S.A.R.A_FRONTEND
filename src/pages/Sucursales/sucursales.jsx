@@ -7,13 +7,14 @@ import Button from "../../components/button";
 import UserForm from "../../components/userForm"; 
 import { Trash, Filter, Plus, Edit, Settings, Building, Map} from "lucide-react";
 import Table from "../../components/table";
-import {getConvenios} from "../../api/api_Convenios"; 
-import columnsBranch from "./TableAgreement/columns"; 
+import {getBranches} from "../../api/api_Convenios"; 
+import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de los convenios
+import columnsBranches from "./TableBranches/columnsBranches"; // columnas de las sucursales
 import Toolbar from "../../components/Toolbar";
 import CustomButton from "../../components/button";
 
 //!importaciones de gestor de Convenios 
-import GestionConvenios from "./gestion_convenios";
+import GestionConvenios from "./convenios";
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -21,8 +22,7 @@ const TitleWrapper = styled.div`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
-  margin-top: 5px;
-  height: 60px;
+  height: 70px;
 `;
 
 const TitleText = styled.h1`
@@ -33,35 +33,7 @@ const TitleText = styled.h1`
   top: 10px;  
 `;
 
-const FilterContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  margin-left: 40px; // Aumenta este valor para mover el SearchBar más a la derecha
-`;
 
-const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between; // Distribuye el espacio entre los elementos
-  align-items: center;
-  padding: 10px 20px;
-  width: 90%;
-  margin: 20px auto;
-  flex-wrap: wrap;
-  gap: 20px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 15px;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-right: 20px; // Esto empuja el contenedor hacia la derecha
-`;
 
 const FormContainer = styled.div`
   display: flex;
@@ -69,54 +41,13 @@ const FormContainer = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 20px;
-    border:3px solid #07f53d;
+  border: 3px solid #07f53d;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 
-`;
-
-
-const Pruebda = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Oscurece el fondo */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-const ButtonSucursales = styled.div`
-  margin-right: -15px; 
-`;
-
-const TableContainer = styled.div`
-  width: 93.5%;
-  margin: 20px auto 20px 90px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 1024px) {
-    width: 90%;
-  }
-
-  @media (max-width: 768px) {
-    width: 85%;
-  }
-`;
-const ContainerToolbar = styled.div`
-  max-width: 80%; /* Define el ancho máximo */
-  margin: auto; /* Centra el contenedor automáticamente */
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-  padding: 10px;
-  flex-wrap: wrap; 
-
-  @media (max-width: 768px) {
-    max-width: 100%; /* En pantallas pequeñas, ocupa todo el ancho */
+  @media (max-width: 480px) {
+    padding: 10px;
   }
 `;
 
@@ -127,7 +58,9 @@ const CustomButtonContainer = styled.div `
 
 
 
-const Convenios = () => {
+
+
+const Sucursales = () => {
   const [activeForm, setActiveForm] = useState(null); // Estado para mostrar/ocultar el formulario
   const [convenios, setConvenios] = useState([]); //estado para los convenios 
   const [loading, setLoading] = useState(true); // estado de la carga de datos 
@@ -136,8 +69,8 @@ const Convenios = () => {
         useEffect(() => {
           const fetchConvenios = async () => { 
             try {
-              setLoading(true); //iniica la carga de datos 
-              const data = await getConvenios();
+              setLoading(true); //inica la carga de datos 
+              const data = await getBranches();
               setConvenios(data)
               setLoading(false); 
             } catch (error) {
@@ -192,15 +125,17 @@ const Convenios = () => {
     <div>
       <Sidebar />
       <TitleWrapper>
-        <TitleText>Panel de Convenios</TitleText>
+        <TitleText>Panel de Sucursales</TitleText>
       </TitleWrapper>
 
 {/* Ejemplo de uso del toolbar solo colocan la funcion para cada uno de crear eliminar y editar son los de por default, si nececitan otro lo añaden controlan el gap de cada uno con buttonsGap */}
-      <Toolbar
+<Toolbar
         onCreate={handleCrearConvenio}
-        onEdit={handleEdit}
+        onEdit={handlegestorCon}
         onDelete={handleDelete}
         buttonsGap="40px" //ejemplo de uso
+        editLabel="Gestionar Convenios"
+        onActiveButton= {true}
       >
         <Toolbar.Search placeholder="Buscar..." 
         //onSearch={handleSearch} prop para recibir la funcion a ejecutar del search tambien pueden manejar el width
@@ -209,18 +144,7 @@ const Convenios = () => {
           options={["Todos", "Activos"]} // manjean las choices desde aca 
           onSelect={(opt) => console.log(opt)} // funcion a ajecutar dependiendo del select
         />
-      <CustomButtonContainer>
-      <CustomButton 
-                icon={Map} 
-                onClick={handlegestorCon}
-                hoverColor = "#4F7AA3"
-                bgColor="#6B90C0"
-                width="200px"
-                height="38px"
-              > Gestionar Convenios
-              </CustomButton>
-      </CustomButtonContainer>
-      
+
       </Toolbar>
 
       {loading ? (
@@ -230,12 +154,10 @@ const Convenios = () => {
       ) : (
         <Table
           data={convenios}
-          columns={columnsBranch}
+          columns={columnsBranches}
           selectable={true}
           onSelectionChange={handleSelectionChange} //! Aquie envia los Datos selecionados 
-          onRowClick={(convenio) => {
-            console.log('Convenio seleccionado:', convenio);
-          }}
+         
         />
       )}
 
@@ -282,15 +204,15 @@ const Convenios = () => {
     
         )}
   
-        <Button onClick={() => { //! prueba De Funcionacion de traer datos 
+        <center><Button onClick={() => { //! prueba De Funcionacion de traer datos 
             const datosSeleccionados = convenios.filter(c => selectedConvenios.includes(c.id));
             console.log("Datos seleccionados:", datosSeleccionados);
           }}>
             Imprimir seleccionados
-        </Button>
+        </Button></center>
     </div>
     
   );
 };
 
-export default Convenios;
+export default Sucursales;

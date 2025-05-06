@@ -128,9 +128,11 @@ const Login = () => {
     setApiError(null);
     try {
       const result = await login(data.usuario, data.password);
+      //console.log(result);
       sessionStorage.setItem('access', result.access);
       sessionStorage.setItem('refresh', result.refresh);
       sessionStorage.setItem('username', result.usuario);
+      sessionStorage.setItem('rol', result.rol);
       navigate('/inicio');
     } catch (err) {
       setApiError(err.message);
