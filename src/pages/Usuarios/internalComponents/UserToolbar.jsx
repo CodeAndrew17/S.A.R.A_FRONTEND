@@ -1,19 +1,28 @@
 import React from "react";
 import styled from "styled-components";
-import Dropdown from "../../../components/Dropdown"; // Reutiliza tu componente Dropdown
-import SearchBar from "../../../components/SearchBar"; // Reutiliza tu componente SearchBar
+import Dropdown from "../../../components/Dropdown";
+import SearchBar from "../../../components/SearchBar";
 import CustomButton from "../../../components/button";
 import { Trash, Edit, Plus } from "lucide-react";
 
 const ToolbarWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 10px 20px;
-  width: 90%;
-  margin: 20px auto;
-  flex-wrap: nowrap;
+  padding: 20px 0;
+  width: 100%;
+  margin-bottom: 20px; 
+  margin-top: 20px; 
+`;
+
+
+const ToolbarContent = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 20px;
+  max-width: 1000px;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -21,51 +30,87 @@ const ToolbarWrapper = styled.div`
   }
 `;
 
-const FilterContainer = styled.div`
+const ResponsiveButton = styled(CustomButton).withConfig({
+  shouldForwardProp: (prop) => prop !== 'isLandscape',
+})`
   display: flex;
   align-items: center;
-  gap: 80px;
-  padding-left: 210px;
+  justify-content: center;
+  gap: 5px;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 20px;
-    padding-left: 0;
+  @media (max-width: 1024px) {
+    width: ${props => props.isLandscape ? "30%" : props.width} !important;
+  }
+
+  @media (max-width: 480px) {
+    width: 100% !important;
   }
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 50px;
-`;
-
 const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
+  const [isLandscape, setIsLandscape] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkOrientation = () => {
+      setIsLandscape(window.matchMedia("(max-width: 1024px) and (max-height: 768px)").matches);
+    };
+
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    return () => window.removeEventListener('resize', checkOrientation);
+  }, []);
+
   return (
     <ToolbarWrapper>
-      <FilterContainer>
-        <Dropdown
-          options={["Activo", "Inactivo", "Todos"]}
-          onSelect={(option) => console.log("Dropdown seleccionado:", option)}
-          defaultOption="Estado"
-        />
+      <ToolbarContent>
+        <ResponsiveButton 
+          bgColor="#5FB8D6" 
+          hoverColor="#519CB2" 
+          width="160px" 
+          height="38px" 
+          onClick={onCreate}
+          isLandscape={isLandscape}
+        >
+          <Plus /> Crear Nuevo
+        </ResponsiveButton>
+        <ResponsiveButton 
+          bgColor="#5A9AC6" 
+          hoverColor="#468BAF" 
+          width="130px" 
+          height="38px" 
+          onClick={onEdit}
+          isLandscape={isLandscape}
+        >
+          <Edit /> Editar
+        </ResponsiveButton>
+        <ResponsiveButton 
+          bgColor="#FF6B6B" 
+          hoverColor="#D9534F" 
+          width="130px" 
+          height="38px" 
+          onClick={onDelete}
+          isLandscape={isLandscape}
+        >
+          <Trash /> Eliminar
+        </ResponsiveButton>
         <SearchBar
-          placeholder="Cédula, Nombre o Convenio"
+          placeholder="Cédula,Nombre o Sucursal"
           width="280px"
+          maxWidth="400px"  
+          responsiveWidth={isLandscape ? "70%" : "50%"}
+          responsiveMaxWidth="300px"
+          mobileWidth="90%"
           onSearch={onSearch}
         />
-      </FilterContainer>
-      <ButtonContainer>
-        <CustomButton bgColor="#FF6B6B" hoverColor="#D9534F" width="130px" height="38px" onClick={onDelete}>
-          <Trash /> Eliminar
-        </CustomButton>
-        <CustomButton bgColor="#5A9AC6" hoverColor="#468BAF" width="130px" height="38px" onClick={onEdit}>
-          <Edit /> Editar
-        </CustomButton>
-        <CustomButton bgColor="#5FB8D6" hoverColor="#519CB2" width="160px" height="38px" onClick={onCreate}>
-          <Plus /> Crear Nuevo
-        </CustomButton>
-      </ButtonContainer>
+        <Dropdown
+          options={{
+            "AC": "Activo", 
+            "IN": "Inactivo",
+            "": "Todos"
+          }}
+          onSelect={onSearch}
+        />
+      </ToolbarContent>
     </ToolbarWrapper>
   );
 };

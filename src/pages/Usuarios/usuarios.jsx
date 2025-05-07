@@ -1,94 +1,16 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/sidebar";
-import Toolbar from "../../components/Toolbar";
+import Header from "./internalComponents/header";
+import Toolbar from "./internalComponents/UserToolbar";
 import UserTable from "./internalComponents/userTable";
 import UserForm from "../../components/userForm";
 import useEmployeeManagement from "./hooks/useEmployeeManagement";
-import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees, editEmployees, getUsers } from "../../api/api_Usuarios";
+import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees, editEmployees ,getUsers} from "../../api/api_Usuarios"; 
 import CreateForm from "./Forms/createForm";
 import AsignForm from "./Forms/asignForm"; // Ajusta la ruta según la ubicación del archivo
 import UpdateForm from "./Forms/updateForm";
 import Swal from "sweetalert2";
-import styled from "styled-components";
 import EmployeeUpdateForm from "./Forms/EmployeeUpdateForm";
-
-const TitleWrapper = styled.div`
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-    margin-top: 5px;
-    height: 60px;
-  `;
-
-const TitleText = styled.h1`
-    color: #000;
-    font-size: 40px;
-    margin: 0;
-    position: relative;
-    top: 10px;  
-  `;
-
-const FilterContainer = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    margin-left: 40px; // Aumenta este valor para mover el SearchBar más a la derecha
-  `;
-
-const TopBar = styled.div`
-    display: flex;
-    justify-content: space-between; // Distribuye el espacio entre los elementos
-    align-items: center;
-    padding: 10px 20px;
-    width: 90%;
-    margin: 20px auto;
-    flex-wrap: wrap;
-    gap: 20px;
-
-    @media (max-width: 768px) {
-      flex-direction: column;
-      gap: 15px;
-    }
-  `;
-
-const ButtonContainer = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-right: 20px; // Esto empuja el contenedor hacia la derecha
-  `;
-
-const FormContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px;
-  `;
-
-const ButtonSucursales = styled.div`
-    margin-right: -15px; 
-  `;
-
-const TableContainer = styled.div`
-  margin-left: 100px; /* Espacio para el sidebar (80px) + un pequeño margen */
-  margin-right: 40px; /* Espacio derecho para consistencia */
-  margin-top: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow-x: auto; /* Para evitar que el contenido se salga horizontalmente */
-`;
-
-
-const ContainerToolbar = styled.div`
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-top: 20px;
-
-  `;
 
 
 const Usuarios = () => {
@@ -113,6 +35,7 @@ const Usuarios = () => {
   const [selectedUser, setSelectedUser] = useState(null); //Usuario seleccionado
   const [editingUser, setEditingUser] = useState(null);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  const [showUpdateForm, setShowUpdateForm] = useState(false); // Añade esto con los otros estados
 
   const handleEditar = () => {
     if (selectedEmployees.length !== 1) {
@@ -150,6 +73,31 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al actualizar:", error);
       Swal.fire("Error", "No se pudieron guardar los cambios", "error");
+    }
+  };
+
+  const handleViewDetails = (usuarioId) => {
+    const usuario = filteredEmployees.find(u => u.id == usuarioId);
+    if (usuario) {
+      setExpandedRow(expandedRow === usuarioId ? null : usuarioId);
+      setEditingUser(usuario.cuenta_usuario ? {
+        ...usuario.cuenta_usuario,
+        id_empleado: usuario.id,
+        nombres: usuario.nombres,
+        apellidos: usuario.apellidos
+      } : null);
+    }
+  };
+
+  const handleEditingUser = () => {
+    if (editingUser) {
+      setShowUpdateForm(true);
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "El usuario no tiene una cuenta asignada para editar",
+        icon: "error"
+      });
     }
   };
 
@@ -241,7 +189,7 @@ const Usuarios = () => {
       console.error("Error al asignar la cuenta:", error);
       Swal.fire({
         title: "Error",
-        text: "La cuenta no pudo ser asignada. El campo de usuario debe contener al menos 4 caracteres. Por favor, ingrese un valor válido y vuelva a intentarlo. ",
+        text: "La cuenta no pudo ser asignada. El campo de usuario debe contener al menos 8 caracteres. Por favor, ingrese un valor válido y vuelva a intentarlo. ",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
@@ -250,34 +198,38 @@ const Usuarios = () => {
 
   const handleFormActualizarCuenta = async (id, formData) => {
     try {
-      console.log("Enviando datos para editar usuario:", id, formData);
-
-      const response = await editUsers(id, formData);
-      console.log("Usuario editado con éxito", response);
-
-      setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === id ? { ...emp, cuenta_usuario: { ...formData } } : emp
-        )
-      );
-
-      Swal.fire({
-        title: "¡Éxito!",
-        text: "El usuario ha sido editado correctamente.",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
-
-      setEditingUser(null); //Liberar el usuario y cerrar el formulario;
+      const payload = {
+        id,
+        ...formData,
+        id_empleado: editingUser.id_empleado
+      };
+  
+      const updatedUser = await editUsers(id, payload);
+      
+      // Actualizar editingUser con los nuevos datos
+      setEditingUser(updatedUser);
+  
+      // Función para actualizar empleados
+      const updateEmployee = (emp) => {
+        if (emp.id === payload.id_empleado) {
+          return {
+            ...emp,
+            cuenta_usuario: updatedUser
+          };
+        }
+        return emp;
+      };
+  
+      // Actualizar ambos estados
+      setEmployees(prev => prev.map(updateEmployee));
+      setFilteredEmployees(prev => prev.map(updateEmployee));
+  
+      // Cerrar formulario y mostrar éxito
+      setShowUpdateForm(false);
+      Swal.fire("¡Éxito!", "Cambios guardados", "success");
+      
     } catch (error) {
-      console.error("Error al editar el usuario", error);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo editar el usuario. Verifica los datos ingresados.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-
-      });
+      Swal.fire("Error", "No se pudieron guardar los cambios", "error");
     }
   };
 
@@ -300,12 +252,12 @@ const Usuarios = () => {
   }
 
   const handleEliminarUser = async () => {
-    const [userList] = await Promise.all([
+    const [userList] =  await Promise.all([
       getUsers()
     ]);
 
     let continuar = true;
-
+  
     if (selectedEmployees.length === 0) {
       Swal.fire({
         title: "Error",
@@ -317,32 +269,30 @@ const Usuarios = () => {
 
     const empleadosConCuenta = selectedEmployees.filter(id =>
       userList.some(user => user.id_empleado === id)
-    );
+    );    
     //Validacion de cuenta de usuario
     const textoDinamico = empleadosConCuenta.length > 0
-      ? `Hay ${empleadosConCuenta.length} empleados con cuenta de usuario. ¿Deseas continuar?`
+      ? `Hay ${empleadosConCuenta.length} empleado(s) con cuenta de usuario. ¿Deseas continuar?`
       : "¿Deseas eliminar los empleados seleccionados?";
     //arroja le alerta con el texto dinamico,sin importar el caso si la respuesta Es afirmativa se eliminan los empleados
     const resultado = await Swal.fire({
-      title: "Revisión",
-      text: textoDinamico,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar"
-    });
-    console.log("ingrese a la validacion")
-    continuar = resultado.isConfirmed;
-
-
-
+        title: "Revisión",
+        text: textoDinamico,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+      });
+      console.log("ingrese a la validacion")
+      continuar = resultado.isConfirmed;
+      
+    
+  
     if (!continuar) return;
 
     try {
       // Eliminamos a los usuarios seleccionados en el backend
-      for (const id of selectedEmployees) {
-        await deleteEmployees(id);
-      };
+      await Promise.all(selectedEmployees.map((id) => deleteAgreement(id)));
 
       // Actualizamos el estado local para eliminar los empleados
       setEmployees((prevEmployees) =>
@@ -359,7 +309,7 @@ const Usuarios = () => {
         icon: "success",
         confirmButtonText: "Aceptar"
       });
-
+      
     } catch (error) {
       console.error("Hubo un error al eliminar los usuarios.", error);
       Swal.fire({
@@ -375,35 +325,13 @@ const Usuarios = () => {
   return (
     <div>
       <Sidebar />
-      <TitleWrapper>
-        <TitleText>Panel de Usuarios</TitleText>
-      </TitleWrapper>
-
-      <ContainerToolbar>
-
-
-        <Toolbar
-          onCreate={handleCreateNew}
-          onEdit={handleEditar}
-          onDelete={handleEliminarUser}
-          buttonsGap="40px"
-        >
-
-          <Toolbar.Search
-            placeholder="Cédula, Nombre o Convenio"
-            onSearch={handleBuscar}
-          />
-
-
-          <Toolbar.Dropdown
-            options={["Todos", "Activos"]} // manjean las choices desde aca 
-            onSelect={(opt) => console.log(opt)} // funcion a ajecutar dependiendo del select
-          />
-        </Toolbar>
-      </ContainerToolbar>
-
-
-      {/*</OuterWrapper> */}
+      <Header /> {/* Encabezado */}
+      <Toolbar
+        onSearch={handleBuscar} // Búsqueda
+        onDelete={handleEliminarUser} // Eliminar
+        onEdit={handleEditar} // Placeholder para editar
+        onCreate={handleCreateNew} // Crear nuevo empleado
+      />
       {/* Formulario de creación, visible cuando showForm es true */}
       {showCreateForm && (
         <CreateForm
@@ -423,13 +351,18 @@ const Usuarios = () => {
         />
       )}
 
-      {editingUser && (
-        <UpdateForm
-          user={editingUser}
-          onSubmit={(formData) => handleFormActualizarCuenta(editingUser.id, formData)}
-          onCancel={() => setEditingUser(null)}
-        />
-      )}
+{editingUser && (
+  <UpdateForm
+    showForm={showUpdateForm}
+    selectedUser={editingUser}
+    handleFormActualizarCuenta={handleFormActualizarCuenta}
+    setShowForm={setShowUpdateForm}
+    onCancel={() => {
+      setShowUpdateForm(false);
+      setEditingUser(null);
+    }}
+  />
+)}
 
       {editingEmployee && (
         <EmployeeUpdateForm
@@ -441,23 +374,23 @@ const Usuarios = () => {
       )}
 
       {/* Tabla de empleados */}
-      <TableContainer>
-        <UserTable
-          filteredEmployees={filteredEmployees}
-          selectedEmployees={selectedEmployees}
-          expandedRow={expandedRow}
-          handleCheckboxChange={handleCheckboxChange}
-          toggleRow={setExpandedRow}
-          handleCrearUsuario={handleCrearUsuario}
-          handleCrearCuenta={handleCrearCuenta}
-          handleVerUsuario={handleVerUsuario}
-          editingUser={editingUser}
-          setEditingUser={setEditingUser}
-          setEmployees={setEmployees}
-          employees={employees}
-          setFilteredEmployees={setFilteredEmployees} // Pasar la lista de empleados al componente UserTable
-        />
-      </TableContainer>
+      <UserTable
+        filteredEmployees={filteredEmployees}
+        selectedEmployees={selectedEmployees}
+        expandedRow={expandedRow}
+        handleCheckboxChange={handleCheckboxChange}
+        toggleRow={setExpandedRow}
+        handleCrearUsuario={handleCrearUsuario}
+        handleCrearCuenta={handleCrearCuenta}
+        handleVerUsuario={handleVerUsuario}
+        handleViewDetails={handleViewDetails} // Pasa el manejador
+        handleEditingUser={handleEditingUser} // Pasa el manejador
+        editingUser={editingUser}
+        setEditingUser={setEditingUser}
+        setEmployees={setEmployees}
+        employees={employees}
+        setFilteredEmployees={setFilteredEmployees} // Pasar la lista de empleados al componente UserTable
+      />
     </div>
   );
 };

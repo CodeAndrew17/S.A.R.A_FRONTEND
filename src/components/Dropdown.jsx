@@ -53,6 +53,7 @@ const DropdownItem = styled.button`
   background: none;
   border: none;
   width: 100%;
+  height:50px;
   text-align: left;
   cursor: pointer;
 
@@ -61,9 +62,13 @@ const DropdownItem = styled.button`
   }
 `;
 
-function Dropdown({ options, onSelect, defaultOption = "Selecciona" }) {
+function Dropdown({ 
+  options = {},   // Recibimos un objeto {valor: label}
+  onSelect, 
+  defaultOption = "Todos"
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(defaultOption);
+  const [selectedLabel, setSelectedLabel] = useState(defaultOption);
   const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
@@ -78,30 +83,33 @@ function Dropdown({ options, onSelect, defaultOption = "Selecciona" }) {
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelectedOption = (option, event) => {
-    event.preventDefault(); // Esto evita que se envíe el formulario
-    setSelectedOption(option);
+  const handleSelectedOption = (value, label, event) => {
+    event.preventDefault();
+    setSelectedLabel(label);
     setIsOpen(false);
-    if (onSelect) {
-      onSelect(option); // Llamamos la función externa si existe
-      onSelect(option);
-    }
+    onSelect?.(value);
   };
+
+  const optionsArray = Object.entries(options);
+
 
   return (
     <DropdownContainer ref={dropdownRef}>
       <DropdownButton onClick={toggleDropdown}>
-        {selectedOption}</DropdownButton>
+        {selectedLabel}</DropdownButton>
+
       {isOpen && (
+
         <DropdownMenu $isOpen={isOpen}>
-          {options.map((option, index) => (
-            <DropdownItem key={index} onClick={(event) => handleSelectedOption(option, event)}>
-              {option}
+           {optionsArray.map(([value, label]) => (
+            <DropdownItem 
+              key={value} 
+              onClick={(event) => handleSelectedOption(value, label, event)}
+            >
+              {label}
             </DropdownItem>
           ))}
         </DropdownMenu>

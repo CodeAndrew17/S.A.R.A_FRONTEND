@@ -21,7 +21,7 @@ const deleteEmployees = async (id) => {
 
 const editEmployees = async (id, updateData) => {
     try{
-        return await axiosWithAuth(`/api/empleado/put/${id}/`, "PUT", updateData);
+        return await axiosWithAuth(`/api/empleado/patch/${id}/`, "PATCH", updateData);
     } catch (error) {
         console.error("error al editar usuario", error);
         throw error;
@@ -76,11 +76,12 @@ const deleteUsers = async (id) => {
 
 const editUsers = async (id, updateDataUser) => {
     try{
-        return await axiosWithAuth(`/api/usuario/put/${id}/`, "PUT", updateDataUser);
+        return await axiosWithAuth(`/api/usuario/patch/${id}/`, "PATCH", updateDataUser);
     } catch (error) {
-        console.error("error al editar la informacion de usuario", error);
+        console.error("Error del backend:", error.response?.data || error); // depuracion
         throw error; 
     }
 };
+
 
 export {getEmployees, deleteEmployees, editEmployees, addEmployees, getBranches, getUsers, addUsers, deleteUsers, editUsers};

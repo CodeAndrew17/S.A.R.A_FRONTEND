@@ -1,6 +1,5 @@
     import { useState, useEffect } from "react";
-    import { getEmployees, deleteEmployees, editEmployees, addEmployees, getUsers } from "../../../api/api_Usuarios";
-    import { getBranches } from '../../../api/api_Usuarios'
+    import { getEmployees, deleteEmployees, editEmployees, addEmployees, getUsers,getBranches } from "../../../api/api_Usuarios";
 
     
     const useEmployeeManagement = () => {
@@ -59,8 +58,8 @@
                 const nombreMatch = emp.nombres?.toLowerCase().includes(sanitizedSearch);
                 const sucursalMatch = emp.id_sucursal &&
                                     sucursalesMap[emp.id_sucursal]?.toLowerCase().includes(sanitizedSearch);
-                
-                return cedulaMatch || nombreMatch || sucursalMatch; 
+                const estadoMatch= emp.estado?.toLowerCase().includes(sanitizedSearch)
+                return cedulaMatch || nombreMatch || sucursalMatch || estadoMatch; 
             });
         
             setFilteredEmployees(filtered); 

@@ -6,7 +6,7 @@ import { createGlobalStyle } from 'styled-components';
 import Usuarios from './pages/Usuarios/usuarios';
 import Administrar from './pages/administrar';
 import Estadisticas from './pages/estadisticas';
-import Convenios from './pages/Convenios/convenios';
+import Sucursales from './pages/Sucursales/sucursales';
 import Revisiones from './pages/revisiones';
 import Configuracion from './pages/configuracion';
 
@@ -20,8 +20,26 @@ const GlobalStyle = createGlobalStyle`
         height: 100%;
         font-family: Helvetica, Arial, sans-serif;
         font-size: 12px;
-    }
+              
+        /* Scroll suave */
+        scroll-behavior: smooth;
+
+        /* Estilos personalizados para scrollbar */
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+        }
 `;
+    
+
 
 //Funcion para la proteccion de rutas
 function ProtectedRoute({children}) {
@@ -39,7 +57,7 @@ function App(){
       <Route path="/contraseña" element={<RestorePassword />} />
       <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
       <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
-      <Route path="/convenios" element={<ProtectedRoute><Convenios/></ProtectedRoute>} />
+      <Route path="/sucursales" element={<ProtectedRoute><Sucursales/></ProtectedRoute>} />
       <Route path="/estadisticas" element={<ProtectedRoute><Estadisticas /></ProtectedRoute>} />
       <Route path="/administrar" element={<ProtectedRoute><Administrar /></ProtectedRoute>} />
       <Route path="/revisiones" element={<ProtectedRoute><Revisiones /></ProtectedRoute>} />

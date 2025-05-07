@@ -22,7 +22,7 @@ const LoginBox = styled.div`
   border-radius: 105px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 800px;
-  height: 490px;
+  height: 500px;
 `;
 
 const LeftSection = styled.div`
@@ -46,7 +46,7 @@ const Logo = styled.img`
 
 const GradientText = styled.h2`
   font-family: 'Playwrite IS', sans-serif;
-  font-size: 29px;
+  font-size: 30px;
   text-align: center;
   background: linear-gradient(90deg, #16368d, #0087d6);
   background-clip: text;
@@ -108,27 +108,34 @@ const SubmitButton = styled.button`
 
 const Message = styled.p`
   color: red;
+
 `;
 
 const Login = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm(); // Usar useForm y registrar los campos, se inicializa y desecstructura para usar register y los demas
-  const [error, setError] = useState(null);
-  const navigate = useNavigate(); //se inicializa navigate
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors } 
+  } = useForm({ 
+    mode: 'onChange',  // Valida mientras se escribe
+    reValidateMode: 'onChange'  // Revalida automáticamente
+  });
+
+  const [apiError, setApiError] = useState(null);
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    setApiError(null);
     try {
-      const result = await login(data.usuario, data.password); // Llama a la función login
-      console.log('Tokens:', result); //imprime los tokens en consola / NOTA: QUITAR EN PRODUCCION
-      // Almacena los tokens en sessionStorage
+      const result = await login(data.usuario, data.password);
+      //console.log(result);
       sessionStorage.setItem('access', result.access);
       sessionStorage.setItem('refresh', result.refresh);
       sessionStorage.setItem('username', result.usuario);
-
-      // Navega a la página de inicio
+      sessionStorage.setItem('rol', result.rol);
       navigate('/inicio');
     } catch (err) {
-      console.error('Error:', err);
-      setError(err.message); // Muestra el mensaje de error
+      setApiError(err.message);
     }
   };
 
@@ -148,7 +155,7 @@ const Login = () => {
                 type="text"
                 id="username"
                 placeholder="Ingrese su nombre de usuario"
-                {...register('usuario', { required: 'El campo usuario es obligatorio' })} //validacion para llenar campos obligatorios
+                {...register('usuario', { required: 'El campo usuario es obligatorio', onChange: () => setApiError(null) })} //validacion para llenar campos obligatorios
               />
               {errors.usuario && <Message>{errors.usuario.message}</Message>} {/*imprimimos el mensaje de error si hay*/}
             </InputGroup>
@@ -158,14 +165,14 @@ const Login = () => {
                 type="password"
                 id="password"
                 placeholder="Ingrese su contraseña"
-                {...register('password', { required: 'El campo contraseña es obligatorio' })}
+                {...register('password', { required: 'El campo contraseña es obligatorio', onChange: () => setApiError(null) })}
               />
               {errors.password && <Message>{errors.password.message}</Message>}
               <ForgotPasswordLink to="/contraseña">¿Olvidaste tu contraseña?</ForgotPasswordLink>
             </InputGroup>
             <SubmitButton type="submit">Iniciar Sesión</SubmitButton>
           </form>
-          {error && <Message>{error}</Message>} {/* Muestra errores si existen */}
+          {apiError && <Message>{apiError}</Message>} 
         </LeftSection>
         <RightSection />
       </LoginBox>

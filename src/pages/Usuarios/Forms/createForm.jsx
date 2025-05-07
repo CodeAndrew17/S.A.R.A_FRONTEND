@@ -41,6 +41,7 @@ const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
                         { value: "IN", label: "Inactivo" }
                     ],
                     required: true,
+                    defaultValue: "Activo"
                 },
                 {
                     name: "id_sucursal",
@@ -48,8 +49,7 @@ const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
                     type: "select",
                     options: sucursales.map(s => ({ value: s.id, label: s.nombre })),
                     required: true,
-                  }
-                  
+                }
             ]}
             onSubmit={onSubmit}
             onCancel={() => setShowForm(false)}
