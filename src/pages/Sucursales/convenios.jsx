@@ -5,6 +5,7 @@ import columnsAgreement from "./TableAgreement/columnsAgreement";
 import UserForm from "../../components/userForm";
 import React, { useState, useEffect, useRef } from "react";
 import CustomButton from "../../components/button";
+import { Edit } from "lucide-react";
 
 //!importacion de Funciona CRUD de Convenios 
 import useAgreementManagement from "./TableAgreement/convenioManagement";
@@ -66,10 +67,13 @@ const FormContainer = styled.div`
   }
 `;
 
-const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
+const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = false, data = null }) => {
   const [activeForm, setActiveForm] = useState(false); // Para mostrar el formulario
   const [selected, setSelected] = useState([]); // Para los convenios seleccionados
+  const [activeEdit, setActiveEdit] =  useState(false)
+  const [dataAgreement, setDataAgreement] = useState([])
   const modalRef = useRef(null); // Referencia al modal
+
 
   const {
     agreements, // Los convenios
@@ -79,14 +83,21 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
     createAgreement, // Funcion para crear un convenio
     removeAgreement, // Funcion para eliminar convenios
     ConsultSearch, //Funcion Para buscar
+    updateAgreement,
   } = useAgreementManagement();
 
+ 
   useEffect(() => {
     fetchAgreementData(); 
   }, []); 
 
   const handleForm = () => setActiveForm(true); 
   const closeForm = () => setActiveForm(false); 
+  const handleEdit =()=> setActiveEdit(true)
+  const closeEdit =() =>setActiveEdit(false)
+
+  
+
 
   // * Crear un convenio
   const handlecreate = (form) => {
@@ -108,6 +119,32 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
       fetchAgreementData(); // Refresca la lista de convenios después de eliminar
     }
   };
+
+  const handleEditAgreement =(record)=>{
+    handleEdit();
+    setDataAgreement(record)
+    console.log(record)
+  }
+  //Reescribe el ultimo campo de las clumnas 
+  const columnsWithActions = columnsAgreement.map(col =>
+    col.key === "actions"
+      ? {
+          ...col,
+          render: (_, record) => (
+            <CustomButton
+              bgColor="#5FB8D6"
+              hoverColor="#519CB2"
+              width="100px"
+              height="30px"
+              onClick={() => handleEditAgreement(record)}
+              icon={Edit}
+            >
+              Editar
+            </CustomButton>
+          ),
+        }
+      : col
+  );
 
   return (
     <ModalContainer>
@@ -145,7 +182,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
           containerStyle={{ margin: "5px 10px 5px 5px", width: "98%", overflow: "auto" }}
           selectable={true}
           data={filteredAgreement} // Usamos los convenios que vienen del hook
-          columns={columnsAgreement}
+          columns={columnsWithActions}
           onSelectionChange={handleSelected}
         />
         <div style={{ alignSelf: 'center', marginTop: '20px' }}>
@@ -165,14 +202,60 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar }) => {
           <UserForm
             title="Crear Convenio"
             fields={[
-              { name: "nombre", placeholder: "Nombre", type: "text", required: true },
+              { name: "nombre", placeholder: "Nombre", type: "text", required: true , defaultValue: dataAgreement.nombre || "",
+              },
               { name: "nit", placeholder: "NIT", type: "number", required: true },
               { name: "telefono", placeholder: "Teléfono", type: "tel", required: true },
             ]}
             onCancel={closeForm}
             onSubmit={handlecreate}
           />
-        )}
+        )};
+          {activeEdit && (
+            <UserForm
+              title="Actualizar Convenio"
+              fields={[
+                {
+                  name: "nombre",
+                  placeholder: "Nombre",
+                  type: "text",
+                  required: true,
+                  defaultValue: dataAgreement.nombre || "",
+                },
+                {
+                  name: "nit",
+                  placeholder: "NIT",
+                  type: "text", // Usa "text" si el NIT tiene puntos o guiones
+                  required: true,
+                  defaultValue: dataAgreement.nit || "",
+                },
+                {
+                  name: "telefono",
+                  placeholder: "Teléfono",
+                  type: "tel",
+                  required: true,
+                  defaultValue: dataAgreement.telefono || "",
+                },
+                {
+
+                  name: "estado",
+                  placeholder: "Estado",
+                  type: "select",
+                  defaultValue: dataAgreement.estado,
+                  options: [
+                    { value: "AC", label: "Activo" },
+                    { value: "IN", label: "Inactivo" },
+                  ],
+                  required: true,
+              }
+              ]}
+              onCancel={closeEdit}
+              onSubmit={updateAgreement} // <-- asegúrate de usar una función de actualización distinta
+            />
+          )}
+
+
+
       </FormContainer>
     </ModalContainer>
   );

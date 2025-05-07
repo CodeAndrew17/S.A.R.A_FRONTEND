@@ -20,6 +20,14 @@ const addAgreement =async(newEmployeeData)=>{
         throw error;
     }
 };
+const editAgreement = async (id, updateData) => {
+    try{
+        return await axiosWithAuth(`/api/convenio/patch/${id}/`, "PATCH", updateData);
+    } catch (error) {
+        console.error("error al editar Convenios", error);
+        throw error;
+    }
+};
 
 const deleteAgreement= async(id)=>{ 
     try{
@@ -72,4 +80,4 @@ const editBranches = async (id, newBranchData) => {
 
 
 
-export {getAgreement,addAgreement, deleteAgreement, getBranches, addBranches, deleteBranches, editBranches};
+export {getAgreement,addAgreement, deleteAgreement, getBranches, addBranches, deleteBranches, editBranches,editAgreement};

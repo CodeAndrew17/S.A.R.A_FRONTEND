@@ -45,19 +45,13 @@ const FormContainer = styled.div`
   padding: 20px;
   border: 3px solid #07f53d;
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
   margin: 0 auto;
 
   @media (max-width: 480px) {
     padding: 10px;
   }
 `;
-
-const CustomButtonContainer = styled.div `
-  margin-left: 35px; 
-`;
-
-
 
 const Sucursales = () => {
   const [activeForm, setActiveForm] = useState(null);
@@ -69,6 +63,8 @@ const Sucursales = () => {
   const [activeCon, setActiveCon] = useState(null);
   const [selectedConvenios, setSelectedConvenios] = useState([]);
   const [sucursalesConvenios, setSucursalesConvenios] = useState([]);
+  const [filteredSucursales, setFilteredSucursales] = useState([]); //estado para el filtro de las sucursales filtradas 
+  const [searchInput, setSearchInput] = useState("");
 
   //effect para cargar las sucursales relacionadas con sus convenios al renderizar el componente 
   useEffect(() => {
@@ -94,6 +90,7 @@ const Sucursales = () => {
   
         // actualizamos todos los estados 
         setSucursalesConvenios(sucursalesConNombreConvenio);
+        setFilteredSucursales(sucursalesConNombreConvenio); //guardamos las sucursales filtradas
         setConvenios(sucursalesConNombreConvenio);
         setConveniosOptions(convenios); // usamos los convenios anteriormente cargados para mostrarlos en el dropdown
   
@@ -167,7 +164,7 @@ const Sucursales = () => {
 
 
   const handleDelete = async () => {
-    const result = await handleDeleteBranches(selectedConvenios);
+    const result = await handleDeleteBranches(selectedConvenios, setConvenios, setSucursalesConvenios);
 
     if (result.succes) {
 
@@ -180,6 +177,37 @@ const Sucursales = () => {
   const handleGestionCancelar = () => {
     setActiveCon(false);
   };
+
+  // Esta función ya tiene acceso a tus estados
+  const handleSearch = (search) => {
+    setSearchInput(search); // 🔥 importante para saber si hay texto buscado
+  
+    if (!search.trim()) {
+      setFilteredSucursales([]);
+      return;
+    }
+  
+    const sanitizedSearch = search.trim().toLowerCase();
+  
+    const filtered = sucursalesConvenios.filter((sucursal) => {
+      const ciudadMatch = sucursal.ciudad?.toLowerCase().includes(sanitizedSearch);
+      const nombreMatch = sucursal.nombre?.toLowerCase().includes(sanitizedSearch);
+      const direccionMatch = sucursal.direccion?.toLowerCase().includes(sanitizedSearch);
+      const convenioMatch = sucursal.convenio?.toLowerCase().includes(sanitizedSearch);
+  
+      return ciudadMatch || nombreMatch || direccionMatch || convenioMatch;
+    });
+  
+    setFilteredSucursales(filtered);
+  };
+
+  const dataToShow = filteredSucursales.length > 0 || searchInput.trim()
+  ? filteredSucursales
+  : sucursalesConvenios;
+
+  
+
+
   return (
     <div>
       <Sidebar />
@@ -197,7 +225,7 @@ const Sucursales = () => {
         onActiveButton= {true}
         >
         <Toolbar.Search placeholder="Buscar..." 
-        //onSearch={handleSearch} prop para recibir la funcion a ejecutar del search tambien pueden manejar el width
+        onSearch={handleSearch} 
         />
         <Toolbar.Dropdown 
           options={["Todos", "Activos"]} // manjean las choices desde aca 
@@ -213,7 +241,7 @@ const Sucursales = () => {
       ) : (
       <div style={{ fontSize: "13px" }}>
         <Table
-          data={sucursalesConvenios}
+          data={dataToShow}
           columns={columnsBranches}
           selectable={true}
           onSelectionChange={handleSelectionChange} //! Aquie envia los Datos selecionados 

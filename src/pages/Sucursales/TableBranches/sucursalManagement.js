@@ -36,19 +36,31 @@ const handleSucursalSubmit = async (newData, setConvenios, setActiveForm, setSuc
   
   
 
-//funcion para actualizar los datos de la tabla brnaches (no esta lista)
-const refreshData = async (setConvenios) => {
+//funcion para actualizar los datos de la tabla brnaches 
+const refreshData = async (setConvenios, setSucursalesConvenios) => {
     try {
-        const updateData = await getBranches();
-        setConvenios(updateData);
-        return updateData;
+      const sucursales = await getBranches();
+      const convenios = await getAgreement();
+  
+      const sucursalesConConvenios = sucursales.map(sucursal => {
+        const convenio = convenios.find(c => c.id === sucursal.convenio);
+        return {
+          ...sucursal,
+          convenio: convenio ? convenio.nombre : "Sin convenio"
+        };
+      });
+  
+      setConvenios(convenios);
+      setSucursalesConvenios(sucursalesConConvenios);
+      return sucursalesConConvenios;
+  
     } catch (error) {
-        console.error("Error al actualizar los datos: ", error);
-        throw error;
+      console.error("Error al actualizar los datos: ", error);
+      throw error;
     }
-}; 
+  };
 
-const handleDeleteBranches = async (selectedIDs, setConvenios) => {
+const handleDeleteBranches = async (selectedIDs, setConvenios, setSucursalesConvenios) => {
     if (selectedIDs.length === 0) { //existen los seleccionados?
         await Swal.fire({
             icon: 'warning',
@@ -87,7 +99,7 @@ const handleDeleteBranches = async (selectedIDs, setConvenios) => {
         const successfulDeletes = results.filter(r => r.success);
         
         // Actualización condicional
-        await refreshData(setConvenios);
+        await refreshData(setConvenios, setSucursalesConvenios);
 
         await Swal.fire({
             icon: 'success',
@@ -112,4 +124,5 @@ const handleDeleteBranches = async (selectedIDs, setConvenios) => {
 };
 
 
-export {handleSucursalSubmit, handleDeleteBranches};
+
+export {handleSucursalSubmit, handleDeleteBranches };
