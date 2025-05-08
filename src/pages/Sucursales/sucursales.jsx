@@ -36,23 +36,6 @@ const TitleText = styled.h1`
 `;
 
 
-
-const FormContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 20px;
-  border: 3px solid #07f53d;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-
-  @media (max-width: 480px) {
-    padding: 10px;
-  }
-`;
-
 const Sucursales = () => {
   const [activeForm, setActiveForm] = useState(null);
   const [convenios, setConvenios] = useState([]); // Sucursales
@@ -251,7 +234,7 @@ const Sucursales = () => {
       )}
 
       {activeForm === "sucursal" && (
-        <FormContainer>
+        
           <UserForm
             title="Crear Nueva Sucursal"
             fields={[
@@ -259,16 +242,6 @@ const Sucursales = () => {
               { name: "ciudad", placeholder: "Ciudad", type: "text" },
               { name: "direccion", placeholder: "Dirección", type: "text" },
               { name: "telefono", placeholder: "Teléfono", type: "tel" },
-              { 
-                name: "estado",
-                type: "select",
-                options: [
-                {value: "AC", label:"Activo"},
-                {value: "IN", label:"Inactivo"}
-                ],
-                defaultValue: "AC",
-                placeholder: "Estado",
-              },
               { 
                 name: "convenio",
                 type: "select",
@@ -281,7 +254,6 @@ const Sucursales = () => {
             onSubmit={handleFormSubmit}
             onCancel={handleCancelForm}
           />
-        </FormContainer>
       )}
         {activeCon && (  
 
@@ -289,12 +261,7 @@ const Sucursales = () => {
           onCerrar={handleGestionCancelar}
           />
         )}
-        <center><Button onClick={() => { //! prueba De Funcionacion de traer datos 
-            const datosSeleccionados = convenios.filter(c => selectedConvenios.includes(c.id));
-            console.log("Datos seleccionados:", datosSeleccionados);
-          }}>
-            Imprimir seleccionados
-        </Button></center>
+
     </div>
     
   );

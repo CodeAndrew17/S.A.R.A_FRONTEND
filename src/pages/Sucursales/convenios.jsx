@@ -6,8 +6,6 @@ import UserForm from "../../components/userForm";
 import React, { useState, useEffect, useRef } from "react";
 import CustomButton from "../../components/button";
 import { Edit } from "lucide-react";
-
-//!importacion de Funciona CRUD de Convenios 
 import useAgreementManagement from "./TableAgreement/convenioManagement";
 
 
@@ -16,7 +14,6 @@ const TitleWrapper = styled.div`
   margin-bottom: 0px;
 `;
 
-
 const TitleText = styled.h1`
   color: #000;
   font-size: 20px;
@@ -24,7 +21,6 @@ const TitleText = styled.h1`
   padding: 0;
   text-align: left;
 `;
-
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -39,11 +35,11 @@ const ModalContainer = styled.div`
   z-index: 1000;
 `;
 
-const FormContainer = styled.div`
+const ContainerAgreement = styled.div`
   padding: 30px;
   background-color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 5px;
   width: 80%;
   max-height: 90vh;
   overflow-y: auto;
@@ -91,13 +87,11 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
     fetchAgreementData(); 
   }, []); 
 
+   // ! Funciones para la Activacion de Formularios 
   const handleForm = () => setActiveForm(true); 
   const closeForm = () => setActiveForm(false); 
-  const handleEdit =()=> setActiveEdit(true)
-  const closeEdit =() =>setActiveEdit(false)
-
-  
-
+  const handleEdit = () => setActiveEdit(true);
+  const closeEdit = () => setActiveEdit(false);
 
   // * Crear un convenio
   const handlecreate = (form) => {
@@ -105,26 +99,34 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
       closeForm(); 
     }
   };
+  
+  const update = (form) => {
+    if (updateAgreement(form)) {
+      closeEdit(); 
+    }
+  };
+  
+  const handleDelete = async () => {
+    const success = await removeAgreement(selected);
+    if (success) {
+      setSelected([]);
+      fetchAgreementData();
+    }
+  };
+  
 
   // Gestionar selección de convenios
   const handleSelected = (ids) => {
     setSelected(ids);
   };
 
-  // Eliminar convenios seleccionados
-  const handleDelete = async () => {
-    const success = await removeAgreement(selected);
-    if (success) {
-      setSelected([]); // Limpia la selección
-      fetchAgreementData(); // Refresca la lista de convenios después de eliminar
-    }
-  };
 
   const handleEditAgreement =(record)=>{
     handleEdit();
+  
     setDataAgreement(record)
-    console.log(record)
   }
+
   //Reescribe el ultimo campo de las clumnas 
   const columnsWithActions = columnsAgreement.map(col =>
     col.key === "actions"
@@ -148,7 +150,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
 
   return (
     <ModalContainer>
-      <FormContainer ref={modalRef}>
+      <ContainerAgreement ref={modalRef}>
       <TitleWrapper>
         <TitleText>{title}</TitleText>
       </TitleWrapper>
@@ -179,7 +181,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
         {/* Mostrar tabla con los convenios */}
 
         <Table
-          containerStyle={{ margin: "5px 10px 5px 5px", width: "98%", overflow: "auto" }}
+          containerStyle={{ margin: "5px 10px 5px 5px", width: "98%", overflow: "auto" ,  borderRadius: "0px"}}
           selectable={true}
           data={filteredAgreement} // Usamos los convenios que vienen del hook
           columns={columnsWithActions}
@@ -202,8 +204,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
           <UserForm
             title="Crear Convenio"
             fields={[
-              { name: "nombre", placeholder: "Nombre", type: "text", required: true , defaultValue: dataAgreement.nombre || "",
-              },
+              { name: "nombre", placeholder: "Nombre", type: "text", required: true},
               { name: "nit", placeholder: "NIT", type: "number", required: true },
               { name: "telefono", placeholder: "Teléfono", type: "tel", required: true },
             ]}
@@ -250,13 +251,10 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
               }
               ]}
               onCancel={closeEdit}
-              onSubmit={updateAgreement} // <-- asegúrate de usar una función de actualización distinta
+              onSubmit={update} 
             />
           )}
-
-
-
-      </FormContainer>
+      </ContainerAgreement>
     </ModalContainer>
   );
 };

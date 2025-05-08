@@ -163,14 +163,15 @@ const useAgreementManagement = () => {
   
   const updateAgreement = async (formData) => {
     try {
+      const agreement = agreements.find(a => a.nit === formData.nit);
       const telefono = parseInt(formData.telefono, 10);
 
       if (isNaN(telefono)) {
         throw new Error("El teléfono no es válido.");
       }
-      console.log(formData)
+      console.log(agreement.id)
       const dataToSend = { ...formData, telefono };
-      const agreementNew = await editAgreement(dataToSend.id,dataToSend);
+      const agreementNew = await editAgreement(agreement.id,dataToSend);
 
       if (agreementNew) {
         Swal.fire({
