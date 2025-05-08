@@ -37,7 +37,7 @@ const useAgreementManagement = () => {
       const nombreMatch = con.nombre?.toLowerCase()?.includes(sanitizedSearch);
       const estadoMatch = con.estado?.toLowerCase()?.includes(sanitizedSearch)
       
-      return nitMatch || nombreMatch;
+      return nitMatch || nombreMatch || estadoMatch;
     });
   
     setFilteredAgreement(filtered);

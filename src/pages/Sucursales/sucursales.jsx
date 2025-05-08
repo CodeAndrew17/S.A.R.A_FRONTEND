@@ -36,6 +36,7 @@ const TitleText = styled.h1`
 `;
 
 
+
 const Sucursales = () => {
   const [activeForm, setActiveForm] = useState(null);
   const [convenios, setConvenios] = useState([]); // Sucursales
@@ -107,27 +108,19 @@ const Sucursales = () => {
   const handleFormSubmit = async (newData) => {
     if (activeForm === "sucursal") {
       try {
-        // Crear la nueva sucursal
-        await handleSucursalSubmit(newData, setConvenios, setActiveForm, setSucursalesConvenios); // Añadir setSucursalesConvenios
-    
-        // Traer las sucursales y convenios actualizados
-        const sucursales = await getBranches();
-        const convenios = await getAgreement();
-    
-        // Relacionamos las sucursales con sus convenios
-        const sucursalesConConvenios = sucursales.map(sucursal => {
-          const convenio = convenios.find(c => c.id === sucursal.convenio);
-          return {
-            ...sucursal,
-            convenio: convenio ? convenio.nombre : "Sin convenio" // Relacionamos por nombre
-          };
-        });
-    
-        // Actualizamos el estado de las sucursales y los convenios
-        setSucursalesConvenios(sucursalesConConvenios);
-        setConvenios(convenios); // Si es necesario también actualizar los convenios
+        setLoading(true);
+        const result = await handleSucursalSubmit(newData, setConvenios, setActiveForm, setSucursalesConvenios);
+        
+        if (result && result.sucursales) {
+          // Actualiza todos los estados necesarios
+          setSucursalesConvenios(result.sucursales);
+          setFilteredSucursales(result.sucursales);
+          setConveniosOptions(result.conveniosOptions);
+        }
       } catch (error) {
         console.error("Error al crear la sucursal:", error);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -147,10 +140,21 @@ const Sucursales = () => {
 
 
   const handleDelete = async () => {
-    const result = await handleDeleteBranches(selectedConvenios, setConvenios, setSucursalesConvenios);
-
-    if (result.succes) {
-
+    try {
+      setLoading(true);
+      const result = await handleDeleteBranches(selectedConvenios, setConvenios, setSucursalesConvenios);
+      
+      if (result && result.sucursales) {
+        // Actualiza todos los estados necesarios
+        setSucursalesConvenios(result.sucursales);
+        setFilteredSucursales(result.sucursales);
+        setConveniosOptions(result.conveniosOptions);
+        setSelectedConvenios([]); // Limpiar selección
+      }
+    } catch (error) {
+      console.error("Error eliminando sucursales:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -163,7 +167,7 @@ const Sucursales = () => {
 
   // Esta función ya tiene acceso a tus estados
   const handleSearch = (search) => {
-    setSearchInput(search); // 🔥 importante para saber si hay texto buscado
+    setSearchInput(search); //  importante para saber si hay texto buscado
   
     if (!search.trim()) {
       setFilteredSucursales([]);
@@ -177,18 +181,26 @@ const Sucursales = () => {
       const nombreMatch = sucursal.nombre?.toLowerCase().includes(sanitizedSearch);
       const direccionMatch = sucursal.direccion?.toLowerCase().includes(sanitizedSearch);
       const convenioMatch = sucursal.convenio?.toLowerCase().includes(sanitizedSearch);
+
+      const estadoTexto = sucursal.estado === "AC" ? "activo" :
+      sucursal.estado === "IN" ? "inactivo" : "";
+
+      const estadoMatch = estadoTexto.includes(sanitizedSearch);
+
   
-      return ciudadMatch || nombreMatch || direccionMatch || convenioMatch;
+      return ciudadMatch || nombreMatch || direccionMatch || convenioMatch || estadoMatch;
     });
   
     setFilteredSucursales(filtered);
   };
 
-  const dataToShow = filteredSucursales.length > 0 || searchInput.trim()
+  const dataToShow = searchInput.trim()
   ? filteredSucursales
   : sucursalesConvenios;
 
-  
+
+
+
 
 
   return (
@@ -211,8 +223,12 @@ const Sucursales = () => {
         onSearch={handleSearch} 
         />
         <Toolbar.Dropdown 
-          options={["Todos", "Activos"]} // manjean las choices desde aca 
-          onSelect={(opt) => console.log(opt)} // funcion a ajecutar dependiendo del select
+          options={{
+            "activo": "Activo", 
+            "inactivo": "Inactivo",
+            "": "Todos"
+          }}
+          onSelect={handleSearch}
         />
 
       </Toolbar>
@@ -234,7 +250,7 @@ const Sucursales = () => {
       )}
 
       {activeForm === "sucursal" && (
-        
+
           <UserForm
             title="Crear Nueva Sucursal"
             fields={[
@@ -261,7 +277,12 @@ const Sucursales = () => {
           onCerrar={handleGestionCancelar}
           />
         )}
-
+        <center><Button onClick={() => { //! prueba De Funcionacion de traer datos 
+            const datosSeleccionados = convenios.filter(c => selectedConvenios.includes(c.id));
+            console.log("Datos seleccionados:", datosSeleccionados);
+          }}>
+            Imprimir seleccionados
+        </Button></center>
     </div>
     
   );
