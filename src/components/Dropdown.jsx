@@ -71,9 +71,7 @@ function Dropdown({
   const [selectedLabel, setSelectedLabel] = useState(defaultOption);
   const dropdownRef = useRef(null);
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -116,7 +114,6 @@ function Dropdown({
       )}
     </DropdownContainer>
   );
-}
+};
 
 export default Dropdown;
-

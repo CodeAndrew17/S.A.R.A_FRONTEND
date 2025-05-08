@@ -58,8 +58,9 @@ const getUsers = async () => {
 
 const addUsers = async (UserData) => {
     try{
-        return await axiosWithAuth("/api/usuario/post/", "POST", UserData);
+        return await axiosWithAuth("/access/api/createuser/post", "POST", UserData);
     } catch (error){
+        console.log(error)
         console.error("error al asignar usuario", error);
         throw error; 
     }

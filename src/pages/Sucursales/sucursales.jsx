@@ -37,22 +37,6 @@ const TitleText = styled.h1`
 
 
 
-const FormContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 20px;
-  border: 3px solid #07f53d;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-
-  @media (max-width: 480px) {
-    padding: 10px;
-  }
-`;
-
 const Sucursales = () => {
   const [activeForm, setActiveForm] = useState(null);
   const [convenios, setConvenios] = useState([]); // Sucursales
@@ -63,6 +47,8 @@ const Sucursales = () => {
   const [activeCon, setActiveCon] = useState(null);
   const [selectedConvenios, setSelectedConvenios] = useState([]);
   const [sucursalesConvenios, setSucursalesConvenios] = useState([]);
+  const [filteredSucursales, setFilteredSucursales] = useState([]); //estado para el filtro de las sucursales filtradas 
+  const [searchInput, setSearchInput] = useState("");
 
   //effect para cargar las sucursales relacionadas con sus convenios al renderizar el componente 
   useEffect(() => {
@@ -88,6 +74,7 @@ const Sucursales = () => {
   
         // actualizamos todos los estados 
         setSucursalesConvenios(sucursalesConNombreConvenio);
+        setFilteredSucursales(sucursalesConNombreConvenio); //guardamos las sucursales filtradas
         setConvenios(sucursalesConNombreConvenio);
         setConveniosOptions(convenios); // usamos los convenios anteriormente cargados para mostrarlos en el dropdown
   
@@ -121,27 +108,19 @@ const Sucursales = () => {
   const handleFormSubmit = async (newData) => {
     if (activeForm === "sucursal") {
       try {
-        // Crear la nueva sucursal
-        await handleSucursalSubmit(newData, setConvenios, setActiveForm, setSucursalesConvenios); // Añadir setSucursalesConvenios
-    
-        // Traer las sucursales y convenios actualizados
-        const sucursales = await getBranches();
-        const convenios = await getAgreement();
-    
-        // Relacionamos las sucursales con sus convenios
-        const sucursalesConConvenios = sucursales.map(sucursal => {
-          const convenio = convenios.find(c => c.id === sucursal.convenio);
-          return {
-            ...sucursal,
-            convenio: convenio ? convenio.nombre : "Sin convenio" // Relacionamos por nombre
-          };
-        });
-    
-        // Actualizamos el estado de las sucursales y los convenios
-        setSucursalesConvenios(sucursalesConConvenios);
-        setConvenios(convenios); // Si es necesario también actualizar los convenios
+        setLoading(true);
+        const result = await handleSucursalSubmit(newData, setConvenios, setActiveForm, setSucursalesConvenios);
+        
+        if (result && result.sucursales) {
+          // Actualiza todos los estados necesarios
+          setSucursalesConvenios(result.sucursales);
+          setFilteredSucursales(result.sucursales);
+          setConveniosOptions(result.conveniosOptions);
+        }
       } catch (error) {
         console.error("Error al crear la sucursal:", error);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -161,10 +140,21 @@ const Sucursales = () => {
 
 
   const handleDelete = async () => {
-    const result = await handleDeleteBranches(selectedConvenios);
-
-    if (result.succes) {
-
+    try {
+      setLoading(true);
+      const result = await handleDeleteBranches(selectedConvenios, setConvenios, setSucursalesConvenios);
+      
+      if (result && result.sucursales) {
+        // Actualiza todos los estados necesarios
+        setSucursalesConvenios(result.sucursales);
+        setFilteredSucursales(result.sucursales);
+        setConveniosOptions(result.conveniosOptions);
+        setSelectedConvenios([]); // Limpiar selección
+      }
+    } catch (error) {
+      console.error("Error eliminando sucursales:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -174,6 +164,45 @@ const Sucursales = () => {
   const handleGestionCancelar = () => {
     setActiveCon(false);
   };
+
+  // Esta función ya tiene acceso a tus estados
+  const handleSearch = (search) => {
+    setSearchInput(search); //  importante para saber si hay texto buscado
+  
+    if (!search.trim()) {
+      setFilteredSucursales([]);
+      return;
+    }
+  
+    const sanitizedSearch = search.trim().toLowerCase();
+  
+    const filtered = sucursalesConvenios.filter((sucursal) => {
+      const ciudadMatch = sucursal.ciudad?.toLowerCase().includes(sanitizedSearch);
+      const nombreMatch = sucursal.nombre?.toLowerCase().includes(sanitizedSearch);
+      const direccionMatch = sucursal.direccion?.toLowerCase().includes(sanitizedSearch);
+      const convenioMatch = sucursal.convenio?.toLowerCase().includes(sanitizedSearch);
+
+      const estadoTexto = sucursal.estado === "AC" ? "activo" :
+      sucursal.estado === "IN" ? "inactivo" : "";
+
+      const estadoMatch = estadoTexto.includes(sanitizedSearch);
+
+  
+      return ciudadMatch || nombreMatch || direccionMatch || convenioMatch || estadoMatch;
+    });
+  
+    setFilteredSucursales(filtered);
+  };
+
+  const dataToShow = searchInput.trim()
+  ? filteredSucursales
+  : sucursalesConvenios;
+
+
+
+
+
+
   return (
     <div>
       <Sidebar />
@@ -191,11 +220,15 @@ const Sucursales = () => {
         onActiveButton= {true}
         >
         <Toolbar.Search placeholder="Buscar..." 
-        //onSearch={handleSearch} prop para recibir la funcion a ejecutar del search tambien pueden manejar el width
+        onSearch={handleSearch} 
         />
         <Toolbar.Dropdown 
-          options={["Todos", "Activos"]} // manjean las choices desde aca 
-          onSelect={(opt) => console.log(opt)} // funcion a ajecutar dependiendo del select
+          options={{
+            "activo": "Activo", 
+            "inactivo": "Inactivo",
+            "": "Todos"
+          }}
+          onSelect={handleSearch}
         />
 
       </Toolbar>
@@ -207,7 +240,7 @@ const Sucursales = () => {
       ) : (
       <div style={{ fontSize: "13px" }}>
         <Table
-          data={sucursalesConvenios}
+          data={dataToShow}
           columns={columnsBranches}
           selectable={true}
           onSelectionChange={handleSelectionChange} //! Aquie envia los Datos selecionados 
@@ -217,7 +250,7 @@ const Sucursales = () => {
       )}
 
       {activeForm === "sucursal" && (
-        <FormContainer>
+
           <UserForm
             title="Crear Nueva Sucursal"
             fields={[
@@ -225,16 +258,6 @@ const Sucursales = () => {
               { name: "ciudad", placeholder: "Ciudad", type: "text" },
               { name: "direccion", placeholder: "Dirección", type: "text" },
               { name: "telefono", placeholder: "Teléfono", type: "tel" },
-              { 
-                name: "estado",
-                type: "select",
-                options: [
-                {value: "AC", label:"Activo"},
-                {value: "IN", label:"Inactivo"}
-                ],
-                defaultValue: "AC",
-                placeholder: "Estado",
-              },
               { 
                 name: "convenio",
                 type: "select",
@@ -247,7 +270,6 @@ const Sucursales = () => {
             onSubmit={handleFormSubmit}
             onCancel={handleCancelForm}
           />
-        </FormContainer>
       )}
         {activeCon && (  
 

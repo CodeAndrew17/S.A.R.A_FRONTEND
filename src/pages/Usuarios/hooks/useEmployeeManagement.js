@@ -50,8 +50,11 @@
                 setFilteredEmployees(employees); 
                 return;
             }
+          
+            
         
             const sanitizedSearch = search.trim().toLowerCase(); 
+        
         
             const filtered = employees.filter((emp) => {
                 const cedulaMatch = emp.cedula?.toString().includes(sanitizedSearch);
@@ -64,8 +67,6 @@
         
             setFilteredEmployees(filtered); 
         };
-        
-
         
         const handleEliminar = async () => {
             if (selectedEmployees.length === 0) {

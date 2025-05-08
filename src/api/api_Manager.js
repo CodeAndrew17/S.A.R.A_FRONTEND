@@ -14,8 +14,7 @@ const login = async (usuario, password) => {
         sessionStorage.setItem('refresh',refresh);
 
         return response.data;  
-    } catch (error) {
-        // Manejo de errores: Si la respuesta contiene error, lo mostramos
+    }catch (error) {
         if (error.response) {
             const { status, data } = error.response;
             //Lista para los errores
@@ -35,7 +34,7 @@ const login = async (usuario, password) => {
 
         } else {
             
-            throw new Error("Error al configurar la petición.");
+            throw new Error('Error de conexión');
         }
     }
 };

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { getAgreement, addAgreement, deleteAgreement, getBranches } from "../../../api/api_Convenios";
+import { getAgreement, addAgreement, deleteAgreement, getBranches ,editAgreement} from "../../../api/api_Convenios";
 import Swal from "sweetalert2";
 import { Search } from "lucide-react";
 
@@ -35,8 +35,9 @@ const useAgreementManagement = () => {
     const filtered = agreements.filter((con) => {
       const nitMatch = con.nit?.toString().toLowerCase().includes(sanitizedSearch);
       const nombreMatch = con.nombre?.toLowerCase()?.includes(sanitizedSearch);
+      const estadoMatch = con.estado?.toLowerCase()?.includes(sanitizedSearch)
       
-      return nitMatch || nombreMatch;
+      return nitMatch || nombreMatch || estadoMatch;
     });
   
     setFilteredAgreement(filtered);
@@ -68,8 +69,8 @@ const useAgreementManagement = () => {
   
   */ 
 
-  // Crear un convenio
-  const createAgreement = async (formData) => {
+
+    const createAgreement = async (formData) => {
     try {
       const telefono = parseInt(formData.telefono, 10);
 
@@ -99,6 +100,8 @@ const useAgreementManagement = () => {
       });
     }
   };
+
+
 
   // Eliminar convenios
   const removeAgreement = async (ids) => {
@@ -158,6 +161,39 @@ const useAgreementManagement = () => {
     }
   };
 
+  
+  const updateAgreement = async (formData) => {
+    try {
+      const agreement = agreements.find(a => a.nit === formData.nit);
+      const telefono = parseInt(formData.telefono, 10);
+
+      if (isNaN(telefono)) {
+        throw new Error("El teléfono no es válido.");
+      }
+      console.log(agreement.id)
+      const dataToSend = { ...formData, telefono };
+      const agreementNew = await editAgreement(agreement.id,dataToSend);
+
+      if (agreementNew) {
+        Swal.fire({
+          title: "Éxito",
+          text: "El convenio se ha creado correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        fetchAgreementData();
+      }
+    } catch (error) {
+      console.error("Error al crear el convenio:", error);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo crear el convenio. Verifica los datos ingresados.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
+
   return {
     agreements,
     loading,
@@ -166,6 +202,7 @@ const useAgreementManagement = () => {
     createAgreement,
     removeAgreement,
     ConsultSearch,
+    updateAgreement,
   };
 };
 
