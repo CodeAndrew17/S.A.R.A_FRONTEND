@@ -123,6 +123,16 @@ const handleDeleteBranches = async (selectedIDs, setConvenios, setSucursalesConv
     }
 };
 
+const handleUpdateBranches = async (id, newData) => {
+    try {
+        const response = await editBranches(id, newData); // Llamada a la API para editar la sucursal
+        console.log("Respuesta del backend", response.data);  
+        return response;
+    } catch (error) {
+        console.error("Error al editar sucursal:", error);
+        throw error;
+    }
+}
 
 
-export {handleSucursalSubmit, handleDeleteBranches };
+export {handleSucursalSubmit, handleDeleteBranches ,handleUpdateBranches};
