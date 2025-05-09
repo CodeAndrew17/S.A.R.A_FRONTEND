@@ -66,14 +66,11 @@ const ContainerAgreement = styled.div`
 const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = false, data = null }) => {
   const [activeForm, setActiveForm] = useState(false); // Para mostrar el formulario
   const [selected, setSelected] = useState([]); // Para los convenios seleccionados
-  const [activeEdit, setActiveEdit] =  useState(false)
-  const [dataAgreement, setDataAgreement] = useState([])
+  const [editinAgreement, setEditinAgreement] =  useState(null) //Datos para editar 
   const modalRef = useRef(null); // Referencia al modal
 
 
   const {
-    agreements, // Los convenios
-    loading, // Estado de carga
     filteredAgreement,// Datos con Filtro
     fetchAgreementData, // Funcion para cargar los convenios
     createAgreement, // Funcion para crear un convenio
@@ -88,24 +85,32 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
   }, []); 
 
    // ! Funciones para la Activacion de Formularios 
-  const handleForm = () => setActiveForm(true); 
-  const closeForm = () => setActiveForm(false); 
-  const handleEdit = () => setActiveEdit(true);
-  const closeEdit = () => setActiveEdit(false);
+  const handleCancelForm = () => {
+    setActiveForm(null);
+    setEditinAgreement(null);
+  };
 
-  // * Crear un convenio
-  const handlecreate = (form) => {
-    if (createAgreement(form)) {
-      closeForm(); 
+  const handleCreateAgreement=()=>{
+    setActiveForm('convenio')
+    setEditinAgreement(null)
+  }
+  const handleFormSubmit= async(newData)=>{
+    try{
+      if(editinAgreement){
+        await updateAgreement( newData)
+      }else{
+        await createAgreement(newData);
+
+      }
+      setEditinAgreement(null)
+      setActiveForm(null)
     }
-  };
-  
-  const update = (form) => {
-    if (updateAgreement(form)) {
-      closeEdit(); 
+    catch (erro){
+      console.log(erro)
+      
     }
-  };
-  
+  }
+
   const handleDelete = async () => {
     const success = await removeAgreement(selected);
     if (success) {
@@ -119,35 +124,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
   const handleSelected = (ids) => {
     setSelected(ids);
   };
-
-
-  const handleEditAgreement =(record)=>{
-    handleEdit();
   
-    setDataAgreement(record)
-  }
-
-  //Reescribe el ultimo campo de las clumnas 
-  const columnsWithActions = columnsAgreement.map(col =>
-    col.key === "actions"
-      ? {
-          ...col,
-          render: (_, record) => (
-            <CustomButton
-              bgColor="#5FB8D6"
-              hoverColor="#519CB2"
-              width="100px"
-              height="30px"
-              onClick={() => handleEditAgreement(record)}
-              icon={Edit}
-            >
-              Editar
-            </CustomButton>
-          ),
-        }
-      : col
-  );
-
   return (
     <ModalContainer>
       <ContainerAgreement ref={modalRef}>
@@ -157,7 +134,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
 
         <Toolbar
         
-          onCreate={handleForm}
+          onCreate={handleCreateAgreement}
           onActiveButton={false}
           onDelete={handleDelete}
           style={{ margin: "3px solid #07f53d" }}
@@ -184,7 +161,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
           containerStyle={{ margin: "5px 10px 5px 5px", width: "98%", overflow: "auto" ,  borderRadius: "0px"}}
           selectable={true}
           data={filteredAgreement} // Usamos los convenios que vienen del hook
-          columns={columnsWithActions}
+          columns={columnsAgreement({setEditinAgreement,setActiveForm})}
           onSelectionChange={handleSelected}
         />
         <div style={{ alignSelf: 'center', marginTop: '20px' }}>
@@ -200,60 +177,29 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
 
 
         {/* Mostrar el formulario si es necesario */}
-        {activeForm && (
+        {activeForm === 'convenio'&& (
           <UserForm
-            title="Crear Convenio"
+            title={editinAgreement? 'Editar Convenio':'Crear Convenio'}
             fields={[
               { name: "nombre", placeholder: "Nombre", type: "text", required: true},
-              { name: "nit", placeholder: "NIT", type: "number", required: true },
+              { name: "nit", placeholder: "NIT", type: "text", required: true },
               { name: "telefono", placeholder: "Teléfono", type: "tel", required: true },
+              { 
+                name: "estado",
+                type: "select",
+                options: [
+                  {value: "AC", label:"Activo"},
+                  {value: "IN", label:"Inactivo"}
+                ],
+                defaultValue: "AC",
+                placeholder: "Estado",
+              },
             ]}
-            onCancel={closeForm}
-            onSubmit={handlecreate}
+            initialValues={editinAgreement}
+            onCancel={handleCancelForm}
+            onSubmit={handleFormSubmit}
           />
         )};
-          {activeEdit && (
-            <UserForm
-              title="Actualizar Convenio"
-              fields={[
-                {
-                  name: "nombre",
-                  placeholder: "Nombre",
-                  type: "text",
-                  required: true,
-                  defaultValue: dataAgreement.nombre || "",
-                },
-                {
-                  name: "nit",
-                  placeholder: "NIT",
-                  type: "text", // Usa "text" si el NIT tiene puntos o guiones
-                  required: true,
-                  defaultValue: dataAgreement.nit || "",
-                },
-                {
-                  name: "telefono",
-                  placeholder: "Teléfono",
-                  type: "tel",
-                  required: true,
-                  defaultValue: dataAgreement.telefono || "",
-                },
-                {
-
-                  name: "estado",
-                  placeholder: "Estado",
-                  type: "select",
-                  defaultValue: dataAgreement.estado,
-                  options: [
-                    { value: "AC", label: "Activo" },
-                    { value: "IN", label: "Inactivo" },
-                  ],
-                  required: true,
-              }
-              ]}
-              onCancel={closeEdit}
-              onSubmit={update} 
-            />
-          )}
       </ContainerAgreement>
     </ModalContainer>
   );

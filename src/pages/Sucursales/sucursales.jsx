@@ -35,21 +35,6 @@ const TitleText = styled.h1`
   top: 10px;  
 `;
 
-const FormContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 20px;
-  border: 3px solid #07f53d;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-
-  @media (max-width: 480px) {
-    padding: 10px;
-  }
-`;
 
 const Sucursales = () => {
   const [activeForm, setActiveForm] = useState(null);
@@ -269,7 +254,6 @@ const Sucursales = () => {
       )}
 
       {activeForm === "sucursal" && (
-        <FormContainer>
           <UserForm
             title={editingBranch ? "Editar Sucursal" : "Crear Nueva Sucursal"}
             fields={[
@@ -299,7 +283,6 @@ const Sucursales = () => {
             onSubmit={handleFormSubmit}
             onCancel={handleCancelForm}
           />
-        </FormContainer>
       )}
 
       {activeCon && (

@@ -70,7 +70,8 @@ const useAgreementManagement = () => {
   */ 
 
 
-    const createAgreement = async (formData) => {
+  const createAgreement = async (formData) => {
+    console.log("Asiendo un post")
     try {
       const telefono = parseInt(formData.telefono, 10);
 
@@ -89,6 +90,7 @@ const useAgreementManagement = () => {
           confirmButtonText: "Aceptar",
         });
         fetchAgreementData();
+        
       }
     } catch (error) {
       console.error("Error al crear el convenio:", error);
@@ -148,6 +150,7 @@ const useAgreementManagement = () => {
         confirmButtonText: "Aceptar",
       });
       return true;
+      
     } catch (error) {
       console.error("Hubo un error al eliminar los convenios.", error);
       await Swal.fire({
@@ -162,6 +165,7 @@ const useAgreementManagement = () => {
 
   
   const updateAgreement = async (formData) => {
+    console.log("Asieno un PUT")
     try {
       const agreement = agreements.find(a => a.nit === formData.nit);
       const telefono = parseInt(formData.telefono, 10);
@@ -194,8 +198,6 @@ const useAgreementManagement = () => {
   };
 
   return {
-    agreements,
-    loading,
     filteredAgreement,
     fetchAgreementData,
     createAgreement,
