@@ -277,12 +277,6 @@ const Sucursales = () => {
           onCerrar={handleGestionCancelar}
           />
         )}
-        <center><Button onClick={() => { //! prueba De Funcionacion de traer datos 
-            const datosSeleccionados = convenios.filter(c => selectedConvenios.includes(c.id));
-            console.log("Datos seleccionados:", datosSeleccionados);
-          }}>
-            Imprimir seleccionados
-        </Button></center>
     </div>
     
   );

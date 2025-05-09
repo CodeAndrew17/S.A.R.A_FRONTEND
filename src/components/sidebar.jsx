@@ -4,10 +4,17 @@ import styled from "styled-components";
 import {logout} from '../api/api_Manager';
 import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipboardList, FaSignOutAlt, FaUser } from "react-icons/fa";
 
+
+
 const SidebarContainer = styled.div`
   width: ${({ $isOpen }) => ($isOpen ? "250px" : "80px")};
   height: 100vh;
-  background: #1e1e2f;
+  background: linear-gradient(
+    to bottom,
+    #104E8B 0%,     /* Azul profesional profundo */
+    #1D6E94 70%,    /* Azul más suave para transición */
+    #2A8E9B 100%    /* Verde agua marina apagado para acento */
+  );
   color: white;
   display: flex;
   flex-direction: column;
@@ -16,20 +23,33 @@ const SidebarContainer = styled.div`
   left: 0;
   top: 0;
   padding-top: 20px;
-  overflow: hidden; 
+  overflow: hidden;
   z-index: 1000;
 `;
+
 
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 15px;
-  border-bottom: 1px solid #29293d;
-  height: 60px;
-  overflow: hidden;
+  height: 80px;
   margin-top: 50px;
+  margin-bottom: 10px;
   transition: padding 0.3s ease;
+  position: relative; /* Para posicionar el pseudo-elemento */
+
+  /* Aquí eliminamos el border-bottom */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 20px; /* Espacio a la izquierda */
+    right: 20px; /* Espacio a la derecha */
+    height: 1px; /* Ancho de la línea */
+    background-color: rgba(10, 30, 60, 0.2); /* Color de la línea */
+  }
 `;
+
 
 const UserIcon = styled(FaUser)`
   font-size: 24px;
@@ -39,7 +59,7 @@ const UserIcon = styled(FaUser)`
 `;
 
 const Username = styled.span`
-  font-size: 15px;
+  font-size: 16px;
   color:rgb(219, 219, 219); /* Azul pastel con un toque de blanco para suavizar */
   visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
@@ -49,22 +69,6 @@ const Username = styled.span`
   line-height: 1.5;
 `;
 
-const Rol = styled.span`
-  font-size: 15px;
-  color: #FFFFFF; /* Verde pastel mezclado con blanco, relajado y armonioso */
-  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
-  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
-  transition: opacity 0.3s ease-in-out;
-  font-family: Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  
-  &::before {
-    content: "•";
-    margin: 0 8px;
-    color: #B7A8D5; /* Violeta pastel con blanco, equilibrio entre los tonos */
-    font-weight: bold;
-  }
-`;
 
 
 const ToggleButton = styled.button`
@@ -98,7 +102,7 @@ const MenuItem = styled.li`
   width: 100%;
 
   &:hover {
-    background: #29293d;
+    background: #0c3b66;
   }
 `;
 
@@ -121,7 +125,9 @@ const Tooltip = styled.div`
   display: ${({ $show }) => ($show ? "block" : "none")};
   position: fixed;
   left: ${({ $sidebarOpen }) => ($sidebarOpen ? "260px" : "85px")};
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(52, 75, 110, 0.85);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(112, 110, 110, 0.2);
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
@@ -130,6 +136,7 @@ const Tooltip = styled.div`
   transition: left 0.3s ease;
   pointer-events: none;
 `;
+
 
 const LogoutWrapper = styled.div`
   display: flex;
@@ -143,7 +150,7 @@ const LogoutWrapper = styled.div`
 
 const LogoutButton = styled.button`
   background: transparent;
-  color: #ff4b5c;
+  color: #ff6666;
   border: none;
   padding: 8px;
   border-radius: 50%;
@@ -156,7 +163,7 @@ const LogoutButton = styled.button`
   transition: all 0.3s ease;
   
   &:hover {
-    background: rgba(255, 75, 92, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     transform: scale(1.1);
   }
 
@@ -177,6 +184,29 @@ const getRolName = (rolCode) => {
   };
   return roles[rolCode] || "Invitado";
 };
+
+const RoleContainer = styled.div`
+  padding: 10px 20px;
+  background: linear-gradient(to right, #104E8B, #1D6E94, #2A8E9B);
+  color: #ffffffcc;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  border-top: 1px solid #1a3c66;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  overflow: hidden;
+
+  /* Transición elegante */
+  max-height: ${({ isOpen }) => (isOpen ? '60px' : '0')};
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+  padding-top: ${({ isOpen }) => (isOpen ? '10px' : '0')};
+  padding-bottom: ${({ isOpen }) => (isOpen ? '10px' : '0')};
+  transition: all 0.4s ease;
+`;
+
+
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(sessionStorage.getItem("sidebarOpen") === "true");
@@ -227,7 +257,6 @@ const Sidebar = () => {
       <UserContainer $isOpen={isOpen}>
         <UserIcon $isOpen={isOpen} />
         <Username $isOpen={isOpen}>{username}</Username>
-        <Rol $isOpen={isOpen}>{rol}</Rol>
       </UserContainer>
 
       <Menu>
@@ -246,15 +275,23 @@ const Sidebar = () => {
                 {item.text}
               </Tooltip>
             )}
+            
           </MenuItem>
         ))}
+        
       </Menu>
 
       <LogoutWrapper $isOpen={isOpen}>
-  <LogoutButton onClick={logout}>
-    <FaSignOutAlt />
-  </LogoutButton>
-</LogoutWrapper>
+        <LogoutButton onClick={logout}>
+          <FaSignOutAlt />
+        </LogoutButton>
+      </LogoutWrapper>
+
+
+
+      <RoleContainer isOpen={isOpen}>
+        <span>Administrador</span>
+      </RoleContainer>
 
     </SidebarContainer>
   );
