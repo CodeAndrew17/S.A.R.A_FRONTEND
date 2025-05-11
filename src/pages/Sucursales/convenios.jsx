@@ -199,7 +199,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
             onCancel={handleCancelForm}
             onSubmit={handleFormSubmit}
           />
-        )};
+        )} {/*el punto y coma en esta linea no va */}
       </ContainerAgreement>
     </ModalContainer>
   );
