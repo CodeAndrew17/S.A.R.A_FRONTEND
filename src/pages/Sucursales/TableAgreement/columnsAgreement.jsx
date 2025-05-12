@@ -1,6 +1,7 @@
 import CustomButton from "../../../components/button";
 import { Edit } from "lucide-react";
 import React, { useState } from "react";
+import Dropdown from "../../../components/Dropdown";
 
 
 const columnsAgreement = ({ setEditinAgreement, setActiveForm })=>[
@@ -31,6 +32,7 @@ const columnsAgreement = ({ setEditinAgreement, setActiveForm })=>[
     </span>
   )
 },
+
     {
         key: 'actions',
         title: 'Acciones',

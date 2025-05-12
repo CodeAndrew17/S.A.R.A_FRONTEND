@@ -65,7 +65,7 @@ const Sucursales = () => {
   
         // proceso para relacionar las sucursales con sus convenios para mostrarlos en la tabla
         const sucursalesConNombreConvenio = sucursales.map(sucursal => {
-          const convenio = convenios.find(c => c.id === sucursal.convenio);
+          const convenio = convenios.find(c => c.id === sucursal.id_convenio);
           return {
             ...sucursal,
             convenio: convenio?.nombre || "Sin convenio" // si no tiene convenio muestra q no tiene

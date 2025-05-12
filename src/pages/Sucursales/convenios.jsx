@@ -179,7 +179,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
         {/* Mostrar el formulario si es necesario */}
         {activeForm === 'convenio'&& (
           <UserForm
-            title={editinAgreement? 'Editar Convenio':'Crear Convenio'}
+            title={editinAgreement ? `Editar Convenio ${editinAgreement.nombre}` : 'Crear Convenio'}
             fields={[
               { name: "nombre", placeholder: "Nombre", type: "text", required: true},
               { name: "nit", placeholder: "NIT", type: "text", required: true },
