@@ -16,22 +16,21 @@ const columnsAgreement = ({ setEditinAgreement, setActiveForm })=>[
       key: 'telefono',
       title: 'Teléfono',
     },
-    {
-      key: 'estado',
-      title: 'Estado',
-      render: (estado) => (
-        <span style={{
-          backgroundColor: estado === 'IN' ? '#f8d7da' : '#d4edda',
-          color: estado === 'Inactivo' ? '#721c24' : '#155724',
-          padding: '3px 8px',
-          borderRadius: '12px',
-          fontSize: '12px',
-          fontWeight: 'bold'
-        }}>
-          {estado}
-        </span>
-      )
-    },
+{
+  key: 'estado',
+  title: 'Estado',
+  render: (estado) => (
+    <span
+      style={{
+        color: estado === 'IN' ? '#dc3545' : '#28a745', // rojo para IN, verde para AC
+        fontWeight: 'bold',
+        textTransform: 'uppercase'
+      }}
+    >
+      {estado}
+    </span>
+  )
+},
     {
         key: 'actions',
         title: 'Acciones',

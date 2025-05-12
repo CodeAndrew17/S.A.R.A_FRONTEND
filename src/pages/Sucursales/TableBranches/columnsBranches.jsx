@@ -22,22 +22,21 @@ const columnsBranch = ({ setEditingBranch, setActiveForm }) => [
     key: 'telefono',
     title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Teléfono</span>,
   },
-  {
-    key: 'estado',
-    title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Estado</span>,
-    render: (estado) => (
-      <span style={{
-        backgroundColor: estado === 'Activo' ? '#f8d7da' : '#d4edda',
-        color: estado === 'Activo' ? '#721c24' : '#155724',
-        padding: '3px 8px',
-        borderRadius: '12px',
-        fontSize: '12px',
-        fontWeight: 'bold'
-      }}>
-        {estado}
-      </span>
-    )
-  },
+{
+  key: 'estado',
+  title: 'Estado',
+  render: (estado) => (
+    <span
+      style={{
+        color: estado === 'IN' ? '#dc3545' : '#28a745', // rojo para IN, verde para AC
+        fontWeight: 'bold',
+        textTransform: 'uppercase'
+      }}
+    >
+      {estado}
+    </span>
+  )
+},
   {
     key: 'convenio',
     title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Convenio</span>,
