@@ -20,6 +20,14 @@ const addAgreement =async(newEmployeeData)=>{
         throw error;
     }
 };
+const editAgreement = async (id, updateData) => {
+    try{
+        return await axiosWithAuth(`/api/convenio/patch/${id}/`, "PATCH", updateData);
+    } catch (error) {
+        console.error("error al editar Convenios", error);
+        throw error;
+    }
+};
 
 const deleteAgreement= async(id)=>{ 
     try{
@@ -30,8 +38,6 @@ const deleteAgreement= async(id)=>{
     }
 
 }
-
-
 
 
 //* Funciones CRUD para Sucursales  
@@ -65,7 +71,6 @@ const deleteBranches = async (id) => {
 
 const editBranches = async (id, newBranchData) => {
     try {
-        console.log("Llamando a editBranches con:", id, newBranchData);
         return await axiosWithAuth(`/api/sucursal/patch/${id}/`, "PATCH", newBranchData);
     } catch (error) {
         console.error("Error al editar sucursal:", error);
@@ -75,5 +80,4 @@ const editBranches = async (id, newBranchData) => {
 
 
 
-
-export {getAgreement,addAgreement, deleteAgreement, getBranches, addBranches, deleteBranches, editBranches};
+export {getAgreement,addAgreement, deleteAgreement, getBranches, addBranches, deleteBranches, editBranches,editAgreement};

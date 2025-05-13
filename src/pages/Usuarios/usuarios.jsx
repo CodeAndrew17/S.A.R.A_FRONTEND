@@ -28,6 +28,7 @@ const Usuarios = () => {
     setFilteredEmployees, // Agregado para actualizar empleados filtrados
     handleEditarEmpleado,
     sucursalesMap,
+    handleFilter
   } = useEmployeeManagement(); // Hook personalizado para la lógica de empleados
 
   const [showCreateForm, setShowForm] = useState(false); // Estado para mostrar/ocultar el formulario
@@ -36,6 +37,7 @@ const Usuarios = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [showUpdateForm, setShowUpdateForm] = useState(false); // Añade esto con los otros estados
+
 
   const handleEditar = () => {
     if (selectedEmployees.length !== 1) {
@@ -291,8 +293,9 @@ const Usuarios = () => {
     if (!continuar) return;
 
     try {
-      // Eliminamos a los usuarios seleccionados en el backend
-      await Promise.all(selectedEmployees.map((id) => deleteAgreement(id)));
+      for (const id of selectedEmployees) {
+        await deleteEmployees(id);
+      };
 
       // Actualizamos el estado local para eliminar los empleados
       setEmployees((prevEmployees) =>
@@ -308,8 +311,9 @@ const Usuarios = () => {
         text: "Se eliminaron los usuarios correctamente.",
         icon: "success",
         confirmButtonText: "Aceptar"
-      });
-      
+      })
+      window.location.reload();
+
     } catch (error) {
       console.error("Hubo un error al eliminar los usuarios.", error);
       Swal.fire({
@@ -331,6 +335,9 @@ const Usuarios = () => {
         onDelete={handleEliminarUser} // Eliminar
         onEdit={handleEditar} // Placeholder para editar
         onCreate={handleCreateNew} // Crear nuevo empleado
+        
+        onfilter={handleFilter}
+        
       />
       {/* Formulario de creación, visible cuando showForm es true */}
       {showCreateForm && (

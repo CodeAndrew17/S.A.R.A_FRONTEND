@@ -15,10 +15,18 @@ import React, { useState, useEffect, useRef } from "react";
  flex-wrap: wrap;
  @media (max-width: 768px) {
    max-width: 100%;
- }
-`;
-
-const BaseButton = styled.button`
+   height: clamp(30px, 4vh, 40px);
+   display: flex;
+   align-items: center;
+   gap: 4px;
+   padding: 0 clamp(4px, 1vw, 8px);
+   border: 2px solid #ccc;
+   border-radius: 8px;
+   background: #e6e3e3;
+   box-sizing: border-box;
+ `;
+ 
+ const BaseButton = styled.button`
  background-color: ${(props) => props.$bgColor || "#5FB8D6"};
  border: none;
  color: white;

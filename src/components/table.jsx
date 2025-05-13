@@ -20,6 +20,23 @@ const TableContainer = styled.div`
     width: 85%;
   }
 
+          /* Scroll suave */
+        scroll-behavior: smooth;
+
+        /* Estilos personalizados para scrollbar */
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+        }
+
 `;
 
 const StyledTable = styled.table`
