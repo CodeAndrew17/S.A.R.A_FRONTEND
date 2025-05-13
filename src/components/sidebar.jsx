@@ -199,11 +199,10 @@ const RoleContainer = styled.div`
   overflow: hidden;
 
   /* Transición elegante */
-  max-height: ${({ isOpen }) => (isOpen ? '60px' : '0')};
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
-  padding-top: ${({ isOpen }) => (isOpen ? '10px' : '0')};
-  padding-bottom: ${({ isOpen }) => (isOpen ? '10px' : '0')};
-  transition: all 0.4s ease;
+  max-height: ${({ $isOpen }) => ($isOpen ? '60px' : '0')};
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  padding-top: ${({ $isOpen }) => ($isOpen ? '10px' : '0')};
+  padding-bottom: ${({ $isOpen }) => ($isOpen ? '10px' : '0')};
 `;
 
 
@@ -289,7 +288,7 @@ const Sidebar = () => {
 
 
 
-      <RoleContainer isOpen={isOpen}>
+      <RoleContainer $isOpen={isOpen}>
         <span>Administrador</span>
       </RoleContainer>
 
