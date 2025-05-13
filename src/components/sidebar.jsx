@@ -288,9 +288,9 @@ const Sidebar = () => {
       </LogoutWrapper>
 
 
-
-      <RoleContainer isOpen={isOpen}>
-        <span>Administrador</span>
+{/*le Faltaba el prefijo*/ }
+      <RoleContainer $isOpen={isOpen}>
+        <span>{rol}</span>
       </RoleContainer>
 
     </SidebarContainer>

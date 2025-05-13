@@ -1,7 +1,8 @@
 import React from "react";
 import Sidebar from "../../components/sidebar"; 
 import styled from "styled-components";
-
+import Table from "../../components/table";
+import columnsManage from "./columnsManage";
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -23,12 +24,28 @@ const TitleText = styled.h1`
 `;
 
 function Administrar() {
+
+  const handleSelectionChange = (selectedRows) => {
+  console.log("Filas seleccionadas:", selectedRows);
+};
+
   return (
     <div> 
       <Sidebar />
       <TitleWrapper>
         <TitleText>Administrar</TitleText>
       </TitleWrapper>
+      <Table
+data={[
+  { id: 1, estado: 'Activo', nombre: 'Ever', cuestionario: 'Libiano' },
+  { id: 2, estado: 'asdad', nombre: 'dadasdsds', cuestionario: 'ojdad' }
+]}
+
+      onSelectionChange = {handleSelectionChange}  
+      selectable={true}
+      columns={columnsManage}
+      />
+
     </div>
   );
 }
