@@ -20,9 +20,9 @@ import React, { useState, useEffect, useRef } from "react";
    align-items: center;
    gap: 4px;
    padding: 0 clamp(4px, 1vw, 8px);
-   border: 2px solid #ccc;
+   
    border-radius: 8px;
-   background: #e6e3e3;
+   
    box-sizing: border-box;
  `;
  

@@ -328,7 +328,9 @@ const Usuarios = () => {
 
   return (
     <div>
-      <Sidebar />
+    <Sidebar />
+
+    <div>
       <Header /> {/* Encabezado */}
       <Toolbar
         onSearch={handleBuscar} // Búsqueda
@@ -398,6 +400,7 @@ const Usuarios = () => {
         employees={employees}
         setFilteredEmployees={setFilteredEmployees} // Pasar la lista de empleados al componente UserTable
       />
+    </div>
     </div>
   );
 };

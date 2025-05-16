@@ -202,7 +202,7 @@ const Sucursales = () => {
   const dataToShow = searchInput.trim() ? filteredSucursales : sucursalesConvenios;
 
   return (
-    <div>
+    <div style={{border:'3px solid #0000'}}>
       <Sidebar />
       <TitleWrapper>
         <TitleText>Panel de Sucursales</TitleText>

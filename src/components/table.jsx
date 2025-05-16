@@ -65,7 +65,8 @@ const TableRow = styled.tr`
 const TableCell = styled.td`
   padding: 12px 15px;
   border-bottom: 1px solid #ddd;
-  white-space: nowrap;
+  white-space: normal;    /*  Permite el Salto de linea */
+  max-height: 250px;     /* Altura máxima visible */
 `;
 
 const ExpandButton = styled.button`

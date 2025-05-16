@@ -8,7 +8,7 @@ import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipb
 
 const SidebarContainer = styled.div`
   width: ${({ $isOpen }) => ($isOpen ? "250px" : "80px")};
-  height: 100vh;
+  height: 100%;
   background: linear-gradient(
     to bottom,
     #104E8B 0%,     /* Azul profesional profundo */

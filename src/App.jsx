@@ -7,7 +7,7 @@ import Usuarios from './pages/Usuarios/usuarios';
 import Administrar from './pages/Administrar/administrar';
 import Estadisticas from './pages/estadisticas';
 import Sucursales from './pages/Sucursales/sucursales';
-import Revisiones from './pages/revisiones';
+import Revisiones from './pages/Solicitudes/revisiones';
 import Configuracion from './pages/configuracion';
 
 
@@ -51,6 +51,8 @@ function App(){
   return(
   <>
     <GlobalStyle />
+
+
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<Login />} />
