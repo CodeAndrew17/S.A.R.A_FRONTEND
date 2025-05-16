@@ -10,7 +10,7 @@ import Table from "../../components/table";
 import {getBranches, getAgreement} from "../../api/api_Convenios"; 
 import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de los convenios
 import columnsBranch from "./TableBranches/columnsBranches"; // columnas de las sucursales
-import Toolbar from "../../components/Toolbar";
+import Toolbar from "../../components/toolbar";
 import CustomButton from "../../components/button";
 
 import {handleSucursalSubmit, handleDeleteBranches, handleUpdateBranches} from "./TableBranches/sucursalManagement"; //funciones tipo crud de sucursales

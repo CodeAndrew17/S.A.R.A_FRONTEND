@@ -4,7 +4,7 @@ import {Inicio} from './pages/principal';
 import  Login from './pages/login';
 import { createGlobalStyle } from 'styled-components';
 import Usuarios from './pages/Usuarios/usuarios';
-import Administrar from './pages/administrar';
+import Administrar from './pages/Administrar/administrar';
 import Estadisticas from './pages/estadisticas';
 import Sucursales from './pages/Sucursales/sucursales';
 import Revisiones from './pages/revisiones';

@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../../components/sidebar"; 
 import styled from "styled-components";
+import Toolbar from "../../components/toolbar";
+import { useState } from "react";
+import Table from "../../components/table"
+import { getPlans, getVehicles } from "../../api/api_Admin";
 
 
 const TitleWrapper = styled.div`
@@ -22,13 +26,77 @@ const TitleText = styled.h1`
   top: 20px; /* Ajusta el texto sin afectar el fondo */
 `;
 
-function Administrar() {
+const Administrar = () => {
+  const [activeForm, setActiveForm] = useState(null);
+  const [editingPack, setEditingPack] = useState(null)
+  const[loading, setLoading] = useState(true);
+  const[loadingPlans, setLoadingPlans] = useState(false);//Estado para carga de planes
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        setLoading(true);
+        setLoadingPlans(true);
+
+        //Carga de planes y vehiculos
+        const [planes, vehiculos] = await Promise.all([
+          getPlans(),
+          getVehicles()
+        ]);
+
+        //Relacion entre Planes y Tipo de vehiculo
+        const VehiculoConPlan = vehiculos.map(vehiculo => {
+          const plan = planes.find(c => c.id === vehiculo.id_plan);
+          return {
+            ...vehiculo,
+            plan: plan?.nombre || "Sin plan"
+          };
+        });
+
+        //actualizar estados
+
+        //guardar los vehiculos filtrados
+
+
+      } catch (error) {
+          console.error("Error cargando los datos: ", error);
+      } finally{
+          setLoading(false);
+          setLoadingPlans(false);
+          }
+      };
+      fetchAllData();
+    }, [])
+
   return (
     <div> 
       <Sidebar />
       <TitleWrapper>
         <TitleText>Administrar</TitleText>
       </TitleWrapper>
+
+      <Toolbar
+        onCreate={null}
+        onEdit={null}
+        onDelete={null}
+        buttonsGap="40px"
+        editLabel="Editar"
+        onActiveButton={true}
+      >
+        <Toolbar.Search
+          placeholder="Buscar..."
+          onSearch={null}
+        />
+
+        <Toolbar.Dropdown
+          options={{
+            "activo" : "Activo",
+            "inactivo" : "Inativo",
+            "": "Todos"
+          }}  
+        />
+      </Toolbar>
+      <Table/>
     </div>
   );
 }
