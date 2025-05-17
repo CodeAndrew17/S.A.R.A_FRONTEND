@@ -16,13 +16,17 @@ const LoginContainer = styled.div`
 `;
 
 const LoginBox = styled.div`
-  background-color: white;
+  background: rgba(255, 255, 255, 0.85);
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   width: 400px;
   max-width: 90%;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 `;
+
 
 const LogoContainer = styled.div`
   text-align: center;
@@ -36,7 +40,7 @@ const Logo = styled.img`
 
 const GradientText = styled.h2`
   font-family: 'Playwrite IS', sans-serif;
-  font-size: 30px;
+  font-size: 35px;
   text-align: center;
   background: linear-gradient(90deg, #16368d, #0087d6);
   background-clip: text;
@@ -162,7 +166,7 @@ const Login = () => {
         <LogoContainer>
           <Logo src={logo} alt="Logo" />
         </LogoContainer>
-        <GradientText>Inicio de Sesión</GradientText>
+        <GradientText>Bienvenido</GradientText>
         <Separator />
         <form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>

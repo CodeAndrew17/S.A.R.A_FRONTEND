@@ -74,16 +74,6 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
           <Plus /> Crear Nuevo
         </ResponsiveButton>
         <ResponsiveButton 
-          bgColor="#5A9AC6" 
-          hoverColor="#468BAF" 
-          width="130px" 
-          height="38px" 
-          onClick={onEdit}
-          isLandscape={isLandscape}
-        >
-          <Edit /> Editar
-        </ResponsiveButton>
-        <ResponsiveButton 
           bgColor="#FF6B6B" 
           hoverColor="#D9534F" 
           width="130px" 
@@ -92,6 +82,16 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
           isLandscape={isLandscape}
         >
           <Trash /> Eliminar
+        </ResponsiveButton>
+        <ResponsiveButton 
+          bgColor="#5A9AC6" 
+          hoverColor="#468BAF" 
+          width="130px" 
+          height="38px" 
+          onClick={onEdit}
+          isLandscape={isLandscape}
+        >
+          <Edit /> Editar
         </ResponsiveButton>
         <SearchBar
           placeholder="Cédula,Nombre o Sucursal"

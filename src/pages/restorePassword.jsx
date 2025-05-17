@@ -17,7 +17,8 @@ const RequestPassword = styled.div`
     padding: 80px;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 90%;
+    height: 200px;
     max-width: 400px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
     border-radius: 10px;

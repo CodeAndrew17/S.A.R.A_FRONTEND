@@ -23,6 +23,7 @@ const BaseButton = styled.button`
   color: white;
   width: 100%;
   min-height: 40px;
+  min-width: 130px;
   padding: 8px 12px;
   font-size: 14px;
   font-family: Helvetica, Arial, sans-serif;

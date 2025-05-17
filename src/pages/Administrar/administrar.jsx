@@ -1,8 +1,15 @@
-import React from "react";
+import {useState} from "react";
 import Sidebar from "../../components/sidebar"; 
 import styled from "styled-components";
 import Table from "../../components/table";
-import columnsManage from "./columnsManage";
+import { useColumnsManage } from "./columnsManage";
+
+import Toolbar from "../../components/toolbar";
+import UserForm from "../../components/userForm";
+import { CheckboxDropdown } from "../../components/dropdownTwo";
+
+
+import { VscTypeHierarchy } from "react-icons/vsc";
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -24,27 +31,142 @@ const TitleText = styled.h1`
 `;
 
 function Administrar() {
+  const [activeForm, setActiveForm] = useState(null); // para mostrar el formulario 
+  const [editingPlan, setEditingPlan] = useState(null); // para editar el plan 
+  const [selectedRows, setSelectedRows] = useState([]); //para manejar las filas sleccionadas 
+  const { columns, selectedItems, setSelectedItems } = useColumnsManage();
+
 
   const handleSelectionChange = (selectedRows) => {
+    setSelectedRows(selectedRows);
   console.log("Filas seleccionadas:", selectedRows);
+  if (selectedRows.length > 0) {
+    setEditingPlan(selectedRows[0]);
+  } else {
+    setEditingPlan(null);
+  }
 };
+
+  const handleCrearPlan = () => {
+    setEditingPlan(null); // Limpiar el estado de edición al crear una nueva sucursal
+    setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
+  };
+
+  const handleEditPlan = ()  => {
+    if (selectedRows.length === 1) {
+      setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
+    }
+  };
+
+
+  //esta funcion va en el otro archivo para manejar la logica de los handle 
+  const handleFormSubmit = (formData) => {
+    console.log("Formulario enviado", formData);
+
+    setActiveForm(null);
+
+  };
+
+  const handleCancelForm = () => {
+    setActiveForm(null); 
+  };
+
+  const handelDeletePlan = () => {
+    alert("Eliminando el Plan...");
+  };
+
+  
 
   return (
     <div> 
       <Sidebar />
       <TitleWrapper>
-        <TitleText>Administrar</TitleText>
+        <TitleText>Administrar Planes</TitleText>
       </TitleWrapper>
-      <Table
-data={[
-  { id: 1, estado: 'Activo', nombre: 'Ever', cuestionario: 'Libiano' },
-  { id: 2, estado: 'asdad', nombre: 'dadasdsds', cuestionario: 'ojdad' }
-]}
+      <Toolbar
+              onCreate={handleCrearPlan}
+              onEdit={handleEditPlan}
+              onDelete={handelDeletePlan}
+              buttonsGap="40px"
+              editLabel="Editar"
+              onActiveButton={true}
+            >
+              <Toolbar.Search 
+                placeholder="Buscar..." 
+                onSearch={null} 
+              />
+              <Toolbar.Dropdown 
+                options={{
+                  "activo": "Activo", 
+                  "inactivo": "Inactivo",
+                  "": "Todos"
+                }}
+              />
+            </Toolbar>
 
-      onSelectionChange = {handleSelectionChange}  
-      selectable={true}
-      columns={columnsManage}
+      <Table
+        data={[
+          { id: 1, estado: 'AC', nombre: 'Plan Autosef', cuestionario: 'Avaluo Comercial', vehiculo: 'Pesados'},
+          { id: 2, estado: 'IN', nombre: 'Plan Basico', cuestionario: 'Inspección', vehiculo: 'Livianos' },
+          { id: 3, estado: 'AC', nombre: 'Plan Premium', cuestionario: 'Avaluo Comercial', vehiculo: 'Motos' },
+          { id: 4, estado: 'AC', nombre: 'Plan Plus', cuestionario: 'Inspección', vehiculo: 'Livianos' },
+        ]}
+        onSelectionChange={handleSelectionChange}
+        selectable={true}
+        columns={columns}
       />
+
+      {activeForm === "Plan" && (
+        <UserForm
+          title={editingPlan ? "Editar Plan" : "Crear Nuevo Plan"}
+          fields = {[
+              { 
+              name: "nombre",
+              label: "Nombre del Plan",
+              placeholder: "Nombre", 
+              type: "text", 
+              required: true 
+            },
+            { 
+              name: "vehiculo",
+              label: "Tipo de Vehículo",
+              type: "select",
+              options: [
+                {value: "Liviano", label: "Livianos"},
+                {value: "Pesado", label: "Pesados"},
+                {value: "Motos", label: "Motos"}
+              ],
+              placeholder: "Seleccionar",
+              required: true
+            },
+            { 
+              name: "cuestionario",
+              type: "select",
+              label: "Cuestionario",
+              options: [
+                {value: "1", label: "Avaluo Comercial"},
+                {value: "2", label: "Inspección"}
+              ],
+              placeholder: "Seleccionar",
+              required: true
+            },
+            { 
+              name: "estado",
+              type: "select",
+              options: [
+                {value: "AC", label: "Activo"},
+                {value: "IN", label: "Inactivo"}
+              ],
+              defaultValue: "AC",
+              placeholder: "Estado",
+              required: true
+            }
+          ]}
+          onSubmit={handleFormSubmit}
+          onCancel={handleCancelForm}
+          initialValues={editingPlan || {}}
+        />
+      )}
 
     </div>
   );
