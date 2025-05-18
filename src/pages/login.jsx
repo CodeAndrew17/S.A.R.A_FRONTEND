@@ -31,6 +31,7 @@ const LoginBox = styled.div`
 const LogoContainer = styled.div`
   text-align: center;
   margin-bottom: 20px;
+  margin-top: -20px;
 `;
 
 const Logo = styled.img`
@@ -47,6 +48,7 @@ const GradientText = styled.h2`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 20px;
+  margin-top: -10px;
 `;
 
 const Separator = styled.hr`
@@ -124,7 +126,8 @@ const Label = styled.label`
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  margin-right: 290px;
+  width: 87%; /* Mismo ancho que los inputs */
+  text-align: left; /* Alinea el texto a la izquierda */
 `;
 
 const Message = styled.p`
