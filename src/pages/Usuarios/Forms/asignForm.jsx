@@ -8,11 +8,12 @@ const AsignForm = ({ showForm, selectedUser, handleFormSubmitCuenta, setShowForm
     <UserForm
       title={`Asignar Cuenta a ${selectedUser?.nombres} ${selectedUser?.apellidos}`}
       fields={[
-        { name: "usuario", placeholder: "Nombre de Usuario", type: "text", required: true },
-        { name: "password", placeholder: "Contraseña", type: "password", required: true },
+        { name: "usuario",label: "Nombre de usuario", placeholder: "Nombre", type: "text", required: true },
+        { name: "password",label: "Contraseña", placeholder: "Contraseña", type: "password", required: true },
         {
           name: "rol",
-          placeholder: "Rol",
+          label: "Rol",
+          placeholder: "Seleccionar",
           type: "select",
           options: [
             { value: "AD", label: "Administrador" },
@@ -25,7 +26,8 @@ const AsignForm = ({ showForm, selectedUser, handleFormSubmitCuenta, setShowForm
         },
         {
           name: "estado",
-          placeholder: "Estado",
+          label: "Estado",
+          placeholder: "Seleccionar",
           type: "select",
           options: [
             { value: "AC", label: "Activo" },

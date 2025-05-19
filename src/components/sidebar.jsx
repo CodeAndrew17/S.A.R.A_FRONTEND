@@ -6,27 +6,6 @@ import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipb
 
 
 
-const SidebarContainer = styled.div`
-  width: ${({ $isOpen }) => ($isOpen ? "250px" : "80px")};
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    #104E8B 0%,     /* Azul profesional profundo */
-    #1D6E94 70%,    /* Azul más suave para transición */
-    #2A8E9B 100%    /* Verde agua marina apagado para acento */
-  );
-  color: white;
-  display: flex;
-  flex-direction: column;
-  transition: width 0.3s ease;
-  position: fixed;
-  left: 0;
-  top: 0;
-  padding-top: 20px;
-  overflow: hidden;
-  z-index: 1000;
-`;
-
 
 const UserContainer = styled.div`
   display: flex;
@@ -185,6 +164,7 @@ const getRolName = (rolCode) => {
   return roles[rolCode] || "Invitado";
 };
 
+//para evitar errores de inicializacion y acceder a variables antes de incializarlas 
 const RoleContainer = styled.div`
   padding: 10px 20px;
   background: linear-gradient(to right, #104E8B, #1D6E94, #2A8E9B);
@@ -203,6 +183,58 @@ const RoleContainer = styled.div`
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   padding-top: ${({ $isOpen }) => ($isOpen ? '10px' : '0')};
   padding-bottom: ${({ $isOpen }) => ($isOpen ? '10px' : '0')};
+`;
+
+const SidebarContainer = styled.div`
+  width: ${({ $isOpen }) => ($isOpen ? "250px" : "80px")};
+  height: 100vh;
+  background: linear-gradient(
+    to bottom,
+    #104E8B 0%,     /* Azul profesional profundo */
+    #1D6E94 70%,    /* Azul más suave para transición */
+    #2A8E9B 100%    /* Verde agua marina apagado para acento */
+  );
+  color: white;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-top: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1000;
+
+    /* Media queries para diferentes tamaños */
+  @media (max-height: 600px) {
+    padding-top: 10px;
+    
+    ${UserContainer} {
+      margin-top: 30px;
+      height: 60px;
+    }
+    
+    ${MenuItem} {
+      padding: 10px 15px;
+    }
+  }
+
+    @media (max-width: 768px) {
+    width: ${({ $isOpen }) => ($isOpen ? "220px" : "60px")};
+    
+    ${ToggleButton} {
+      font-size: 20px;
+    }
+    
+    ${Icon} {
+      font-size: 20px;
+    }
+    
+    ${Text} {
+      font-size: 14px;
+    }
+  }
 `;
 
 

@@ -41,11 +41,6 @@ function Estadisticas() {
       <Sidebar />
       <TitleWrapper>
         <TitleText>Estadísticas</TitleText>
-        <ContainerTrash>
-        <CustomButton bgColor="#003366" hoverColor="#005C4B" width="130px" height="38px" onClick={onDelete}>
-          <Square /> Button
-        </CustomButton>
-        </ContainerTrash>
       </TitleWrapper>
 
     </div>
