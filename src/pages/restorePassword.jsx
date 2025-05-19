@@ -3,6 +3,7 @@ import { solicitarPassword } from '../api/api_Manager';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import styled from 'styled-components';
+import { User,Mail, Info } from 'lucide-react'; 
 
 const ContainerRestore = styled.div`
     display: flex;
@@ -13,20 +14,22 @@ const ContainerRestore = styled.div`
 `;
 
 const RequestPassword = styled.div`
-    background: white;
-    padding: 80px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 90%;
+    height: 320px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 `;
 
 const Header = styled.header`
     text-align: center;
     line-height: 100px;
-    margin-top: -100px;
+    margin-top: -50px;
 `;
 
 const InputGroup = styled.div`
@@ -34,13 +37,30 @@ const InputGroup = styled.div`
     flex-direction: column;
     margin-bottom: 20px;
     gap: 10px;
+    margin-top: 14px;
+`;
+
+const InputContainer = styled.div`
+    display: flex;
+    align-items: center;
+    width: 97%;
+    border: 1px solid ${props => (props.$error ? 'red' : '#ccc')};
+    border-radius: 5px;
+    padding-right: 10px;
+    background: white;
 `;
 
 const StyledInput = styled.input`
-    width: 90%;
+    width: 100%;
     padding: 10px;
-    border: 1px solid ${props => (props.$error ? 'red' : '#ccc')};
-    border-radius: 5px;
+    border: none;
+    outline: none;
+    background: transparent;
+`;
+
+const IconWrapper = styled.span`
+  margin-left: 10px;
+  color: #666;
 `;
 
 const ErrorText = styled.span`
@@ -53,7 +73,7 @@ const ButtonGroup = styled.div`
     display: flex;
     justify-content: space-between;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 30px;
 `;
 
 const StyledButton = styled.button`
@@ -103,41 +123,58 @@ const RestorePassword = () => {
             <RequestPassword>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Header>
-                        <h1>Recuperar Contraseña</h1>
+                        <h1>Recuperación de Contraseña</h1>
                     </Header>
-                    <hr style={{ border: '1px solid #ccc', marginTop: '-30px', width: 395 }} />
-                    <article>
-                        <center><h3>Complete los campos para recuperar su acceso</h3></center>
-                    </article>
+                    <hr style={{ 
+                                border: '1px solid #ccc', 
+                                marginTop: '-30px', 
+                                width: '100%',  
+                                marginLeft: '0'  
+                            }} />
+                                <article style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    <Info size={15} />
+                                    <h4 style={{ fontWeight: '400', color: '#333' }}>Complete los campos con la información asociada a su cuenta.</h4>
+                                </article>
+
                     <InputGroup>
-                        <strong><label htmlFor="username">Usuario</label></strong>
-                        <StyledInput
-                            type="text"
-                            id="username"
-                            placeholder="Ingrese su usuario"
-                            $error={errors.usuario}
-                            {...register("usuario", { required: "El campo usuario es obligatorio" })} // mensaje de correo obligatorio si no lo lllena
-                        />
+                        <label htmlFor="username">Usuario</label>
+                        <InputContainer $error={errors.usuario}>
+                            <IconWrapper>
+                                <User size={18} />
+                            </IconWrapper>
+                            <StyledInput
+                                type="text"
+                                id="username"
+                                placeholder="Ingrese su usuario"
+                                $error={errors.usuario}
+                                {...register("usuario", { required: "El campo usuario es obligatorio" })}
+                            />
+                        </InputContainer>
                         {errors.usuario && <ErrorText>{errors.usuario.message}</ErrorText>}
                         
-                        <strong><label htmlFor="email">Correo electrónico</label></strong>
-                        <StyledInput
-                            type="email"
-                            placeholder="Ingrese su correo electrónico"
-                            $error={errors.correo}
-                            {...register("correo", {
-                                required: "El campo correo electrónico es obligatorio",
-                                pattern: {
-                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, //usa la funcion register para aceptar cierto numero de caracteres especiales antes de @ luego asegura q haya un dominio despues del dicho caracter 
-                                    message: "El correo electrónico no es válido." // si no cumple con las caracteristicas muestra el mensaje 
-                                }
-                            })}
-                        />
-                        {errors.correo && <ErrorText>{errors.correo.message}</ErrorText>} {/*mensaje de errores desplegado si no se cumple con los requisistos u otros factores*/}
+                        <label htmlFor="email">Correo electrónico</label>
+                        <InputContainer $error={errors.correo}>
+                            <IconWrapper>
+                                <Mail size={18} />
+                            </IconWrapper>
+                            <StyledInput
+                                type="email"
+                                placeholder="Ingrese su correo electrónico"
+                                $error={errors.correo}
+                                {...register("correo", {
+                                    required: "El campo correo electrónico es obligatorio",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                        message: "El correo electrónico no es válido."
+                                    }
+                                })}
+                            />
+                        </InputContainer>
+                        {errors.correo && <ErrorText>{errors.correo.message}</ErrorText>}
                     </InputGroup>
                     <ButtonGroup>
-                        <StyledButton type="submit">Enviar correo</StyledButton>
                         <StyledButton type="button" onClick={handleCancel}>Cancelar</StyledButton>
+                        <StyledButton type="submit">Enviar correo</StyledButton>
                     </ButtonGroup>
                 </form>
                 <ToastContainer />

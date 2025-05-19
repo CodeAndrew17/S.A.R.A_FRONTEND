@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 
 const handleSucursalSubmit = async (newData, setConvenios, setActiveForm, setSucursalesConvenios) => {
     try {
-
+      console.log(newData)
       await addBranches(newData); 
   
       // Traer las sucursales y convenios actualizados

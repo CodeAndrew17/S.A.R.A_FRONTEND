@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar"
 import styled from "styled-components";
-import Dropdown from "../../components/Dropdown";
-import SearchBar from "../../components/SearchBar";
-import Button from "../../components/button";
 import UserForm from "../../components/userForm"; 
 import { Trash, Filter, Plus, Edit, Settings, Building, Map} from "lucide-react";
 import Table from "../../components/table";
 import {getBranches, getAgreement} from "../../api/api_Convenios"; 
 import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de los convenios
 import columnsBranch from "./TableBranches/columnsBranches"; // columnas de las sucursales
-import Toolbar from "../../components/Toolbar";
-import CustomButton from "../../components/button";
+import Toolbar from "../../components/toolbar";
+
 
 import {handleSucursalSubmit, handleDeleteBranches, handleUpdateBranches} from "./TableBranches/sucursalManagement"; //funciones tipo crud de sucursales
 
@@ -24,7 +21,8 @@ const TitleWrapper = styled.div`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
-  height: 70px;
+  margin-top: 5px;
+  height: 60px;
 `;
 
 const TitleText = styled.h1`
@@ -257,10 +255,10 @@ const Sucursales = () => {
           <UserForm
             title={editingBranch ? "Editar Sucursal" : "Crear Nueva Sucursal"}
             fields={[
-              { name: "nombre", placeholder: "Nombre", type: "text" },
-              { name: "ciudad", placeholder: "Ciudad", type: "text" },
-              { name: "direccion", placeholder: "Dirección", type: "text" },
-              { name: "telefono", placeholder: "Teléfono", type: "tel" },
+              { name: "nombre", placeholder: "Nombre", type: "text", required: true },
+              { name: "ciudad", placeholder: "Ciudad", type: "text", required: true },
+              { name: "direccion", placeholder: "Dirección", type: "text", required: true },
+              { name: "telefono", placeholder: "Teléfono", type: "tel", required: true},
               { 
                 name: "estado",
                 type: "select",
@@ -270,13 +268,16 @@ const Sucursales = () => {
                 ],
                 defaultValue: "AC",
                 placeholder: "Estado",
+                required: true
               },
               { 
                 name: "convenio",
+                label: "Convenio",
                 type: "select",
                 options: conveniosOptions.map((c) => ({value: c.id, label: c.nombre})),
-                placeholder: loadingConvenios ? "Cargando..." : "Seleccione Convenio",
+                placeholder: loadingConvenios ? "Cargando..." : "Seleccionar",
                 disabled: loadingConvenios
+                ,required: true
               }
             ]}
             initialValues={editingBranch}

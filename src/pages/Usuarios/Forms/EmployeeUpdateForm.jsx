@@ -11,6 +11,7 @@ const EmployeeEditForm = ({
   const fields = [
     {
       name: "nombres",
+      label: "Nombres",
       type: "text",
       placeholder: "Nombres",
       defaultValue: employee?.nombres || "",
@@ -18,6 +19,7 @@ const EmployeeEditForm = ({
     },
     {
       name: "apellidos",
+      label: "Apellidos",
       type: "text",
       placeholder: "Apellidos",
       defaultValue: employee?.apellidos || "",
@@ -25,6 +27,7 @@ const EmployeeEditForm = ({
     },
     {
       name: "cedula",
+      label: "Cédula",
       type: "text",
       placeholder: "Cédula",
       defaultValue: employee?.cedula || "",
@@ -32,29 +35,38 @@ const EmployeeEditForm = ({
     },
     {
       name: "correo",
+      label: "Correo",
       type: "email",
       placeholder: "Correo electrónico",
-      defaultValue: employee?.correo || ""
+      defaultValue: employee?.correo || "",
+      required: true
     },
     {
       name: "id_sucursal",
+      label: "Sucursal",
       type: "select",
-      placeholder: "Seleccione sucursal",
+      placeholder: "Seleccionar",
+      
       defaultValue: employee?.id_sucursal || "",
+      
       options: Object.entries(sucursalesMap).map(([id, nombre]) => ({
         value: id,
         label: nombre
-      }))
+      })),
+      required: true
+      
     },
     {
       name: "estado",
+      label: "Estado",
       type: "select",
-      placeholder: "Estado",
+      placeholder: "Seleccionar",
       defaultValue: employee?.estado || "AC",
       options: [
         { value: "AC", label: "Activo" },
         { value: "IN", label: "Inactivo" }
-      ]
+      ],
+      required: true
     }
   ];
 

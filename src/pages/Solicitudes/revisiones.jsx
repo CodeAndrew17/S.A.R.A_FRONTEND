@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar"; 
 import styled from "styled-components";
 import Table from "../../components/table";
 import ColumnsRequest from "./TableRequest/columnsRequest";
 import Toolbar from "../../components/Toolbar";
+
+import { getRequest } from "../../api/api_Solicitudes";
 
 
 const TitleWrapper = styled.div`
@@ -25,67 +27,37 @@ const TitleText = styled.h1`
   position: relative;
 
 `;
-const dataPrueba = [
-  {
-    id: 1,
-    placa: 'ABC123',
-    fecha: '10/05/2025',
-    central_servicio: 'Centro Norte',
-    turno: 'Mañana',
-    id_empleado: 'Juan Pérez',
-    id_sucursal: 'Sucursal Norte',
-    estado: 'AC',
-    id_plan: 'Plan Basico',
-    id_tipo_vehiculo: 'Carro',
-    observaciones: 'El vehículo fue recibido en el Centro Norte. Para encontrar el servicio, dirigirse a la zona de recepción, módulo 3. El servicio incluye revisión general, ajuste de frenos y verificación de niveles. Tiempo estimado: 2 horas aprox.',
-    id_convenio: 'AutoMec S.A.',
-  },
-  {
-    id: 2,
-    placa: 'XYZ789',
-    fecha: '12/05/2015',
-    central_servicio: 'Centro Sur',
-    turno: '1',
-    id_empleado: 'María Rodríguez',
-    id_sucursal: 'Fast Drive',
-    estado: 'IN',
-    id_plan: 'PLAN02',
-    id_tipo_vehiculo: 'Moto',
-    observaciones: 'Falta repuesto para frenos',
-    id_convenio: 'Inchcape Colombia S.A.S.',
-  },
-  {
-    id: 3,
-    placa: 'LMN456',
-    fecha: '09/05/2025',
-    central_servicio: 'Centro Este',
-    turno: 'Noche',
-    id_empleado: 'Andres Gustavo Álvarez Suárez',
-    id_sucursal: 'Sucursal Este',
-    estado: 'PE',
-    id_plan: 'PLAN03',
-    id_tipo_vehiculo: 'Camioneta',
-    observaciones: 'Esperando aprobación del cliente',
-    id_convenio: 'Transporte Express Ltda.',
-  },
-  {
-    id: 4,
-    placa: 'DEF321',
-    fecha: '08/05/2025',
-    central_servicio: 'Centro Oeste',
-    turno: 'Mañana',
-    id_empleado: 'Laura Gómez',
-    id_sucursal: 'Sucursal Oeste',
-    estado: 'AC', // RE = Revisado (ejemplo ficticio)
-    id_plan: 'PLAN04',
-    id_tipo_vehiculo: 'Bus',
-    observaciones: 'Estado sin clasificar Estado sin clasificar Estado sin   sin clasificar',
-    id_convenio: 'Movilidad Segura S.A.',
-  },
-];
-
 
 function Revisiones() {
+  const [activeForm, setActiveForm]= useState(true)
+  const [loading,setLoading]=useState(true)
+  const [dataRequest, setDataRequest]= useState([])
+
+  useEffect(() => {
+
+    const fetchRequest = async () => {
+
+      try {
+
+        setLoading(true);
+        const data = await getRequest();
+        setDataRequest(data);
+
+      } catch (error) {
+
+        console.error("Error al obtener solicitudes:", error);
+      } finally {
+
+        setLoading(false);
+
+      }
+    };
+
+  fetchRequest();
+  }, []);
+
+  const prueba= dataRequest.id_convenio
+
   return (
     <div > 
       <Sidebar />
@@ -110,10 +82,10 @@ function Revisiones() {
 
       </Toolbar>
 
-      
+      {console.log("data del table",dataRequest)}
       <Table
       columns={ColumnsRequest({})}
-      data={dataPrueba}
+      data={dataRequest}
       selectable={true}
       
       />
@@ -121,4 +93,79 @@ function Revisiones() {
   );
 }
 
+
 export default Revisiones;
+
+
+
+
+
+
+
+
+
+
+/* 
+const barrios = [
+  { value: "b1", label: "Barrio 1", zona: "NORTE" },
+  { value: "b2", label: "Barrio 2", zona: "SUR" },
+  { value: "b3", label: "Barrio 3", zona: "NORTE" },
+  { value: "b4", label: "Barrio 4", zona: "CENTRO" },
+];
+const Revisiones = () => {
+  const [formFields, setFormFields] = useState([
+    {
+      name: "zona",
+      label: "Zona",
+      type: "text",
+      placeholder: "Ingrese una zona (NORTE, SUR, CENTRO)",
+      required: true,
+    },
+
+    {
+      name: "zona",
+      label: "Zona",
+      type: "text",
+      placeholder: "Ingrese una zona (NORTE, SUR, CENTRO)",
+      required: true,
+    },
+    {
+      name: "barrio",
+      label: "Barrio",
+      type: "select",
+      placeholder: "Seleccione un barrio",
+      options: [],
+      allOptions: barrios,
+      required: true,
+    }
+  ]);
+
+  const handleFieldChange = (name, value) => {
+    if (name === "zona") {
+      const filtered = barrios.filter(b => b.zona === value.toUpperCase());
+
+      const updatedFields = formFields.map((field) => {
+        if (field.name === "barrio") {
+          return { ...field, options: filtered };
+        }
+        return field;
+      });
+
+      setFormFields(updatedFields);
+    }
+  };
+
+  return (
+    <UserForm
+      title="Formulario Zona y Barrio"
+      fields={formFields}
+      onSubmit={(data) => console.log("Enviado", data)}
+      onCancel={() => console.log("Cancelado")}
+      onFieldChange={handleFieldChange}
+    />
+  );
+};
+
+
+export default Revisiones;
+*/
