@@ -4,7 +4,7 @@ import { axiosWithAuth } from "./api_Manager";
 //* CRUD Para administrar(planes)
 const getPlans = async () => {
     try {
-        return await axiosWithAuth("/api/plan/get", "GET");
+        return await axiosWithAuth("/api/plan/get/", "GET");
     } catch (error) {
         console.error("Error al cargar los planes: ", error);
         throw error;
@@ -33,7 +33,7 @@ const editPlans = async (id, newPlanData) => {
 
 const deletePlans = async (id) => {
     try {
-        return await axiosWithAuth(`/api/plan/delete/${id}`, "DELETE")
+        return await axiosWithAuth(`/api/plan/delete/${id}/`, "DELETE")
     } catch (error) {
         console.error("Error al eliminar el plan", error);
         throw error;
@@ -42,6 +42,7 @@ const deletePlans = async (id) => {
 
 
 //* CRUD para vehiculos
+////////////////////////////////////////////////////////////////////
 const getVehicles = async () => {
     try{
         return await axiosWithAuth("/api/TipoVehiculo/get/", "GET");
@@ -50,6 +51,7 @@ const getVehicles = async () => {
         throw error;
     }
 };
+////////////////////////////////////////////////////////////////////
 
 const addVehicles = async (newVehicleData) =>{
     try{
