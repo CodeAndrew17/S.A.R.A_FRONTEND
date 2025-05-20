@@ -17,6 +17,7 @@ const ModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  transition: all 0.3s in;
 `;
 
 const FormContainer = styled.div`
@@ -29,6 +30,7 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  transition: all 0.3s ease;
 `;
 
 const LogoContainer = styled.div`

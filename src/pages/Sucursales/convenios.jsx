@@ -1,5 +1,5 @@
 import Table from "../../components/table";
-import Toolbar from "../../components/Toolbar";
+import Toolbar from "../../components/toolbar";
 import styled from "styled-components";
 import columnsAgreement from "./TableAgreement/columnsAgreement";
 import UserForm from "../../components/userForm";

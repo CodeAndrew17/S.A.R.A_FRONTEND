@@ -5,13 +5,14 @@ export const useColumnsManage = () => {
   const [selectedItems, setSelectedItems] = useState([]);
 
   const optionsDrop = [
-    { value: "opcion1", label: "Prueba de vacio(PMV)" },
-    { value: "opcion2", label: "Impronta" },
-    { value: "opcion3", label: "Fotos" },
-    { value: "opcion4", label: "Dinamometro" },
-    { value: "opcion5", label: "Prueba de compresión" },
-    { value: "opcion6", label: "Prueba de Gasolina" },
-    { value: "opcion7", label: "Novedades" },
+    { value: "opcion1", label: "Plantilla Vehiculo " },
+    { value: "opcion2", label: "Caracteristicas del Vehiculo" },
+    { value: "opcion3", label: "Plantilla de Cliente" },
+    { value: "opcion4", label: "Plantilla de Accesorios" },
+    { value: "opcion5", label: "Plantilla de Novedades" },
+    { value: "opcion6", label: "Plantilla de Improntas" },
+    { value: "opcion7", label: "Plantilla de PCM" },
+    { value: "opcion8", label: "Plantilla de PMV" },
   ];
 
   const columns = [

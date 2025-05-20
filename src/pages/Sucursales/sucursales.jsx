@@ -98,12 +98,13 @@ const Sucursales = () => {
 
   const handleFormSubmit = async (newData) => {
     try {
+      console.log("Datos del formulario:", newData);
       setLoading(true);
       
       if (editingBranch) {
         await handleUpdateBranches(editingBranch.id, newData);
       } else {
-        await handleSucursalSubmit(newData);
+        await handleSucursalSubmit(newData,setConvenios, setActiveForm, setSucursalesConvenios);
       }
 
       // Refetch data after operation
@@ -113,7 +114,7 @@ const Sucursales = () => {
       ]);
 
       const sucursalesConNombreConvenio = sucursales.map(sucursal => {
-        const convenio = convenios.find(c => c.id === sucursal.convenio);
+        const convenio = convenios.find(c => c.id === sucursal.id_convenio);
         return {
           ...sucursal,
           convenio: convenio?.nombre || "Sin convenio"
@@ -139,13 +140,13 @@ const Sucursales = () => {
 
   const handleDelete = async () => {
     try {
-      setLoading(true);
-      const result = await handleDeleteBranches(selectedConvenios);
+      //setLoading(true);
+      const result = await handleDeleteBranches(selectedConvenios, setConveniosOptions, setSucursalesConvenios);
       
       if (result.success) {
         const sucursales = await getBranches();
         const sucursalesConNombreConvenio = sucursales.map(sucursal => {
-          const convenio = conveniosOptions.find(c => c.id === sucursal.convenio);
+          const convenio = conveniosOptions.find(c => c.id === sucursal.id_convenio);
           return {
             ...sucursal,
             convenio: convenio?.nombre || "Sin convenio"
@@ -185,7 +186,7 @@ const Sucursales = () => {
       const ciudadMatch = sucursal.ciudad?.toLowerCase().includes(sanitizedSearch);
       const nombreMatch = sucursal.nombre?.toLowerCase().includes(sanitizedSearch);
       const direccionMatch = sucursal.direccion?.toLowerCase().includes(sanitizedSearch);
-      const convenioMatch = sucursal.convenio?.toLowerCase().includes(sanitizedSearch);
+      const convenioMatch = sucursal.id_convenio?.toLowerCase().includes(sanitizedSearch);
 
       const estadoTexto = sucursal.estado === "AC" ? "activo" :
                         sucursal.estado === "IN" ? "inactivo" : "";
@@ -271,7 +272,7 @@ const Sucursales = () => {
                 required: true
               },
               { 
-                name: "convenio",
+                name: "id_convenio",
                 label: "Convenio",
                 type: "select",
                 options: conveniosOptions.map((c) => ({value: c.id, label: c.nombre})),
