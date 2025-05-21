@@ -12,17 +12,17 @@ export const useColumnsManage = () => {
     { value: "opcion5", label: "Plantilla de Novedades" },
     { value: "opcion6", label: "Plantilla de Improntas" },
     { value: "opcion7", label: "Plantilla de PCM" },
-    { value: "opcion8", label: "Plantilla de PMV" },
+    { value: "opcion8", label: "Plantilla de PMV" }, //datos estaticos de prueba
   ];
 
   const columns = [
-    { key: "nombre", title: "Nombre" },
-    { key: "vehiculo", title: "Vehiculo" },
-    { key: "cuestionario", title: "Cuestionario" },
-    { key: "estado", title: "Estado" },
+    { key: "nombre_plan", title: <span style={{fontSize: '14px', fontWeight: 'bold'}}>Nombre</span> },
+    { key: "nombre_vehiculo", title:<span style={{fontSize: '14px', fontWeight: 'bold'}}>Vehiculo</span> },
+    { key: "nombre_cuestionario", title: <span style={{fontSize: '14px', fontWeight: 'bold'}}>Cuestionario</span>},
+    { key: "estado", title: <span style={{fontSize: '14px', fontWeight: 'bold'}}>Estado</span> },
     {
-      key: "parametros",
-      title: "Parametros",
+      key: "lista_adicionales",
+      title: <span style={{fontSize: '14px', fontWeight: 'bold'}}>Modificar</span>,
       render: (fila) => (
         <CheckboxDropdown
           options={optionsDrop}

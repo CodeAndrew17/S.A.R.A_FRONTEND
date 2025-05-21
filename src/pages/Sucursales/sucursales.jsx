@@ -186,7 +186,7 @@ const Sucursales = () => {
       const ciudadMatch = sucursal.ciudad?.toLowerCase().includes(sanitizedSearch);
       const nombreMatch = sucursal.nombre?.toLowerCase().includes(sanitizedSearch);
       const direccionMatch = sucursal.direccion?.toLowerCase().includes(sanitizedSearch);
-      const convenioMatch = sucursal.id_convenio?.toLowerCase().includes(sanitizedSearch);
+      const convenioMatch = sucursal.convenio?.toLowerCase().includes(sanitizedSearch);
 
       const estadoTexto = sucursal.estado === "AC" ? "activo" :
                         sucursal.estado === "IN" ? "inactivo" : "";

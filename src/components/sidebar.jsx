@@ -5,17 +5,17 @@ import {logout} from '../api/api_Manager';
 import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipboardList, FaSignOutAlt, FaUser } from "react-icons/fa";
 
 
-
-
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 15px;
+  padding-left: ${({ $isOpen }) => ($isOpen ? "15px" : "26px")}; /* Mismo ajuste */
   height: 80px;
   margin-top: 50px;
   margin-bottom: 10px;
   transition: padding 0.3s ease;
   position: relative; /* Para posicionar el pseudo-elemento */
+
 
   /* Aquí eliminamos el border-bottom */
   &::after {
@@ -33,8 +33,9 @@ const UserContainer = styled.div`
 const UserIcon = styled(FaUser)`
   font-size: 24px;
   min-width: 24px;
-  margin-right: ${({ $isOpen }) => ($isOpen ? "15px" : "10px")};
+  margin-right: ${({ $isOpen }) => ($isOpen ? "25px" : "25px")};
   transition: margin 0.3s ease;
+  
 `;
 
 const Username = styled.span`
@@ -70,15 +71,17 @@ const Menu = styled.ul`
   list-style: none;
   padding: 0;
   margin-top: 20px;
+  
 `;
 
 const MenuItem = styled.li`
   display: flex;
   align-items: center;
   padding: 15px;
+  padding-left: ${({ $isOpen }) => ($isOpen ? "15px" : "26px")}; 
   cursor: pointer;
-  position: relative;  // Cambiado de absolute a relative
   width: 100%;
+  position: relative;
 
   &:hover {
     background: #0c3b66;
