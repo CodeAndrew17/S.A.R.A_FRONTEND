@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getRequest } from "../../../api/api_Solicitudes";
+import { getRequest, getTipoVehiculo } from "../../../api/api_Solicitudes";
 import { getBranches, getAgreement } from "../../../api/api_Convenios";
 import { getEmployees } from "../../../api/api_Usuarios";
 import { getPlanes } from "../../../api/api_Solicitudes";
@@ -13,6 +13,7 @@ const useRequestManage = () => {
   const [convenioList, setConvenioList] = useState([]);
   const [empleadoList, setEmpleadoList] = useState([]);
   const [planList, setPlanList] = useState([]);
+  const [tipovehiculoList,setTipoVehiculoList] = useState([])
   const [formsData,setFormsData]=useState([]);
 
 useEffect(() => {
@@ -52,6 +53,23 @@ useEffect(() => {
       options: sucursalList.map((s) => ({value: s.id, label: s.nombre})),
       required: true,
     },
+
+    {
+      name: "id_tipovehiculo",
+      label: "Tipo de Vehiculo",
+      type: "select",
+      placeholder: "Seleccione un tipo de Vehiculo",
+      options: tipovehiculoList.map((t) => ({value: t.id, label: t.nombre_vehiculo})),
+      required: true,
+    },
+    {
+      name: "id_plan",
+      label: "Plan",
+      type: "select",
+      placeholder: "Seleccione el plan que requiere",
+      options: planList.map((p) => ({value: p.id, label: p.nombre_plan})),
+      required: true,
+    },
     {
       name: "id_empleado",
       label: "Solicitado por",
@@ -70,21 +88,22 @@ useEffect(() => {
       placeholder: "Escriba una recomendacion del servicios",
     }
   ]);
-}, [convenioList, sucursalList, empleadoList]);
-
+}, [convenioList, sucursalList, empleadoList,tipovehiculoList,planList]);
 
   const fetchBaseData = async () => {
     try {
-      const [sucursal, convenio, empleado, plan] = await Promise.all([
+      const [sucursal, convenio, empleado, plan,tipovehiculo] = await Promise.all([
         getBranches(),
         getAgreement(),
         getEmployees(),
         getPlanes(),
+        getTipoVehiculo()
       ]);
       setSucursalList(sucursal);
       setConvenioList(convenio);
       setEmpleadoList(empleado);
       setPlanList(plan);
+      setTipoVehiculoList(tipovehiculo)
     } catch (error) {
       console.error("Error al obtener datos base:", error);
     }
@@ -131,12 +150,14 @@ useEffect(() => {
   return {
     dataRequest,
     formsData,
+    setFormsData,
     loading,
     fetchRequest, // para recargar las solicitudes si lo necesitas manualmente
     sucursalList,
     convenioList,
     empleadoList,
     planList,
+    tipovehiculoList
   };
 };
 

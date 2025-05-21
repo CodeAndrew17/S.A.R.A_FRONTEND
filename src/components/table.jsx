@@ -7,45 +7,27 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 const TableContainer = styled.div`
   width: 93.5%;
   margin: 20px auto 20px 90px;
+  position: relative; /* Añadido */
+  z-index: 1; /* Añadido */
+`;
+
+const ScrollWrapper = styled.div`
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
-
-
-  @media (max-width: 1024px) {
-    width: 90%;
-  }
-
-  @media (max-width: 768px) {
-    width: 85%;
-  }
-
-          /* Scroll suave */
-        scroll-behavior: smooth;
-
-        /* Estilos personalizados para scrollbar */
-        &::-webkit-scrollbar {
-          height: 6px;
-          width: 6px;
-        }
-
-        &::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background-color: rgba(0, 0, 0, 0.2);
-          border-radius: 3px;
-        }
-
+  overflow-y: visible; /* Cambiado a visible */
+  width: 100%;
+  /* Estilos del scrollbar... */
 `;
 
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   min-width: 600px;
+  position: relative;
 `;
+
 
 const TableHeader = styled.th`
   background-color: #5FB8D6;
@@ -68,8 +50,9 @@ const TableRow = styled.tr`
 const TableCell = styled.td`
   padding: 12px 15px;
   border-bottom: 1px solid #ddd;
-  white-space: normal;    /*  Permite el Salto de linea */
-  max-height: 250px;     /* Altura máxima visible */
+  white-space: nowrap;
+  position: relative; /* Añadido para dropdowns */
+  overflow: visible; /* Añadido */
 `;
 
 const ExpandButton = styled.button`
@@ -147,6 +130,7 @@ const Table = ({
 
   return (
     <TableContainer style={containerStyle}>
+      <ScrollWrapper>
       <StyledTable>
         <thead>
           <tr>
@@ -217,6 +201,7 @@ const Table = ({
           )}
         </tbody>
       </StyledTable>
+      </ScrollWrapper>
     </TableContainer>
   );
 };

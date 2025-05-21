@@ -21,5 +21,16 @@ const getRequest = async () =>{
     }
 
 }
+const getTipoVehiculo = async ()=>{
+    try{
 
-export {getRequest,getPlanes}
+        return await axiosWithAuth("/api/tipovehiculo/get/","GET")
+
+    }catch(errors){
+        console.log({'Erros':errors})
+
+        throw errors
+    }
+}
+
+export {getRequest,getPlanes,getTipoVehiculo}

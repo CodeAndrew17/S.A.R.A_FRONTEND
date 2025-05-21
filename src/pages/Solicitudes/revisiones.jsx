@@ -31,17 +31,73 @@ function Revisiones() {
   const [activeForm, setActiveForm] = useState(true)
   const [loading, setLoading] = useState(true);
   const {
+    sucursalList,
+    convenioList,
+    empleadoList,
+    planList,
+    tipovehiculoList,
     dataRequest,
     formsData,
-    convenioList,
+    setFormsData,
     fetchRequest
   } = useRequestManage()
 
+const handleFiledChage = (name, value) => {
+  let updatedFields = [...formsData];
 
-  const handleCreateRequest=()=>{
+  if (name === 'id_convenio') {
+    const filtersucursal = sucursalList.filter(
+      (s) => String(s.id_convenio) === String(value)
+    );
+
+    console.log("Sucursales filtradas:", filtersucursal);
+
+    updatedFields = updatedFields.map((field) => {
+      if (field.name === "id_sucursal") {
+        return {
+          ...field,
+          options: filtersucursal.map((s) => ({
+            value: s.id,
+            label: s.nombre,
+          })),
+        };
+      }
+      return field;
+    });
+  }
+
+  if (name === "id_tipovehiculo") {
+    const filteredPlans = planList.filter(
+      (p) => String(p.id_tipo_vehiculo) === String(value)
+    );
+
+    console.log("Planes filtrados:", filteredPlans);
+
+    updatedFields = updatedFields.map((field) => {
+      if (field.name === "id_plan") {
+        return {
+          ...field,
+          options: filteredPlans.map((p) => ({
+            value: p.id,
+            label: p.nombre_plan,
+          })),
+        };
+      }
+      return field;
+    });
+  }
+
+  setFormsData(updatedFields);
+};
+
+
+ const handleCreateRequest=()=>{
     setActiveForm('request')
   }
-  return (
+  const handlecCancelForm = ()=>{
+    setActiveForm(null)
+  }
+    return (
     <div>
       <Sidebar />
       <TitleWrapper>
@@ -80,6 +136,8 @@ function Revisiones() {
       <UserForm
         title="Pruba de Creacion"
         fields={formsData}
+        onFieldChange={handleFiledChage}
+        onCancel={handlecCancelForm}
       />
 
     

@@ -106,10 +106,18 @@ function Administrar() {
 
       <Table
         data={[
-          { id: 1, estado: 'AC', nombre: 'Plan Autosef', cuestionario: 'Avaluo Comercial', vehiculo: 'Pesados'},
-          { id: 2, estado: 'IN', nombre: 'Plan Basico', cuestionario: 'Inspección', vehiculo: 'Livianos' },
-          { id: 3, estado: 'AC', nombre: 'Plan Premium', cuestionario: 'Avaluo Comercial', vehiculo: 'Motos' },
-          { id: 4, estado: 'AC', nombre: 'Plan Plus', cuestionario: 'Inspección', vehiculo: 'Livianos' },
+            { id: 1, estado: 'AC', nombre: 'Plan Autosef', cuestionario: 'Avaluo Comercial', vehiculo: 'Pesados' },
+            /*{ id: 2, estado: 'IN', nombre: 'Plan Basico', cuestionario: 'Inspección', vehiculo: 'Livianos' },
+            { id: 3, estado: 'AC', nombre: 'Plan Premium', cuestionario: 'Avaluo Comercial', vehiculo: 'Motos' },
+            { id: 4, estado: 'AC', nombre: 'Plan Plus', cuestionario: 'Inspección', vehiculo: 'Livianos' },
+            { id: 5, estado: 'AC', nombre: 'Plan Ejecutivo', cuestionario: 'Diagnóstico General', vehiculo: 'Pesados' },
+            { id: 6, estado: 'IN', nombre: 'Plan Empresarial', cuestionario: 'Inspección Técnica', vehiculo: 'Motos' },
+            { id: 7, estado: 'AC', nombre: 'Plan Familiar', cuestionario: 'Avaluo Comercial', vehiculo: 'Livianos' },
+            { id: 8, estado: 'AC', nombre: 'Plan Turbo', cuestionario: 'Inspección Especial', vehiculo: 'Pesados' },
+            { id: 9, estado: 'IN', nombre: 'Plan Dinámico', cuestionario: 'Revisión Completa', vehiculo: 'Motos' },
+            { id: 10, estado: 'AC', nombre: 'Plan Elite', cuestionario: 'Control de Calidad', vehiculo: 'Livianos' },
+            { id: 11, estado: 'AC', nombre: 'Plan Óptimo', cuestionario: 'Inspección de Seguridad', vehiculo: 'Pesados' },
+            { id: 12, estado: 'IN', nombre: 'Plan Avanzado', cuestionario: 'Evaluación Técnica', vehiculo: 'Motos' }*/
         ]}
         onSelectionChange={handleSelectionChange}
         selectable={true}
