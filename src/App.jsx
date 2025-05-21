@@ -7,7 +7,7 @@ import Usuarios from './pages/Usuarios/usuarios';
 import Administrar from './pages/Administrar/administrar';
 import Estadisticas from './pages/estadisticas';
 import Sucursales from './pages/Sucursales/sucursales';
-import Revisiones from './pages/revisiones';
+import Revisiones from './pages/Revisiones/revisiones';
 import Configuracion from './pages/configuracion';
 
 

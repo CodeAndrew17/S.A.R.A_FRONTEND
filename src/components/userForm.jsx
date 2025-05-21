@@ -260,6 +260,7 @@ const UserForm = ({
                       value={formData[field.name] ?? ""}
                       onChange={handleInputChange}
                       required={field.required}
+                      readOnly={field.readOnly}
                       style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
                     />
                     <ErrorMessage>{errors[field.name]}</ErrorMessage>
