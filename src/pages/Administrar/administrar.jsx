@@ -2,14 +2,17 @@ import {useState} from "react";
 import Sidebar from "../../components/sidebar"; 
 import styled from "styled-components";
 import Table from "../../components/table";
-import { useColumnsManage } from "./columnsManage";
+import { useColumnsManage } from "./columnsAdmin";
 
-import Toolbar from "../../components/toolbar";
+import Toolbar from "../../components/Toolbar";
 import UserForm from "../../components/userForm";
 import { CheckboxDropdown } from "../../components/dropdownTwo";
 
-
 import { VscTypeHierarchy } from "react-icons/vsc";
+
+import usePlansandVehicles from "./adminManager"; //funciones para manejar datos
+import { toast } from "react-toastify";
+
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -33,10 +36,13 @@ const TitleText = styled.h1`
 function Administrar() {
   const [activeForm, setActiveForm] = useState(null); // para mostrar el formulario 
   const [editingPlan, setEditingPlan] = useState(null); // para editar el plan 
-  const [selectedRows, setSelectedRows] = useState([]); //para manejar las filas sleccionadas 
+  const [selectedRows, setSelectedRows] = useState([]); //para manejar las filas seleccionadas 
+
   const { columns, selectedItems, setSelectedItems } = useColumnsManage();
 
-
+  const { plans, vehicles, loading, error, submitPlan, deletePlan, editPlan } = usePlansandVehicles(); // Llama al hook usePlans para usar sus funciones y estados
+  
+  //funcion para manejar la seleccion de filas y acceder a su id para modificarlas en el edit y delete
   const handleSelectionChange = (selectedRows) => {
     setSelectedRows(selectedRows);
   console.log("Filas seleccionadas:", selectedRows);
@@ -47,35 +53,72 @@ function Administrar() {
   }
 };
 
+//preparamos la interfaz para la creacion de un nuevo plan
   const handleCrearPlan = () => {
     setEditingPlan(null); // Limpiar el estado de edición al crear una nueva sucursal
     setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
   };
 
-  const handleEditPlan = ()  => {
-    if (selectedRows.length === 1) {
-      setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
+  //capturamos los datos del formualrio y los enviamos a la api con la logica de submitPlan para actualizar los datos en table tambien usamos editPlan para eficiencia 
+  const handleFormSubmit = async (formData) => {
+    try {
+    if (editingPlan) {
+      await editPlan(editingPlan.id, formData); 
+      console.log("Plan editado con éxito");
+    } else {
+      await submitPlan(formData); 
+      toast.success("Plan creado exitosamente");
+    }
+
+    setActiveForm(null); //cerramos el formulario en cualquiera de los dos casos de crear o editar 
+    setEditingPlan(null); //limpiamos despues de editar o crear un plan
+
+    } catch (error) {
+      console.error("#Error al crear el plan", error);
+      toast.error("Error al crear el plan");
     }
   };
 
-
-  //esta funcion va en el otro archivo para manejar la logica de los handle 
-  const handleFormSubmit = (formData) => {
-    console.log("Formulario enviado", formData);
-
-    setActiveForm(null);
-
-  };
-
+  //Funcion para cerrar el formulario
   const handleCancelForm = () => {
     setActiveForm(null); 
+    setEditingPlan(null); //limpiamos de nuevo el formulario 
   };
 
-  const handelDeletePlan = () => {
-    alert("Eliminando el Plan...");
+
+  const handleEditPlan = ()  => {
+    if (selectedRows.length === 1) {
+      const idSeleccionado = selectedRows[0]; //taremos solo el id para solo traer la data de ese plan seleccionado
+      const planCompleto = plans.find(plan => plan.id === idSeleccionado);
+
+      if (planCompleto) {
+      setEditingPlan(planCompleto); // Establece el plan seleccionado para editar
+      setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
+      }
+      console.log("Plan seleccionado para editar:", planCompleto);
+      setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
+    } else {
+      toast.error("Por favor selecciona un solo plan para editar");
+    }
   };
 
-  
+  const handelDeletePlan = async () => {
+    try {
+      if (selectedRows.length === 0){
+        toast.error("Por favor selecciona por lo menos un plan para eliminar");
+        return;
+      }
+        await Promise.all(
+        selectedRows.map(async (id) => {
+          await deletePlan(id);
+        })
+      );
+    } catch (error) {
+      console.error("Error al eliminar el plan", error);
+      toast.error("Error al eliminar los planes seleccionados");
+    }
+  };
+
 
   return (
     <div> 
@@ -105,68 +148,70 @@ function Administrar() {
             </Toolbar>
 
       <Table
-        data={[
-          { id: 1, estado: 'AC', nombre: 'Plan Autosef', cuestionario: 'Avaluo Comercial', vehiculo: 'Pesados'},
-          { id: 2, estado: 'IN', nombre: 'Plan Basico', cuestionario: 'Inspección', vehiculo: 'Livianos' },
-          { id: 3, estado: 'AC', nombre: 'Plan Premium', cuestionario: 'Avaluo Comercial', vehiculo: 'Motos' },
-          { id: 4, estado: 'AC', nombre: 'Plan Plus', cuestionario: 'Inspección', vehiculo: 'Livianos' },
-        ]}
+        data={plans}
         onSelectionChange={handleSelectionChange}
         selectable={true}
         columns={columns}
       />
 
-      {activeForm === "Plan" && (
-        <UserForm
-          title={editingPlan ? "Editar Plan" : "Crear Nuevo Plan"}
-          fields = {[
+        {activeForm === "Plan" && (
+          <UserForm
+            title={editingPlan ? "Editar Plan" : "Crear Nuevo Plan"}
+            fields = {[
+                { 
+                name: "nombre_plan",
+                label: "Nombre del Plan",
+                placeholder: "Nombre", 
+                type: "text", 
+                required: true 
+              },
               { 
-              name: "nombre",
-              label: "Nombre del Plan",
-              placeholder: "Nombre", 
-              type: "text", 
-              required: true 
-            },
-            { 
-              name: "vehiculo",
-              label: "Tipo de Vehículo",
-              type: "select",
-              options: [
-                {value: "Liviano", label: "Livianos"},
-                {value: "Pesado", label: "Pesados"},
-                {value: "Motos", label: "Motos"}
-              ],
-              placeholder: "Seleccionar",
-              required: true
-            },
-            { 
-              name: "cuestionario",
-              type: "select",
-              label: "Cuestionario",
-              options: [
-                {value: "1", label: "Avaluo Comercial"},
-                {value: "2", label: "Inspección"}
-              ],
-              placeholder: "Seleccionar",
-              required: true
-            },
-            { 
-              name: "estado",
-              type: "select",
-              options: [
-                {value: "AC", label: "Activo"},
-                {value: "IN", label: "Inactivo"}
-              ],
-              defaultValue: "AC",
-              placeholder: "Estado",
-              required: true
-            }
-          ]}
-          onSubmit={handleFormSubmit}
-          onCancel={handleCancelForm}
-          initialValues={editingPlan || {}}
-        />
-      )}
+                name: "id_tipo_vehiculo",
+                label: "Tipo de Vehículo",
+                type: "select",
+
+                options: vehicles.map(v => ({ //mapeamos los vehiculos para q muestre el nombre y envie el id como valor
+                  value: v.id,
+                  label: v.nombre_vehiculo
+                })),
+
+                placeholder: "Seleccionar",
+                required: true
+              },
+              { 
+                name: "cuestionario",
+                type: "select",
+                label: "Cuestionario",
+                options: [
+                  {value: 1, label: "Avaluo Comercial"}, //valores estaticos cambiar mas adelante 
+                  {value: 2, label: "Inspección"},
+                  {value: 3, label: "Adicionales"}
+                ],
+                placeholder: "Seleccionar",
+                required: true
+              },
+              { 
+                name: "estado",
+                type: "select",
+                options: [
+                  {value: "AC", label: "Activo"},
+                  {value: "IN", label: "Inactivo"}
+                ],
+                defaultValue: "AC",
+                placeholder: "Estado",
+                required: true
+              },
+              {
+                name: "lista_adicionales",
+                type: "hidden", // para no mostrarlo en el formulario
+                defaultValue: [], // se envia vacio como array para añadir mas cuando toque editar
+              }
+            ]}
+            onSubmit={handleFormSubmit}
+            onCancel={handleCancelForm}
+            initialValues={editingPlan} // En caso de editar, pasamos los valores iniciales
+          />
+        )}
 
     </div>
   );

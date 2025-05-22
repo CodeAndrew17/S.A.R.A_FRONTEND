@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar"; 
 import styled from "styled-components";
 import Table from "../../components/table";
 import ColumnsRequest from "./TableRequest/columnsRequest";
 import Toolbar from "../../components/Toolbar";
+import useRequestManage from "./TableRequest/requestManagement";
+import UserForm from "../../components/userForm";
+import { Database } from "lucide-react";
+import Swal from "sweetalert2";
 
 
 const TitleWrapper = styled.div`
@@ -12,7 +16,7 @@ const TitleWrapper = styled.div`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
-  margin-top: 10px; /* Espaciado del fondo */
+  margin-top: 10px;
   height: 60px;
 `;
 
@@ -20,103 +24,137 @@ const TitleText = styled.h1`
   color: #000;
   font-size: 40px;
   line-height: 10px;
-  margin: 0; /* Para que no interfiera con el diseño */
-  top: 20px; /* Ajusta el texto sin afectar el fondo */
+  margin: 0;
+  top: 20px;
   position: relative;
-
 `;
-const dataPrueba = [
-  {
-    id: 1,
-    placa: 'ABC123',
-    fecha: '10/05/2025',
-    central_servicio: 'Centro Norte',
-    turno: 'Mañana',
-    id_empleado: 'Juan Pérez',
-    id_sucursal: 'Sucursal Norte',
-    estado: 'AC',
-    id_plan: 'Plan Basico',
-    id_tipo_vehiculo: 'Carro',
-    observaciones: 'El vehículo fue recibido en el Centro Norte. Para encontrar el servicio, dirigirse a la zona de recepción, módulo 3. El servicio incluye revisión general, ajuste de frenos y verificación de niveles. Tiempo estimado: 2 horas aprox.',
-    id_convenio: 'AutoMec S.A.',
-  },
-  {
-    id: 2,
-    placa: 'XYZ789',
-    fecha: '12/05/2015',
-    central_servicio: 'Centro Sur',
-    turno: '1',
-    id_empleado: 'María Rodríguez',
-    id_sucursal: 'Fast Drive',
-    estado: 'IN',
-    id_plan: 'PLAN02',
-    id_tipo_vehiculo: 'Moto',
-    observaciones: 'Falta repuesto para frenos',
-    id_convenio: 'Inchcape Colombia S.A.S.',
-  },
-  {
-    id: 3,
-    placa: 'LMN456',
-    fecha: '09/05/2025',
-    central_servicio: 'Centro Este',
-    turno: 'Noche',
-    id_empleado: 'Andres Gustavo Álvarez Suárez',
-    id_sucursal: 'Sucursal Este',
-    estado: 'PE',
-    id_plan: 'PLAN03',
-    id_tipo_vehiculo: 'Camioneta',
-    observaciones: 'Esperando aprobación del cliente',
-    id_convenio: 'Transporte Express Ltda.',
-  },
-  {
-    id: 4,
-    placa: 'DEF321',
-    fecha: '08/05/2025',
-    central_servicio: 'Centro Oeste',
-    turno: 'Mañana',
-    id_empleado: 'Laura Gómez',
-    id_sucursal: 'Sucursal Oeste',
-    estado: 'AC', // RE = Revisado (ejemplo ficticio)
-    id_plan: 'PLAN04',
-    id_tipo_vehiculo: 'Bus',
-    observaciones: 'Estado sin clasificar Estado sin clasificar Estado sin   sin clasificar',
-    id_convenio: 'Movilidad Segura S.A.',
-  },
-];
 
 
 function Revisiones() {
-  return (
-    <div > 
+  const [activeForm, setActiveForm] = useState(true)
+  const [editinRequest, setEditinRequest] =  useState(null) //Datos para editar 
+  const [selectedRequests, setSelectedRequests] = useState([]);
+
+
+  const [loading, setLoading] = useState(true);
+  const {
+    originalRequest,
+    dataRequest,
+    formsData,
+    fetchRequest,
+    fetchBaseData,
+    createRequest,
+    editingRequest,
+    handleFiledChage,
+  } = useRequestManage()
+
+  useEffect(() => {
+  const init = async () => {
+    await fetchBaseData();  // <-- se llama aquí
+    await fetchRequest();
+    console.log(originalRequest)
+  };
+  init();
+}, []);
+
+
+
+  const handleeditRequest = () => {
+    if (selectedRequests.length === 1) {
+      setEditinRequest(selectedRequests[0]); // cargamos los datos al formulario
+      setActiveForm('request');
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo modificar la solicitud. Verifica los datos ingresados.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
+
+
+  const handleCreateRequest=()=>{
+    setActiveForm('request')
+
+  }
+  const handlecCancelForm = ()=>{
+    setActiveForm(null)
+  }
+
+  const handleFormSubmit = (data) => {
+    console.log("Datos recibidos:", data); // <-- Añade esto
+
+    if(editinRequest){
+      const dataWithId = {
+      ...data,
+      id: editinRequest.id
+      };
+      console.log("ingresar al edit ",dataWithId)
+      
+      editingRequest(dataWithId)
+
+    }else{
+      createRequest(data);
+    }
+    setActiveForm(null)
+    setEditinRequest(null)
+    
+  };
+    return (
+    <div>
       <Sidebar />
       <TitleWrapper>
         <TitleText>Revisiones</TitleText>
       </TitleWrapper>
-      <Toolbar>
 
-        <Toolbar.Search 
-          placeholder="Buscar..."
-          onSearch={null} 
+      <Toolbar
+        onCreate={handleCreateRequest}
+        onEdit={handleeditRequest}
       
+      >
+        <Toolbar.Search
+          placeholder="Buscar..."
+          onSearch={null}
         />
         <Toolbar.Dropdown
           options={{
-            "AC": "Activo", 
+            "AC": "Activo",
             "IN": "Inactivo",
-            'PE': "En Progreso",
-            "": "Todos"}}            
+            "PE": "En Progreso",
+            "": "Todos"
+          }}
           onSelect={null}
+          
         />
-
+    
       </Toolbar>
 
-      
       <Table
-      columns={ColumnsRequest({})}
-      data={dataPrueba}
-      selectable={true}
-      
-      />
+        columns={ColumnsRequest({})}
+        data={dataRequest}
+        selectable={true}
+        onSelectionChange={(selectedIds) => {
+          const selectedItems = originalRequest.filter(item => selectedIds.includes(item.id));
+          console.log("Filas seleccionadas:", selectedItems);
+            setEditinRequest(selectedRequests[0]);
+
+          setSelectedRequests(selectedItems);
+        }}
+        />
+    {activeForm ==='request' &&(
+        <UserForm
+          title="Pruba de Creacion"
+          fields={formsData}
+          onFieldChange={handleFiledChage}
+          onCancel={handlecCancelForm}
+          onSubmit={handleFormSubmit}
+          initialValues={editinRequest}
+        />
+
+    
+    )}
+
     </div>
   );
 }
