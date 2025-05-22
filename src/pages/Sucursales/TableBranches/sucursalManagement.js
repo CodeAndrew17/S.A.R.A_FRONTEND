@@ -4,6 +4,8 @@ import { addBranches, getBranches, deleteBranches, getAgreement,
 import Swal from "sweetalert2"; 
 
 
+const useEffect = () => {
+    const loadBranchesAndAgreements = async () => {}}
 
 const handleSucursalSubmit = async (newData, setConvenios, setActiveForm, setSucursalesConvenios) => {
     try {
