@@ -15,10 +15,10 @@ const columnsRequest=({})=>[
       case 'AC': // Activo
         color = '#28a745'; // verde
         break;
-      case 'IN': // Inactivo
+      case 'CAL': // Inactivo
         color = '#dc3545'; // rojo
         break;
-      case 'PE': // Pendiente (por ejemplo)
+      case 'PRO': // Pendiente (por ejemplo)
         color = '#ffc107'; // amarillo
         break;
       default:

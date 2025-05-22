@@ -6,6 +6,8 @@ import ColumnsRequest from "./TableRequest/columnsRequest";
 import Toolbar from "../../components/Toolbar";
 import useRequestManage from "./TableRequest/requestManagement";
 import UserForm from "../../components/userForm";
+import { Database } from "lucide-react";
+import Swal from "sweetalert2";
 
 
 const TitleWrapper = styled.div`
@@ -27,76 +29,78 @@ const TitleText = styled.h1`
   position: relative;
 `;
 
+
 function Revisiones() {
   const [activeForm, setActiveForm] = useState(true)
+  const [editinRequest, setEditinRequest] =  useState(null) //Datos para editar 
+  const [selectedRequests, setSelectedRequests] = useState([]);
+
+
   const [loading, setLoading] = useState(true);
   const {
-    sucursalList,
-    convenioList,
-    empleadoList,
-    planList,
-    tipovehiculoList,
+    originalRequest,
     dataRequest,
     formsData,
-    setFormsData,
-    fetchRequest
+    fetchRequest,
+    fetchBaseData,
+    createRequest,
+    editingRequest,
+    handleFiledChage,
   } = useRequestManage()
 
-const handleFiledChage = (name, value) => {
-  let updatedFields = [...formsData];
-
-  if (name === 'id_convenio') {
-    const filtersucursal = sucursalList.filter(
-      (s) => String(s.id_convenio) === String(value)
-    );
-
-    console.log("Sucursales filtradas:", filtersucursal);
-
-    updatedFields = updatedFields.map((field) => {
-      if (field.name === "id_sucursal") {
-        return {
-          ...field,
-          options: filtersucursal.map((s) => ({
-            value: s.id,
-            label: s.nombre,
-          })),
-        };
-      }
-      return field;
-    });
-  }
-
-  if (name === "id_tipovehiculo") {
-    const filteredPlans = planList.filter(
-      (p) => String(p.id_tipo_vehiculo) === String(value)
-    );
-
-    console.log("Planes filtrados:", filteredPlans);
-
-    updatedFields = updatedFields.map((field) => {
-      if (field.name === "id_plan") {
-        return {
-          ...field,
-          options: filteredPlans.map((p) => ({
-            value: p.id,
-            label: p.nombre_plan,
-          })),
-        };
-      }
-      return field;
-    });
-  }
-
-  setFormsData(updatedFields);
-};
+  useEffect(() => {
+  const init = async () => {
+    await fetchBaseData();  // <-- se llama aquí
+    await fetchRequest();
+    console.log(originalRequest)
+  };
+  init();
+}, []);
 
 
- const handleCreateRequest=()=>{
+
+  const handleeditRequest = () => {
+    if (selectedRequests.length === 1) {
+      setEditinRequest(selectedRequests[0]); // cargamos los datos al formulario
+      setActiveForm('request');
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo modificar la solicitud. Verifica los datos ingresados.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
+
+
+  const handleCreateRequest=()=>{
     setActiveForm('request')
+
   }
   const handlecCancelForm = ()=>{
     setActiveForm(null)
   }
+
+  const handleFormSubmit = (data) => {
+    console.log("Datos recibidos:", data); // <-- Añade esto
+
+    if(editinRequest){
+      const dataWithId = {
+      ...data,
+      id: editinRequest.id
+      };
+      console.log("ingresar al edit ",dataWithId)
+      
+      editingRequest(dataWithId)
+
+    }else{
+      createRequest(data);
+    }
+    setActiveForm(null)
+    setEditinRequest(null)
+    
+  };
     return (
     <div>
       <Sidebar />
@@ -106,10 +110,9 @@ const handleFiledChage = (name, value) => {
 
       <Toolbar
         onCreate={handleCreateRequest}
+        onEdit={handleeditRequest}
       
       >
-
-
         <Toolbar.Search
           placeholder="Buscar..."
           onSearch={null}
@@ -131,14 +134,23 @@ const handleFiledChage = (name, value) => {
         columns={ColumnsRequest({})}
         data={dataRequest}
         selectable={true}
-      />
+        onSelectionChange={(selectedIds) => {
+          const selectedItems = originalRequest.filter(item => selectedIds.includes(item.id));
+          console.log("Filas seleccionadas:", selectedItems);
+            setEditinRequest(selectedRequests[0]);
+
+          setSelectedRequests(selectedItems);
+        }}
+        />
     {activeForm ==='request' &&(
-      <UserForm
-        title="Pruba de Creacion"
-        fields={formsData}
-        onFieldChange={handleFiledChage}
-        onCancel={handlecCancelForm}
-      />
+        <UserForm
+          title="Pruba de Creacion"
+          fields={formsData}
+          onFieldChange={handleFiledChage}
+          onCancel={handlecCancelForm}
+          onSubmit={handleFormSubmit}
+          initialValues={editinRequest}
+        />
 
     
     )}

@@ -1,6 +1,7 @@
 import { Await } from "react-router-dom";
 import { axiosWithAuth } from "./api_Manager";
 
+//! Peticiones Get 
 const getPlanes= async()=>{
     try{
         return await axiosWithAuth("/api/plan/get/")
@@ -33,4 +34,28 @@ const getTipoVehiculo = async ()=>{
     }
 }
 
-export {getRequest,getPlanes,getTipoVehiculo}
+//Post 
+const addRequest =  async (newRequestData)=>{
+    try{
+        return await axiosWithAuth("/request/api/solicitud/post/","POST",newRequestData)
+
+    }catch(errors){
+        console.log(errors)
+        throw errors
+    }
+}
+
+const patchRequest = async(id,editRequestData) =>{
+    try{
+        return await axiosWithAuth(`/request/api/solicitud/patch/${id}/`,"PATCH",editRequestData)
+        
+
+    }catch(errors){
+        console.log(errors)
+        throw errors
+
+    }
+}
+
+
+export {getRequest,getPlanes,getTipoVehiculo,addRequest,patchRequest}

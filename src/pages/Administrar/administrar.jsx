@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Table from "../../components/table";
 import { useColumnsManage } from "./columnsManage";
 
-import Toolbar from "../../components/toolbar";
+import Toolbar from "../../components/Toolbar";
 import UserForm from "../../components/userForm";
 import { CheckboxDropdown } from "../../components/dropdownTwo";
 
