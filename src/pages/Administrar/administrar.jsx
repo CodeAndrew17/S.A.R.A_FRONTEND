@@ -88,8 +88,14 @@ function Administrar() {
 
   const handleEditPlan = ()  => {
     if (selectedRows.length === 1) {
-      const planSeleccionado = selectedRows[0];
-      setEditingPlan(planSeleccionado); // Establece el plan seleccionado para editar
+      const idSeleccionado = selectedRows[0]; //taremos solo el id para solo traer la data de ese plan seleccionado
+      const planCompleto = plans.find(plan => plan.id === idSeleccionado);
+
+      if (planCompleto) {
+      setEditingPlan(planCompleto); // Establece el plan seleccionado para editar
+      setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
+      }
+      console.log("Plan seleccionado para editar:", planCompleto);
       setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
     } else {
       toast.error("Por favor selecciona un solo plan para editar");
