@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { addRequest, getRequest, getTipoVehiculo,patchRequest } from "../../../api/api_Solicitudes";
+import { addRequest, deleteRequest, getRequest, getTipoVehiculo,patchRequest } from "../../../api/api_Solicitudes";
 import { getBranches, getAgreement } from "../../../api/api_Convenios";
 import { getEmployees } from "../../../api/api_Usuarios";
 import { getPlanes } from "../../../api/api_Solicitudes";
@@ -99,7 +99,7 @@ const useRequestManage = () => {
   };
 
   useEffect(() => {
-    fetchRequest(); // ✅ Solo llamamos fetchRequest, que se encarga de todo
+    fetchRequest(); 
   }, []);
 
   const createRequest= async (data)=>{
@@ -200,6 +200,42 @@ const handleFiledChage = (name, value) => {
   setFormsData(updatedFields);
 };
 
+const removeRequest = async (listIds)=>{
+
+  if(listIds.length===0){
+    await Swal.fire({
+      title:"Error",
+      text:"Debe Selecionar al menos una solicitud",
+      icon:"error"
+    });
+    return false
+  }
+
+  try{
+    for(const id of listIds){
+        deleteRequest(id.id)
+        fetchRequest();
+
+    };
+    await Swal.fire({
+            title: "Solicitudes  Eliminados",
+            text: "Se eliminaron los Convenios correctamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+  return true;
+    
+  }catch(errors){
+    console.log(errors)
+    Swal.fire({
+      title:"Error al elimianr",
+      text :`No se puedo hacer la elimacion ${errors}`,
+      icon:'error'
+    })
+
+  }
+
+}
   return {
     dataRequest,
     originalRequest,
@@ -215,6 +251,7 @@ const handleFiledChage = (name, value) => {
     fetchBaseData,
     createRequest,
     editingRequest,
+    removeRequest,
     handleFiledChage
   };
 };

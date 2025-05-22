@@ -56,6 +56,17 @@ const patchRequest = async(id,editRequestData) =>{
 
     }
 }
+const deleteRequest =async(id)=>{
+    try{
+        return await axiosWithAuth(`/request/api/solicitud/delete/${id}/`,"DELETE")
+
+    }catch(errros){
+        console.log(errros)
+        throw errros        
+
+    }
+
+}
 
 
-export {getRequest,getPlanes,getTipoVehiculo,addRequest,patchRequest}
+export {getRequest,getPlanes,getTipoVehiculo,addRequest,patchRequest,deleteRequest}

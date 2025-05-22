@@ -45,6 +45,7 @@ function Revisiones() {
     fetchBaseData,
     createRequest,
     editingRequest,
+    removeRequest,
     handleFiledChage,
   } = useRequestManage()
 
@@ -57,7 +58,7 @@ function Revisiones() {
   init();
 }, []);
 
-
+console.log("Data de ids", selectedRequests)
 
   const handleeditRequest = () => {
     if (selectedRequests.length === 1) {
@@ -72,6 +73,14 @@ function Revisiones() {
       });
     }
   };
+
+  const handleDelete=async()=>{
+    const success = await removeRequest(selectedRequests);
+     if (success) {
+      fetchRequest();
+      fetchBaseData();
+    }
+  }
 
 
   const handleCreateRequest=()=>{
@@ -111,6 +120,7 @@ function Revisiones() {
       <Toolbar
         onCreate={handleCreateRequest}
         onEdit={handleeditRequest}
+        onDelete={handleDelete}
       
       >
         <Toolbar.Search
