@@ -119,7 +119,9 @@ function Administrar() {
     }
   };
 
+  const todosLosIDs = plans.map(plan => plan.id);
 
+  console.log("Estructura de carga: ",todosLosIDs)
   return (
     <div> 
       <Sidebar />
