@@ -9,7 +9,7 @@ import { Trash, Filter, Plus, Edit, Settings, Building, Map} from "lucide-react"
 import Table from "../../components/table";
 import {getConvenios} from "../../api/api_Convenios"; 
 import columns from "./TableAgreement/columns"; 
-import Toolbar from "../../components/Toolbar";
+import Toolbar from "../../components/toolbar";
 
 
 const TitleWrapper = styled.div`

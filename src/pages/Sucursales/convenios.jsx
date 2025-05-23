@@ -1,11 +1,10 @@
 import Table from "../../components/table";
-import Toolbar from "../../components/Toolbar";
+import Toolbar from "../../components/toolbar";
 import styled from "styled-components";
 import columnsAgreement from "./TableAgreement/columnsAgreement";
 import UserForm from "../../components/userForm";
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import CustomButton from "../../components/button";
-import { Edit } from "lucide-react";
 import useAgreementManagement from "./TableAgreement/convenioManagement";
 
 
@@ -15,40 +14,70 @@ const TitleWrapper = styled.div`
 `;
 
 const TitleText = styled.h1`
-  color: #000;
-  font-size: 20px;
+  color: #2c3e50;
+  font-size: 24px;
+  font-weight: 600;
   margin: 0;
   padding: 0;
-  text-align: left;
+  position: relative;
+  display: inline-block;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -16px;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, #00c5d6, #2575fc);
+    border-radius: 3px;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 28px;
+    
+    &::after {
+      width: 70px;
+    }
+  }
 `;
 
 const ModalContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 1000;
+  overflow-y: auto; /* Permite scroll si el contenido del modal es muy largo */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Cambiado de 'center' a 'flex-start' para alinear arriba */
+  padding: 20px 0; /* Espacio vertical */
 `;
 
 const ContainerAgreement = styled.div`
-  padding: 30px;
   background-color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-  width: 80%;
-  max-height: 90vh;
+  width: 100%;
+  max-width: 1200px; /* Ancho máximo para pantallas grandes */
+  min-height: 90vh; /* Altura mínima */
+  max-height: 90vh; /* Altura máxima con scroll interno */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  scroll-behavior: smooth;
+  padding: 20px;
+  margin: 20px; /* Margen en dispositivos pequeños */
+  
+  /* Media queries para diferentes tamaños */
+  @media (min-width: 768px) {
+    padding: 30px;
+    margin: 0;
+  }
 
+  /* Estilos de scroll */
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -179,13 +208,14 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
         {/* Mostrar el formulario si es necesario */}
         {activeForm === 'convenio'&& (
           <UserForm
-            title={editinAgreement? 'Editar Convenio':'Crear Convenio'}
+            title={editinAgreement ? `Editar Convenio ${editinAgreement.nombre}` : 'Crear Convenio'}
             fields={[
-              { name: "nombre", placeholder: "Nombre", type: "text", required: true},
+              { name: "nombre",label: "Nombre", placeholder: "Nombre", type: "text", required: true},
               { name: "nit", placeholder: "NIT", type: "text", required: true },
               { name: "telefono", placeholder: "Teléfono", type: "tel", required: true },
               { 
                 name: "estado",
+                label: "Estado",
                 type: "select",
                 options: [
                   {value: "AC", label:"Activo"},
@@ -193,6 +223,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
                 ],
                 defaultValue: "AC",
                 placeholder: "Estado",
+                required: true
               },
             ]}
             initialValues={editinAgreement}

@@ -118,7 +118,7 @@ const useAgreementManagement = () => {
 
     const [agreementList] = await Promise.all([getBranches()]);
     const branchesAsigandas = agreementList.filter((item) =>
-      ids.includes(item.convenio)
+      ids.includes(item.id_convenio)
     );
 
     const textoDinamico =

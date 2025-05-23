@@ -55,7 +55,7 @@ const getVehicles = async () => {
 
 const addVehicles = async (newVehicleData) =>{
     try{
-        const response = await axiosWithAuth("/api/TipoVehiculo/post/");
+        const response = await axiosWithAuth("/api/TipoVehiculo/post/", "POST", newVehicleData);
         return response;
     } catch (error) {
         console.error("Error al crear el vehiculo: ", error);
@@ -74,7 +74,7 @@ const editVehicles = async (id, newVehicleData) => {
 
 const deleteVehicles = async (id) => {
     try{
-        return await axiosWithAuth("/api/TipoVehiculo/delete/1/", "DELETE");
+        return await axiosWithAuth(`/api/TipoVehiculo/delete/${id}/`, "DELETE");
     } catch (error) {
         console.error("Error al eliminar el vehiculo: ", error)
         throw error;

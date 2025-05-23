@@ -4,10 +4,12 @@ import { addBranches, getBranches, deleteBranches, getAgreement,
 import Swal from "sweetalert2"; 
 
 
+const useEffect = () => {
+    const loadBranchesAndAgreements = async () => {}}
 
 const handleSucursalSubmit = async (newData, setConvenios, setActiveForm, setSucursalesConvenios) => {
     try {
-
+      console.log(newData)
       await addBranches(newData); 
   
       // Traer las sucursales y convenios actualizados
@@ -43,7 +45,7 @@ const refreshData = async (setConvenios, setSucursalesConvenios) => {
       const convenios = await getAgreement();
   
       const sucursalesConConvenios = sucursales.map(sucursal => {
-        const convenio = convenios.find(c => c.id === sucursal.id_convenio);
+        const convenio = convenios.find(c => c.id === sucursal.convenio);
         return {
           ...sucursal,
           convenio: convenio ? convenio.nombre : "Sin convenio"

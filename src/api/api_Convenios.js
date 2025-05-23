@@ -31,13 +31,13 @@ const editAgreement = async (id, updateData) => {
 
 const deleteAgreement= async(id)=>{ 
     try{
-        const response = await axiosWithAuth(`/api/convenio/delete/${id}/`, "DELETE");
-        return response
-    }catch (error){
-        console.error("Error al eliminar la sucursal: ", error)
-        throw error
+        const reponse = await axiosWithAuth(`/api/convenio/delete/${id}/`, "DELETE")
+
+    }catch (errors){
+        throw errors
     }
-};
+
+}
 
 
 //* Funciones CRUD para Sucursales  

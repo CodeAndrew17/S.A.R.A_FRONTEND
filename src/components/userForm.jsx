@@ -17,6 +17,7 @@ const ModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  transition: all 0.3s in;
 `;
 
 const FormContainer = styled.div`
@@ -24,11 +25,12 @@ const FormContainer = styled.div`
   background-color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  width: 800px;
+  width: 680px;
   height: auto;
   display: flex;
   flex-direction: column;
   position: relative;
+  transition: all 0.3s ease;
 `;
 
 const LogoContainer = styled.div`
@@ -76,13 +78,13 @@ const FormContent = styled.div`
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 12px;
-  margin: 8px 0;
+  padding: 10px;
+  margin: 6px 0;
   border: 1px solid #ddd;
   border-radius: 6px;
   box-sizing: border-box;
@@ -97,8 +99,8 @@ const Input = styled.input`
 
 const Select = styled.select`
   width: 100%;
-  padding: 12px;
-  margin: 8px 0;
+  padding: 10px;
+  margin: 6px 0;
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: white;
@@ -166,6 +168,7 @@ const UserForm = ({
   fields = [],
   onSubmit,
   onCancel,
+  onFieldChange,
   successMessage = "Usuario creado con éxito",
   successDescription = "El usuario ha sido registrado correctamente",
   initialValues = {}
@@ -194,7 +197,12 @@ const UserForm = ({
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
+      if (typeof onFieldChange === 'function') {
+        onFieldChange(name, value);
+      }
   };
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -222,6 +230,15 @@ const UserForm = ({
           <FormContent>
             {fields.map((field) => (
               <InputGroup key={field.name}>
+                <label style={{ 
+                  marginBottom: "8px", 
+                  fontWeight: "500",
+                  color: "#555",
+                  fontSize: "14px"
+                }}>
+                  {field.label || field.placeholder}
+                  {field.required && <span style={{ color: "red" }}> *</span>}
+                </label>
                 {field.type === "select" ? (
                   <>
                     <Select
@@ -260,7 +277,6 @@ const UserForm = ({
                       value={formData[field.name] ?? ""}
                       onChange={handleInputChange}
                       required={field.required}
-                      readOnly={field.readOnly}
                       style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
                     />
                     <ErrorMessage>{errors[field.name]}</ErrorMessage>

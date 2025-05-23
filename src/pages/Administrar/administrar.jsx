@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import Sidebar from "../../components/sidebar";
+import {useState} from "react";
+import Sidebar from "../../components/sidebar"; 
 import styled from "styled-components";
-import Toolbar from "../../components/toolbar";
-import { useState } from "react";
-import Table from "../../components/table"
-import CustomButton from "../../components/button";
-import { getPlans, getVehicles } from "../../api/api_Admin";
-import { use } from "react";
-import { ListTodo } from "lucide-react";
-import columnsAdmin from "../Administrar/TableAdmin/columnsAdmin"
-import UserForm from "../../components/userForm";
-import { handlePaqueteSubmit, handleUpdatePaquetes } from "./TableAdmin/adminManager";
+import Table from "../../components/table";
+import { useColumnsManage } from "./columnsAdmin";
 
+import Toolbar from "../../components/toolbar";
+import UserForm from "../../components/userForm";
+import { CheckboxDropdown } from "../../components/dropdownTwo";
+
+import { VscTypeHierarchy } from "react-icons/vsc";
+
+import usePlansandVehicles from "./adminManager"; //funciones para manejar datos
+import { toast } from "react-toastify";
 
 
 const TitleWrapper = styled.div`
@@ -33,200 +33,188 @@ const TitleText = styled.h1`
   top: 20px; /* Ajusta el texto sin afectar el fondo */
 `;
 
-const Administrar = () => {
-  const [activeForm, setActiveForm] = useState(null);
-  const [editingPack, setEditingPack] = useState(null)
-  const [planes, setPlanes] = useState(null);
-  const [packsOptions, setPacksOptions] = useState([]);
-  const [vehiculosOptions, setVehiculosOptions] = useState([]);
-  const [formularioOptions, setFormularioOptions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingPlans, setLoadingPlans] = useState(false);//Estado para carga de planes
-  const [loadingVehicles, setLoadingVehicles] = useState(true);
-  const [loadingForms, setLoadingForms] = useState(true);
+function Administrar() {
+  const [activeForm, setActiveForm] = useState(null); // para mostrar el formulario 
+  const [editingPlan, setEditingPlan] = useState(null); // para editar el plan 
+  const [selectedRows, setSelectedRows] = useState([]); //para manejar las filas seleccionadas 
 
-  const [activePack, setActivePack] = useState(null);
-  const [selectedPacks, setSelectedPacks] = useState([]);
-  const [vehiculosPlanes, setVehiculosPlanes] = useState([]);
-  const [filteredPacks, setFilteredPacks] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
+  const { columns, selectedItems, setSelectedItems } = useColumnsManage();
 
-  useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        setLoading(true);
-        setLoadingPlans(true);
-        setLoadingVehicles(true);
-
-        const [planesRes, vehiculosRes] = await Promise.all([
-          getPlans(),
-          getVehicles()
-        ]);
-
-        const VehiculoConPlan = vehiculosRes.map(vehiculo => {
-          const plan = planesRes.find(c => c.id === vehiculo.id_plan);
-          return {
-            ...vehiculo,
-            plan: plan?.nombre || "Sin plan"
-          };
-        });
-
-        // Actualizar todos los estados correctamente
-        setPlanes(planesRes);
-        setVehiculosPlanes(VehiculoConPlan);
-        setFilteredPacks(VehiculoConPlan);
-        setPacksOptions(planesRes);
-        setVehiculosOptions(vehiculosRes);
-
-      } catch (error) {
-        console.error("Error cargando los datos: ", error);
-      } finally {
-        setLoading(false);
-        setLoadingPlans(false);
-        setLoadingVehicles(false); // 🔥 Este es el que desbloquea el SELECT
-      }
-    };
-
-    fetchAllData();
-  }, []);
-
-
-  const handleCrearPaquete = () => {
-    setEditingPack(null);
-    setActiveForm("Paquete")
+  const { plans, vehicles, loading, error, submitPlan, deletePlan, editPlan } = usePlansandVehicles(); // Llama al hook usePlans para usar sus funciones y estados
+  
+  //funcion para manejar la seleccion de filas y acceder a su id para modificarlas en el edit y delete
+  const handleSelectionChange = (selectedRows) => {
+    setSelectedRows(selectedRows);
+  console.log("Filas seleccionadas:", selectedRows);
+  if (selectedRows.length > 0) {
+    setEditingPlan(selectedRows[0]);
+  } else {
+    setEditingPlan(null);
   }
+};
 
-  const handleCancelForm = () => {
-    setActiveForm(null);
-    setEditingPack(null);
-  }
-
-  const handleGestionCancelar = () => {
-    setActivePack(false);
+//preparamos la interfaz para la creacion de un nuevo plan
+  const handleCrearPlan = () => {
+    setEditingPlan(null); // Limpiar el estado de edición al crear una nueva sucursal
+    setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
   };
 
-  const handleFormSubmit = async (newData) => {
+  //capturamos los datos del formualrio y los enviamos a la api con la logica de submitPlan para actualizar los datos en table tambien usamos editPlan para eficiencia 
+  const handleFormSubmit = async (formData) => {
     try {
-      setLoading(true);
-
-      if (editingPack) {
-        await handleUpdatePaquetes(editingPack.id, newData);
-      } else {
-        await handlePaqueteSubmit(newData);
-      }
-
-      const VehiculoConPlan = vehiculos.map(vehiculo => {
-        const plan = planes.find(c => c.id === vehiculo.id_plan);
-        return {
-          ...vehiculo,
-          plan: plan?.nombre || "Sin plan"
-        };
-      });
-
-      //actualizar estados
-      setVehiculosPlanes(VehiculoConPlan);
-      setFilteredPacks(VehiculoConPlan);
-      setPlanes(vehiculosPlanes);
-      setPacksOptions(planes); //guardar los planes filtrados
-
-
-    } catch (error) {
-      console.error("Error cargando los datos: ", error);
-    } finally {
-      setLoading(false);
-      setLoadingPlans(false);
+    if (editingPlan) {
+      await editPlan(editingPlan.id, formData); 
+      console.log("Plan editado con éxito");
+    } else {
+      await submitPlan(formData); 
+      toast.success("Plan creado exitosamente");
     }
 
+    setActiveForm(null); //cerramos el formulario en cualquiera de los dos casos de crear o editar 
+    setEditingPlan(null); //limpiamos despues de editar o crear un plan
+
+    } catch (error) {
+      console.error("#Error al crear el plan", error);
+      toast.error("Error al crear el plan");
+    }
+  };
+
+  //Funcion para cerrar el formulario
+  const handleCancelForm = () => {
+    setActiveForm(null); 
+    setEditingPlan(null); //limpiamos de nuevo el formulario 
   };
 
 
-  console.log(vehiculosOptions);
+  const handleEditPlan = ()  => {
+    if (selectedRows.length === 1) {
+      const idSeleccionado = selectedRows[0]; //taremos solo el id para solo traer la data de ese plan seleccionado
+      const planCompleto = plans.find(plan => plan.id === idSeleccionado);
+
+      if (planCompleto) {
+      setEditingPlan(planCompleto); // Establece el plan seleccionado para editar
+      setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
+      }
+      console.log("Plan seleccionado para editar:", planCompleto);
+      setActiveForm("Plan"); // Mostrar el formulario cuando se hace clic en "Plan"
+    } else {
+      toast.error("Por favor selecciona un solo plan para editar");
+    }
+  };
+
+  const handelDeletePlan = async () => {
+    try {
+      if (selectedRows.length === 0){
+        toast.error("Por favor selecciona por lo menos un plan para eliminar");
+        return;
+      }
+        await Promise.all(
+        selectedRows.map(async (id) => {
+          await deletePlan(id);
+        })
+      );
+    } catch (error) {
+      console.error("Error al eliminar el plan", error);
+      toast.error("Error al eliminar los planes seleccionados");
+    }
+  };
+
+
   return (
-    <div>
+    <div> 
       <Sidebar />
       <TitleWrapper>
-        <TitleText>Administrar</TitleText>
+        <TitleText>Administrar Planes</TitleText>
       </TitleWrapper>
-
       <Toolbar
-        onCreate={handleCrearPaquete}
-        onEdit={null}
-        onDelete={null}
-        buttonsGap="40px"
-        editLabel="Editar"
-        onActiveButton={true}
-      >
-        <Toolbar.Search
-          placeholder="Buscar..."
-          onSearch={null}
-        />
+              onCreate={handleCrearPlan}
+              onEdit={handleEditPlan}
+              onDelete={handelDeletePlan}
+              buttonsGap="40px"
+              editLabel="Editar"
+              onActiveButton={true}
+            >
+              <Toolbar.Search 
+                placeholder="Buscar..." 
+                onSearch={null} 
+              />
+              <Toolbar.Dropdown 
+                options={{
+                  "activo": "Activo", 
+                  "inactivo": "Inactivo",
+                  "": "Todos"
+                }}
+              />
+            </Toolbar>
 
-        <Toolbar.Dropdown
-          options={{
-            "activo": "Activo",
-            "inactivo": "Inativo",
-            "": "Todos"
-          }}
-        />
+      <Table
+        data={plans}
+        onSelectionChange={handleSelectionChange}
+        selectable={true}
+        columns={columns}
+      />
 
-        <CustomButton
-          bgColor="#32d0ac"
-          hoverColor="#32d0ac"
-          width="120px"
-          height="40px"
-          onClick={() => console.log("Boton clickado")}
-          style={null}
-          className="Boton extra"
-          icon={ListTodo}
-        >
-          Gestionar items
-        </CustomButton>
-      </Toolbar>
+        {activeForm === "Plan" && (
+          <UserForm
+            title={editingPlan ? "Editar Plan" : "Crear Nuevo Plan"}
+            fields = {[
+                { 
+                name: "nombre_plan",
+                label: "Nombre del Plan",
+                placeholder: "Nombre", 
+                type: "text", 
+                required: true 
+              },
+              { 
+                name: "id_tipo_vehiculo",
+                label: "Tipo de Vehículo",
+                type: "select",
 
-      {/* Formulario solo para crear */}
-      {activeForm === "Paquete" && (
-        <UserForm
-          title="Crear Nuevo Paquete"
-          fields={[
-            { name: "nombre_plan", placeholder: "Nombre", type: "text" },
-            {
-              name: "Vehículo",
-              type: "select",
-              options: vehiculosOptions.map((v) => ({ value: v.id, label: v.nombre_vehiculo })),
-              placeholder: loadingVehicles ? "Cargando..." : "Seleccione Vehículo",
-              disabled: loadingVehicles
-            },
-            {
-              name: "Formulario",
-              type: "select",
-              options: formularioOptions.map((f) => ({ value: f.id, label: f.nombre })),
-              placeholder: loadingForms ? "Cargando..." : "Seleccione Formulario",
-              disabled: loadingForms
-            },
-            {
-              name: "estado",
-              type: "select",
-              options: [
-                { value: "AC", label: "Activo" },
-                { value: "IN", label: "Inactivo" }
-              ],
-              defaultValue: "AC",
-              placeholder: "Estado",
-            },
-          ]}
-          initialValues={{}} // Vacío porque es solo creación
-          onSubmit={handleFormSubmit}
-          onCancel={handleCancelForm}
-        />
-      )}
+                options: vehicles.map(v => ({ //mapeamos los vehiculos para q muestre el nombre y envie el id como valor
+                  value: v.id,
+                  label: v.nombre_vehiculo
+                })),
 
-      {activePack && (
-        <GestionConvenios
-          onCerrar={handleGestionCancelar}
-        />
-      )}
+                placeholder: "Seleccionar",
+                required: true
+              },
+              { 
+                name: "cuestionario",
+                type: "select",
+                label: "Cuestionario",
+                options: [
+                  {value: 1, label: "Avaluo Comercial"}, //valores estaticos cambiar mas adelante 
+                  {value: 2, label: "Inspección"},
+                  {value: 3, label: "Adicionales"}
+                ],
+                placeholder: "Seleccionar",
+                required: true
+              },
+              { 
+                name: "estado",
+                type: "select",
+                options: [
+                  {value: "AC", label: "Activo"},
+                  {value: "IN", label: "Inactivo"}
+                ],
+                defaultValue: "AC",
+                placeholder: "Estado",
+                required: true
+              },
+              {
+                name: "lista_adicionales",
+                type: "hidden", // para no mostrarlo en el formulario
+                defaultValue: [], // se envia vacio como array para añadir mas cuando toque editar
+              }
+            ]}
+            onSubmit={handleFormSubmit}
+            onCancel={handleCancelForm}
+            initialValues={editingPlan} // En caso de editar, pasamos los valores iniciales
+          />
+        )}
+
     </div>
   );
-};
+}
 
 export default Administrar;
