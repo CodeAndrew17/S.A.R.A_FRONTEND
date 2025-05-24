@@ -148,9 +148,10 @@ function Revisiones() {
 
   const handleCreateRequest = () => {
     setActiveForm("request");
-  };console.log("Data de ids", selectedRequests)
+  };
 
   const handleeditRequest = () => {
+    console.log("Data basic",editinRequest)
     if (selectedRequests.length === 1) {
       setEditinRequest(selectedRequests[0]);
       setActiveForm("request");
@@ -165,31 +166,25 @@ function Revisiones() {
   };
 
 
-  const handleCreateRequest=()=>{
-    setActiveForm('request')
-
+const handleFormSubmit = async (data) => {
+  if (editinRequest) {
+    const dataWithId = { ...data, id: editinRequest.id };
+    await editingRequest(dataWithId);   // esperar que se complete la edición
+    await fetchRequest();               // refrescar la lista de solicitudes
+  } else {
+    await createRequest(data);
+    await fetchRequest();
   }
-  const handlecCancelForm = ()=>{
-    setActiveForm(null)
-  }
-
-  const handleFormSubmit = (data) => {
-    if (editinRequest) {
-      const dataWithId = {
-        ...data,
-        id: editinRequest.id,
-      };
-      editingRequest(dataWithId);
-    } else {
-      createRequest(data);
-    }
-    setActiveForm(null);
-    setEditinRequest(null);
-  };
+  setActiveForm(null);
+  setEditinRequest(null);
+};
 
   const handleCancelForm = () => {
     setActiveForm(null);
   };
+  const handledelete = ()=>{
+    removeRequest(selectedRequests)
+  }
 
   return (
     <div>
@@ -200,8 +195,9 @@ function Revisiones() {
 
       <Toolbar
         onCreate={handleCreateRequest}
-        onEdit={handleeditRequest}>
-        onDelete={handleDelete}
+        onEdit={handleeditRequest}
+        onDelete={handledelete}
+        >
 
         <Toolbar.Search
           placeholder="Buscar..."
@@ -247,12 +243,14 @@ function Revisiones() {
         data={filteredRevisions}
         selectable={true}
         onSelectionChange={(selectedIds) => {
-          const selectedItems = originalRequest.filter((item) =>
+          console.log(originalRequest)
+          const selectedItems = filteredRevisions.filter((item) =>
             selectedIds.includes(item.id)
           );
-          setEditinRequest(selectedItems[0]);
           setSelectedRequests(selectedItems);
+          setEditinRequest(selectedItems.length === 1 ? selectedItems[0] : null);
         }}
+
       />
 
       {activeForm === "request" && (
