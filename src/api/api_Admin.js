@@ -1,4 +1,6 @@
+import axios from "axios";
 import { axiosWithAuth } from "./api_Manager";
+import { EraserIcon } from "lucide-react";
 
 
 //* CRUD Para administrar(planes)
@@ -81,5 +83,15 @@ const deleteVehicles = async (id) => {
     }
 };
 
+const getForms = async () => {
+  try {
+    const response = await axiosWithAuth(`/api/formulario/get/`, "GET");
+    return response;
+  } catch (error) {
+    console.error("Error al cargar los formularios: ", error);
+    throw error;
+  }
+};
 
-export{getPlans,addPlans,editPlans,deletePlans, getVehicles, addVehicles, editVehicles, deleteVehicles}
+
+export{getPlans,addPlans,editPlans,deletePlans, getVehicles, addVehicles, editVehicles, deleteVehicles, getForms}

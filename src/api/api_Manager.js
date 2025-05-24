@@ -34,7 +34,7 @@ const login = async (usuario, password) => {
 
         } else {
             
-            throw new Error('Error de conexión');
+            throw new Error("Error al configurar la petición.");
         }
     }
 };
