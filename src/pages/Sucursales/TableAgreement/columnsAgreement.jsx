@@ -7,19 +7,19 @@ import Dropdown from "../../../components/Dropdown";
 const columnsAgreement = ({ setEditinAgreement, setActiveForm })=>[
     {
       key: 'nombre',
-      title: 'Nombre',
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Nombre</span>,
     },
     {
       key: 'nit',
-      title: 'NIT',
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>NIT</span>,
     },
     {
       key: 'telefono',
-      title: 'Teléfono',
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Teléfono</span>,
     },
 {
   key: 'estado',
-  title: 'Estado',
+  title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Estado</span>,
   render: (estado) => (
     <span
       style={{
@@ -35,7 +35,7 @@ const columnsAgreement = ({ setEditinAgreement, setActiveForm })=>[
 
     {
         key: 'actions',
-        title: 'Acciones',
+        title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
     render: (_, record) => (
         <CustomButton
         bgColor="#5FB8D6"

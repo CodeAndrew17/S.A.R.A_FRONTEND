@@ -6,6 +6,7 @@ const usePlansandVehicles = () => {
     const [vehicles, setVehicles] = useState([]); // estado para alamcenar los vehiculo 
     const [loading, setLoading] = useState(true); // estado para manejar el lapso de carga de datos en la tabla
     const [error, setError] = useState(null); // estado para manejar los errores 
+    const [search, setSearch] = useState(""); // para manejar los filtros del search 
 
 
         const fetchAll = async () => { //dejamos la funcion afuera del useEffecta para reutilizarla en el refresh de cuando se modifica la tabla
@@ -15,9 +16,6 @@ const usePlansandVehicles = () => {
                     getPlans(), //obtenemos los planes
                     getVehicles() // obtenemos vehiculos
                 ]);
-
-                console.log("planes ", plansData); // depuracion de datos 
-                console.log("vehiculos ", vehiclesData); //depuracion
 
                 const cuestionariosMap = {
                     1 : "Avaluo Comercial",
@@ -85,7 +83,7 @@ const usePlansandVehicles = () => {
         }
     };
 
-    return {plans, vehicles, loading,  error, submitPlan, deletePlan, editPlan}; // retornamos los datos para ser utilizados en el componente  
+    return {plans, vehicles, loading,  error , submitPlan, deletePlan, editPlan}; // retornamos los datos para ser utilizados en el componente  
     // plans soporta toda la informacion a mostra en la tabla con los datos relacionados
 };
 

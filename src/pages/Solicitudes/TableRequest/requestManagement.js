@@ -34,11 +34,11 @@ const useRequestManage = () => {
         options: sucursalList.map((s) => ({ value: s.id, label: s.nombre })), 
         required: true 
       },
-      {name:"telefono", label:"Telefono", type:"text", placeholder:"Numero de contactp", required:true},
+      {name:"telefono", label:"Teléfono", type:"text", placeholder:"Número de contacto", required:true},
       { name: "id_tipo_vehiculo", label: "Tipo de Vehiculo", type: "select", placeholder: "Seleccione un tipo de Vehiculo", options: tipovehiculoList.map((t) => ({ value: t.id, label: t.nombre_vehiculo })), required: true },
       { name: "id_plan", label: "Plan", type: "select", placeholder: "Seleccione el plan que requiere", options: planList.map((p) => ({ value: p.id, label: p.nombre_plan })), required: true },
       { name: "id_empleado", label: "Solicitado por", type: "select", placeholder: "Seleccione un empleado", options: empleadoList.map((e) => ({ value: e.id, label: `${e.nombres} ${e.apellidos}` })), required: true },
-      { name: "observaciones", label: "Observacion", type: "textarea", placeholder: "Escriba una recomendación del servicio" }
+      { name: "observaciones", label: "Observaciones", type: "textarea", placeholder: "Escriba una recomendación del servicio",  fullWidth: true  }
     ]);
   }, [convenioList, sucursalList, empleadoList, tipovehiculoList, planList]);
 

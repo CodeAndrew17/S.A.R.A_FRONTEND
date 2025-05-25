@@ -6,7 +6,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const TableContainer = styled.div`
   width: 93.5%;
-  margin: 20px auto 20px 90px;
+  margin: 20px auto 20px 85px;
   position: relative; /* Añadido */
   z-index: 1; /* Añadido */
 `;
@@ -16,9 +16,29 @@ const ScrollWrapper = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
-  overflow-y: visible; /* Cambiado a visible */
+  overflow-y: auto; /* Cambiado de 'visible' a 'auto' para scroll vertical */
   width: 100%;
-  /* Estilos del scrollbar... */
+  max-height: 70vh; /* Altura máxima para activar el scroll */
+  
+  /* Estilos personalizados para el scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
 `;
 
 const StyledTable = styled.table`
@@ -86,8 +106,6 @@ const CheckboxInput = styled.input`
   width: 16px;
   height: 16px;
 `;
-
-
 
 
 const Table = ({ 

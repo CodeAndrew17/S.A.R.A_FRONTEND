@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Table from "../../components/table";
 import { useColumnsManage } from "./columnsAdmin";
 
-import Toolbar from "../../components/Toolbar";
+import Toolbar from "../../components/toolbar";
 import UserForm from "../../components/userForm";
 import { CheckboxDropdown } from "../../components/dropdownTwo";
 
@@ -36,7 +36,9 @@ const TitleText = styled.h1`
 function Administrar() {
   const [activeForm, setActiveForm] = useState(null); // para mostrar el formulario 
   const [editingPlan, setEditingPlan] = useState(null); // para editar el plan 
-  const [selectedRows, setSelectedRows] = useState([]); //para manejar las filas seleccionadas 
+  const [selectedRows, setSelectedRows] = useState([]); //para manejar las filas seleccionadas
+  const [searchText, setSearchText] = useState(""); // para manejar el texto de busqueda
+  const [statusFilter, setStatusFilter] = useState(""); // para Todos
 
   const { columns, selectedItems, setSelectedItems } = useColumnsManage();
 
@@ -119,6 +121,30 @@ function Administrar() {
     }
   };
 
+  //funcion para manejar los filtrso por busqueda de search y dropdown añadimos para q ignore tildes 
+
+const normalizeText = (text) =>
+  text?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+const filteredPlans = plans.filter((plan) => {
+  const search = normalizeText(searchText);
+
+  const matchesSearch =
+    normalizeText(plan.nombre_plan).includes(search) ||
+    normalizeText(plan.nombre_vehiculo).includes(search) ||
+    normalizeText(plan.nombre_cuestionario).includes(search);
+
+  const estadoNormalizado = plan.estado?.toLowerCase();
+  const matchesStatus =
+    statusFilter === "" ||
+    (statusFilter === "activo" && estadoNormalizado === "ac") ||
+    (statusFilter === "inactivo" && estadoNormalizado === "in");
+
+  return matchesSearch && matchesStatus;
+});
+
+
+
 
   return (
     <div> 
@@ -136,7 +162,7 @@ function Administrar() {
             >
               <Toolbar.Search 
                 placeholder="Buscar..." 
-                onSearch={null} 
+                onSearch={(text) => setSearchText(text)}  
               />
               <Toolbar.Dropdown 
                 options={{
@@ -144,11 +170,12 @@ function Administrar() {
                   "inactivo": "Inactivo",
                   "": "Todos"
                 }}
+                onSelect={(option) => setStatusFilter(option)} // Guardas el filtro
               />
             </Toolbar>
 
       <Table
-        data={plans}
+        data={filteredPlans}
         onSelectionChange={handleSelectionChange}
         selectable={true}
         columns={columns}
