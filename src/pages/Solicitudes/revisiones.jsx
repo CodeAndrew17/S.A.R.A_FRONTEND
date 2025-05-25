@@ -182,7 +182,9 @@ const handleFormSubmit = async (data) => {
   const handleCancelForm = () => {
     setActiveForm(null);
   };
-  const handledelete = ()=>{
+  const handledelete = async()=>{
+    await fetchBaseData();
+    await fetchRequest();
     removeRequest(selectedRequests)
   }
 

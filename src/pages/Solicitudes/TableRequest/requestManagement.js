@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { addRequest, getRequest, getTipoVehiculo,patchRequest } from "../../../api/api_Solicitudes";
+import { addRequest, getRequest, getTipoVehiculo,patchRequest,deleteRequest } from "../../../api/api_Solicitudes";
 import { getBranches, getAgreement } from "../../../api/api_Convenios";
 import { getEmployees } from "../../../api/api_Usuarios";
 import { getPlanes } from "../../../api/api_Solicitudes";
@@ -35,9 +35,10 @@ const useRequestManage = () => {
         required: true 
       },
       {name:"telefono", label:"Telefono", type:"text", placeholder:"Numero de contactp", required:true},
+      { name: "id_empleado", label: "Solicitado por", type: "select", placeholder: "Seleccione un empleado", options: empleadoList.map((e) => ({ value: e.id, label: `${e.nombres} ${e.apellidos}` })), required: true },
+
       { name: "id_tipo_vehiculo", label: "Tipo de Vehiculo", type: "select", placeholder: "Seleccione un tipo de Vehiculo", options: tipovehiculoList.map((t) => ({ value: t.id, label: t.nombre_vehiculo })), required: true },
       { name: "id_plan", label: "Plan", type: "select", placeholder: "Seleccione el plan que requiere", options: planList.map((p) => ({ value: p.id, label: p.nombre_plan })), required: true },
-      { name: "id_empleado", label: "Solicitado por", type: "select", placeholder: "Seleccione un empleado", options: empleadoList.map((e) => ({ value: e.id, label: `${e.nombres} ${e.apellidos}` })), required: true },
       { name: "observaciones", label: "Observacion", type: "textarea", placeholder: "Escriba una recomendación del servicio" }
     ]);
   }, [convenioList, sucursalList, empleadoList, tipovehiculoList, planList]);
@@ -202,6 +203,53 @@ const handleFiledChage = (name, value) => {
 
   setFormsData(updatedFields);
 };
+const removeRequest = async (listIds) => {
+  if (listIds.length === 0) {
+    await Swal.fire({
+      title: "Error",
+      text: "Debe seleccionar al menos una solicitud",
+      icon: "error",
+    });
+    return false;
+  }
+
+  const resultado = await Swal.fire({
+    title: "Confirmación",
+    text: "¿Quieres eliminar las revisiones seleccionadas?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar",
+  });
+
+  if (!resultado.isConfirmed) return false;
+
+  try {
+    for (const id of listIds) {
+      await deleteRequest(id.id); // <-- ¡IMPORTANTE!
+    }
+
+    await fetchRequest(); // Solo una vez después de eliminar todo
+
+    await Swal.fire({
+      title: "Solicitudes eliminadas",
+      text: "Se eliminaron las solicitudes correctamente.",
+      icon: "success",
+      confirmButtonText: "Aceptar",
+    });
+
+    return true;
+
+  } catch (errors) {
+    console.log(errors);
+    Swal.fire({
+      title: "Error al eliminar",
+      text: `No se pudo completar la eliminación: ${errors}`,
+      icon: "error",
+    });
+    return false;
+  }
+};
 
   return {
     dataRequest,
@@ -218,6 +266,7 @@ const handleFiledChage = (name, value) => {
     fetchBaseData,
     createRequest,
     editingRequest,
+    removeRequest,
     handleFiledChage
   };
 };
