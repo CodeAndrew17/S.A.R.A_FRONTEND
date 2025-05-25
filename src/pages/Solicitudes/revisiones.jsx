@@ -59,19 +59,20 @@ function Revisiones() {
 
 
 
-  const handleeditRequest = () => {
-    if (selectedRequests.length === 1) {
-      setEditinRequest(selectedRequests[0]); // cargamos los datos al formulario
-      setActiveForm('request');
-    } else {
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo modificar la solicitud. Verifica los datos ingresados.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
-    }
-  };
+const handleeditRequest = () => {
+  if (selectedRequests.length === 1) {
+    console.log("Data Seleicionada",selectedRequests[0])
+    setEditinRequest(selectedRequests[0]); // cargamos los datos al formulario
+    setActiveForm('request');
+  } else {
+    Swal.fire({
+      title: "Error",
+      text: "Debes seleccionar exactamente una solicitud para editar",
+      icon: "error",
+      confirmButtonText: "Aceptar",
+    });
+  }
+};
 
 
   const handleCreateRequest=()=>{
@@ -83,16 +84,10 @@ function Revisiones() {
   }
 
   const handleFormSubmit = (data) => {
-    console.log("Datos recibidos:", data); // <-- Añade esto
 
     if(editinRequest){
-      const dataWithId = {
-      ...data,
-      id: editinRequest.id
-      };
-      console.log("ingresar al edit ",dataWithId)
-      
-      editingRequest(dataWithId)
+   
+      editingRequest(data)
 
     }else{
       createRequest(data);
@@ -136,22 +131,19 @@ function Revisiones() {
         selectable={true}
         onSelectionChange={(selectedIds) => {
           const selectedItems = originalRequest.filter(item => selectedIds.includes(item.id));
-          console.log("Filas seleccionadas:", selectedItems);
-            setEditinRequest(selectedRequests[0]);
-
+          console.log(selectedItems)
           setSelectedRequests(selectedItems);
         }}
         />
     {activeForm ==='request' &&(
         <UserForm
-          title="Pruba de Creacion"
+          title="Prueba de Creación"
           fields={formsData}
           onFieldChange={handleFiledChage}
           onCancel={handlecCancelForm}
           onSubmit={handleFormSubmit}
-          initialValues={editinRequest}
+          initialValues={editinRequest || {}}
         />
-
     
     )}
 

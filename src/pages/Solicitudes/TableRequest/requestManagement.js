@@ -160,8 +160,6 @@ const handleFiledChage = (name, value) => {
       (s) => Number(s.id_convenio) === Number(value)
     );
 
-    console.log("Sucursales filtradas:", filtersucursal);
-
     updatedFields = updatedFields.map((field) => {
       if (field.name === "id_sucursal") {
         return {
@@ -170,6 +168,11 @@ const handleFiledChage = (name, value) => {
             value: s.id,
             label: s.nombre,
           })),
+          // Mantener el valor actual si está en edición
+          value: originalRequest.id_sucursal && 
+                 filtersucursal.some(s => s.id === originalRequest.id_sucursal) 
+                 ? originalRequest.id_sucursal 
+                 : undefined
         };
       }
       return field;
@@ -181,8 +184,6 @@ const handleFiledChage = (name, value) => {
       (p) => Number(p.id_tipo_vehiculo) === Number(value)
     );
 
-    console.log("Planes filtrados:", filteredPlans);
-
     updatedFields = updatedFields.map((field) => {
       if (field.name === "id_plan") {
         return {
@@ -191,6 +192,11 @@ const handleFiledChage = (name, value) => {
             value: p.id,
             label: p.nombre_plan,
           })),
+          // Mantener el valor actual si está en edición
+          value: originalRequest.id_plan && 
+                 filteredPlans.some(p => p.id === originalRequest.id_plan) 
+                 ? originalRequest.id_plan 
+                 : undefined
         };
       }
       return field;

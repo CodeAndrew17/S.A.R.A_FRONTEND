@@ -176,19 +176,20 @@ const UserForm = ({
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    const initialData = {};
-    fields.forEach((field) => {
-      if (initialValues && initialValues[field.name] !== undefined) {
-        initialData[field.name] = initialValues[field.name];
-      } else if (field.defaultValue !== undefined) {
-        initialData[field.name] = field.defaultValue;
-      } else {
-        initialData[field.name] = "";
-      }
-    });
-    setFormData(initialData);
-  }, []);
+ useEffect(() => {
+  const initialData = {};
+  fields.forEach((field) => {
+    if (initialValues && initialValues[field.name] !== undefined) {
+      initialData[field.name] = initialValues[field.name];
+    } else if (field.defaultValue !== undefined) {
+      initialData[field.name] = field.defaultValue;
+    } else {
+      initialData[field.name] = "";
+    }
+  });
+  
+  setFormData(initialData);
+}, [ ]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
