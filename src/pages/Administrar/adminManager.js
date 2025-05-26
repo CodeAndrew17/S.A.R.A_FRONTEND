@@ -75,6 +75,7 @@ const usePlansandVehicles = () => {
     const editPlan = async (id, newPlanData) => {
         try {
             await editPlans(id, newPlanData);
+            console.log("Plan editado con éxito", newPlanData);
             fetchAll(); //la mejor funcion jamas hecha 
 
         } catch (error) {
@@ -83,7 +84,27 @@ const usePlansandVehicles = () => {
         }
     };
 
-    return {plans, vehicles, loading,  error , submitPlan, deletePlan, editPlan}; // retornamos los datos para ser utilizados en el componente  
+    const updatePlanAdicionales = async (id, nuevosAdicionales) => {
+    try {
+        // Obtener el plan actual
+        const plan = plans.find(p => p.id === id);
+        if (!plan) return;
+
+        // Hacer un patch o edit, enviando la nueva lista
+        const newPlanData = { ...plan, lista_adicionales: nuevosAdicionales };
+        await editPlans(id, newPlanData);
+
+        // Refrescar planes
+        fetchAll();
+    } catch (error) {
+        setError(error);
+        console.error("Error actualizando adicionales", error);
+    }
+    };
+
+
+
+    return {plans, vehicles, loading,  error , submitPlan, deletePlan, editPlan, updatePlanAdicionales}; // retornamos los datos para ser utilizados en el componente  
     // plans soporta toda la informacion a mostra en la tabla con los datos relacionados
 };
 

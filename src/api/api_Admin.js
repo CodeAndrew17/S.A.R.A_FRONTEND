@@ -16,7 +16,6 @@ const getPlans = async () => {
 const addPlans = async (newPlanData) => {
     try {
         const response = await axiosWithAuth("/api/plan/post/", "POST", newPlanData);
-        console.log("Respuesta del backend: ", response.data);
         return response
     } catch (error) {
         console.error("Error al enviar el nuevo plan al backend: ", error);
@@ -94,4 +93,4 @@ const getForms = async () => {
 };
 
 
-export{getPlans,addPlans,editPlans,deletePlans, getVehicles, addVehicles, editVehicles, deleteVehicles, getForms}
+export{getPlans,addPlans,editPlans,deletePlans, getVehicles, addVehicles, editVehicles, deleteVehicles, getForms};

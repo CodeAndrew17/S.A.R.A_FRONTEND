@@ -77,7 +77,7 @@ const DoneButton = styled.button`
   cursor: pointer;
 `;
 
-export const CheckboxDropdown = ({ options, selectedValues, onChange }) => {
+export const CheckboxDropdown = ({ options, selectedValues, onChange, onSave }) => {
   const [position, setPosition] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(selectedValues || []);
@@ -181,6 +181,10 @@ const handleDone = () => {
   onChange(selected);
   setInitialSelected(selected);
   setHasChanges(false);
+
+  if (onSave) {
+    onSave(selected);
+  }
 
   Swal.fire({
     position: 'center',

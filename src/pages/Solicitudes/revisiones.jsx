@@ -7,7 +7,7 @@ import Toolbar from "../../components/toolbar";
 import useRequestManage from "./TableRequest/requestManagement";
 import UserForm from "../../components/userForm";
 import Swal from "sweetalert2";
-import DateDropdown from "../../components/dateDropdown";
+import DateDropdown from "../../components/DateDropdown";
 import CustomButton from "../../components/button";
 import { LucideBrush, FilterX } from "lucide-react";
 
@@ -47,8 +47,8 @@ function Revisiones() {
   const [estadoFiltro, setEstadoFiltro] = useState("");
   const [filtroFecha, setFiltroFecha] = useState({ fecha: null, modo: "date" });
   const [fechaKey, setFechaKey] = useState(0)
-
   const [filteredRevisions, setFilteredRevisions] = useState([]);
+  
 
   const {
     originalRequest,
@@ -58,6 +58,7 @@ function Revisiones() {
     fetchBaseData,
     createRequest,
     editingRequest,
+    removeRequest,
     handleFiledChage,
   } = useRequestManage();
 
@@ -133,8 +134,7 @@ function Revisiones() {
     setFilteredRevisions(resultados);
   };
 
-
-
+  const handledelete = async()=>{removeRequest(selectedRequests)}
 
   const handleSearch = (search) => {
     setSearchInput(search);
@@ -146,13 +146,13 @@ function Revisiones() {
     aplicarFiltros(estado, searchInput, filtroFecha);
   };
 
-  const handleCreateRequest = () => {
-    setActiveForm("request");
-  };
+  const handleCreateRequest = () => {setActiveForm("request");};
 
   const handleeditRequest = () => {
     if (selectedRequests.length === 1) {
-      setEditinRequest(selectedRequests[0]);
+      const selected = selectedRequests[0];
+      setEditinRequest(selected);
+      
       setActiveForm("request");
     } else {
       Swal.fire({
@@ -164,34 +164,44 @@ function Revisiones() {
     }
   };
 
+
+
+
+  const handlecCancelForm = ()=>{
+    setActiveForm(null)
+  }
+
   const handleFormSubmit = (data) => {
-    if (editinRequest) {
+    console.log("Datos recibidos:", data); // <-- Añade esto
+
+    if(editinRequest){
       const dataWithId = {
-        ...data,
-        id: editinRequest.id,
+      ...data,
+      id: editinRequest.id
       };
-      editingRequest(dataWithId);
-    } else {
+      console.log("ingresar al edit ",dataWithId)
+      
+      editingRequest(dataWithId)
+
+    }else{
       createRequest(data);
     }
-    setActiveForm(null);
-    setEditinRequest(null);
+    setActiveForm(null)
+    setEditinRequest(null)
+    
   };
-
-  const handleCancelForm = () => {
-    setActiveForm(null);
-  };
-
-  return (
+    return (
     <div>
       <Sidebar />
       <TitleWrapper>
-        <TitleText>Panel de Revisiones</TitleText>
+        <TitleText>Revisiones</TitleText>
       </TitleWrapper>
 
       <Toolbar
         onCreate={handleCreateRequest}
-        onEdit={handleeditRequest}>
+        onEdit={handleeditRequest}
+        onDelete={handledelete}
+        >
 
         <Toolbar.Search
           placeholder="Buscar..."
@@ -207,7 +217,6 @@ function Revisiones() {
         />
         <DateDropdown
         key={fechaKey}
-      
           onSelect={(fecha, modo) => {
             setFiltroFecha({ fecha, modo });
             aplicarFiltros(estadoFiltro, searchInput, { fecha, modo });
@@ -241,9 +250,10 @@ function Revisiones() {
           const selectedItems = originalRequest.filter((item) =>
             selectedIds.includes(item.id)
           );
-          setEditinRequest(selectedItems[0]);
           setSelectedRequests(selectedItems);
+          setEditinRequest(selectedItems.length === 1 ? selectedItems[0] : null);
         }}
+
       />
 
       {activeForm === "request" && (
@@ -251,11 +261,13 @@ function Revisiones() {
           title="Prueba de Creación"
           fields={formsData}
           onFieldChange={handleFiledChage}
-          onCancel={handleCancelForm}
+          onCancel={handlecCancelForm}
           onSubmit={handleFormSubmit}
-          initialValues={editinRequest}
+          initialValues={editinRequest || {}}
         />
-      )}
+    
+        )}
+
     </div>
   );
 }
