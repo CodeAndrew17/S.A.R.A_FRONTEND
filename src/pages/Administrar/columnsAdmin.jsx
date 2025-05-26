@@ -37,7 +37,7 @@ export const useColumnsManage = () => {
   const handleUpdateAdicionales = async (planId, nuevosAdicionales) => {
     console.log("llmando a la api ", planId, nuevosAdicionales);
   try {
-    await updatePlanAdicionales(planId, nuevosAdicionales); // esta sería tu función API
+    await updatePlanAdicionales(planId, nuevosAdicionales); 
     Swal.fire({
       icon: "success",
       title: "Adicionales actualizados",
@@ -64,30 +64,22 @@ export const useColumnsManage = () => {
       key: "lista_adicionales",
       title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Modificar</span>,
       render: (valorCelda, fila) => (
-        console.log("fila", fila),
-
         <CheckboxDropdown
           options={optionsDrop}
-          selectedValues={fila.lista_adicionales || []}
-          onChange={(nuevosSeleccionados) => { //pasarlo obligatoriamente
-              console.log("onChange ejecutado", nuevosSeleccionados);
-            }}
-
+          selectedValues={(fila.lista_adicionales || []).map(id => `form-${id}`)}
+          onChange={(nuevosSeleccionados) => {
+            console.log("onChange ejecutado", nuevosSeleccionados);
+          }}
           onSave={(valoresSeleccionados) => {
-            console.log("fila completa", fila);
-            console.log("onSave ejecutandose", valoresSeleccionados);
-
             const idsFormularios = valoresSeleccionados.map(val => {
               if (typeof val === "string" && val.startsWith("form-")) {
                 return parseInt(val.replace("form-", ""));
               } else if (typeof val === "number") {
                 return val;
               } else {
-                console.warn("Valor inesperado en lista_adicionales:", val);
-                return null; // o podrías lanzar un error si quieres
+                return null;
               }
-            }).filter(val => val !== null); // quitamos nulos si los hay
-
+            }).filter(val => val !== null);
 
             handleUpdateAdicionales(fila.id, idsFormularios);
           }}
