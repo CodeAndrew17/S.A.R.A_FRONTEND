@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { addRequest, getRequest, getTipoVehiculo,patchRequest } from "../../../api/api_Solicitudes";
+import { addRequest, getRequest, getTipoVehiculo,patchRequest,deleteRequest } from "../../../api/api_Solicitudes";
 import { getBranches, getAgreement } from "../../../api/api_Convenios";
 import { getEmployees } from "../../../api/api_Usuarios";
 import { getPlanes } from "../../../api/api_Solicitudes";
@@ -17,6 +17,7 @@ const useRequestManage = () => {
   const [tipovehiculoList, setTipoVehiculoList] = useState([]);
   const [formsData, setFormsData] = useState([]);
 
+  
   useEffect(() => {
     setFormsData([
       { name: "placa", label: "Placa", type: "text", placeholder: "Ingresar placa del vehiculo", required: true },
@@ -28,17 +29,30 @@ const useRequestManage = () => {
       },
       { name: "id_convenio", label: "Convenio", type: "select", placeholder: "Seleccione un convenio", 
         options: convenioList.map((c) => ({ value: c.id, label: c.nombre })), 
+        defaultValue: null, 
         required: true 
       },
       { name: "id_sucursal", label: "Sucursales", type: "select", placeholder: "Seleccione una Sucursal", 
-        options: sucursalList.map((s) => ({ value: s.id, label: s.nombre })), 
+        options: sucursalList.map((s) => ({ value: s.id, label: s.nombre })),
+        defaultValue: null, 
         required: true 
       },
-      {name:"telefono", label:"Telefono", type:"text", placeholder:"Numero de contactp", required:true},
-      { name: "id_tipo_vehiculo", label: "Tipo de Vehiculo", type: "select", placeholder: "Seleccione un tipo de Vehiculo", options: tipovehiculoList.map((t) => ({ value: t.id, label: t.nombre_vehiculo })), required: true },
-      { name: "id_plan", label: "Plan", type: "select", placeholder: "Seleccione el plan que requiere", options: planList.map((p) => ({ value: p.id, label: p.nombre_plan })), required: true },
-      { name: "id_empleado", label: "Solicitado por", type: "select", placeholder: "Seleccione un empleado", options: empleadoList.map((e) => ({ value: e.id, label: `${e.nombres} ${e.apellidos}` })), required: true },
-      { name: "observaciones", label: "Observacion", type: "textarea", placeholder: "Escriba una recomendación del servicio" }
+      {name:"telefono", label:"Telefono", type:"text", placeholder:"Numero de contactp",defaultValue: null, required:true},
+      { name: "id_empleado", label: "Solicitado por", type: "select", placeholder: "Seleccione un empleado", 
+        options: empleadoList.map((e) => ({ value: e.id, label: `${e.nombres} ${e.apellidos}` })), 
+        defaultValue: null, 
+        required: true },
+
+      { name: "id_tipo_vehiculo", label: "Tipo de Vehiculo", type: "select", placeholder: "Seleccione un tipo de Vehiculo", 
+        options: tipovehiculoList.map((t) => ({ value: t.id, label: t.nombre_vehiculo })), 
+        defaultValue: null, 
+        required: true },
+      { name: "id_plan", label: "Plan", type: "select", placeholder: "Seleccione el plan que requiere", 
+        options: planList.map((p) => ({ value: p.id, label: p.nombre_plan })), 
+        defaultValue: null, 
+        required: true },
+      { name: "observaciones", label: "Observacion", type: "textarea", placeholder: "Escriba una recomendación del servicio",  defaultValue: null, 
+ }
     ]);
   }, [convenioList, sucursalList, empleadoList, tipovehiculoList, planList]);
 
@@ -68,7 +82,7 @@ const useRequestManage = () => {
     try {
       setLoading(true);
       const data = await getRequest();
-      setOriginalRequest(data); // <--- Guarda los datos sin transformar
+      setOriginalRequest(data); //  Guarda los datos origanales
 
       const baseData = await fetchBaseData(); 
       if (!baseData) return;
@@ -99,9 +113,10 @@ const useRequestManage = () => {
   };
 
   useEffect(() => {
-    fetchRequest(); // ✅ Solo llamamos fetchRequest, que se encarga de todo
+    fetchRequest();
   }, []);
-
+  
+  //Funciona para Crear Revisiones 
   const createRequest= async (data)=>{
     try {
       console.log(data)
@@ -126,10 +141,10 @@ const useRequestManage = () => {
       });
     }
   }
+
+  //Funcion para editar Revisiones 
   const editingRequest = async (data) => {
     try {
-
-      console.log("Data Envida", data)
 
       const response = await patchRequest(data.id, data);
 
@@ -141,6 +156,9 @@ const useRequestManage = () => {
           confirmButtonText: "Aceptar",
         });
         fetchRequest();
+      }else{
+              console.error("Error al modificar la solicitud:");
+
       }
     } catch (error) {
       console.error("Error al modificar la solicitud:", error);
@@ -152,76 +170,112 @@ const useRequestManage = () => {
       });
     }
   };
-const handleFiledChage = (name, value) => {
-  let updatedFields = [...formsData];
 
-  if (name === 'id_convenio') {
-    const filtersucursal = sucursalList.filter(
-      (s) => Number(s.id_convenio) === Number(value)
-    );
+  //Funcion para aplicar filtros
+  const handleFiledChage = (name, value,) => {
+    let updatedFields = [...formsData];
 
-    updatedFields = updatedFields.map((field) => {
-      if (field.name === "id_sucursal") {
-        return {
-          ...field,
-          options: filtersucursal.map((s) => ({
-            value: s.id,
-            label: s.nombre,
-          })),
-          // Mantener el valor actual si está en edición
-          value: originalRequest.id_sucursal && 
-                 filtersucursal.some(s => s.id === originalRequest.id_sucursal) 
-                 ? originalRequest.id_sucursal 
-                 : undefined
-        };
-      }
-      return field;
+    if (name === 'id_convenio') {
+      const filtersucursal = sucursalList.filter(
+        (s) => Number(s.id_convenio) === Number(value)
+      );
+
+
+      updatedFields = updatedFields.map((field) => {
+        if (field.name === "id_sucursal") {
+          return {
+            ...field,
+            options: filtersucursal.map((s) => ({
+              value: s.id,
+              label: s.nombre,
+            })),
+          };
+        }
+        return field;
+      });
+    }
+
+    if (name === "id_tipo_vehiculo") {
+      const filteredPlans = planList.filter(
+        (p) => Number(p.id_tipo_vehiculo) === Number(value)
+      );
+
+      updatedFields = updatedFields.map((field) => {
+        if (field.name === "id_plan") {
+          return {
+            ...field,
+            options: filteredPlans.map((p) => ({
+              value: p.id,
+              label: p.nombre_plan,
+            })),
+          };
+        }
+        return field;
+      });
+    }
+
+    setFormsData(updatedFields);
+  };
+
+  //Funcion para eliminar 
+  const removeRequest = async (listIds) => {
+    if (listIds.length === 0) {
+      await Swal.fire({
+        title: "Error",
+        text: "Debe seleccionar al menos una solicitud",
+        icon: "error",
+      });
+      return false;
+    }
+
+    const resultado = await Swal.fire({
+      title: "Confirmación",
+      text: "¿Quieres eliminar las revisiones seleccionadas?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
     });
-  }
 
-  if (name === "id_tipo_vehiculo") {
-    const filteredPlans = planList.filter(
-      (p) => Number(p.id_tipo_vehiculo) === Number(value)
-    );
+    if (!resultado.isConfirmed) return false;
 
-    updatedFields = updatedFields.map((field) => {
-      if (field.name === "id_plan") {
-        return {
-          ...field,
-          options: filteredPlans.map((p) => ({
-            value: p.id,
-            label: p.nombre_plan,
-          })),
-          // Mantener el valor actual si está en edición
-          value: originalRequest.id_plan && 
-                 filteredPlans.some(p => p.id === originalRequest.id_plan) 
-                 ? originalRequest.id_plan 
-                 : undefined
-        };
+    try {
+      for (const id of listIds) {
+        await deleteRequest(id.id);
       }
-      return field;
-    });
-  }
 
-  setFormsData(updatedFields);
-};
+      await fetchRequest(); 
+
+      await Swal.fire({
+        title: "Solicitudes eliminadas",
+        text: "Se eliminaron las solicitudes correctamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
+
+      return true;
+
+    } catch (errors) {
+      console.log(errors);
+      Swal.fire({
+        title: "Error al eliminar",
+        text: `No se pudo completar la eliminación: ${errors}`,
+        icon: "error",
+      });
+      return false;
+    }
+  };
 
   return {
-    dataRequest,
     originalRequest,
+    dataRequest,
     formsData,
-    setFormsData,
-    loading,
     fetchRequest,
-    sucursalList,
-    convenioList,
-    empleadoList,
-    planList,
-    tipovehiculoList,
     fetchBaseData,
     createRequest,
     editingRequest,
-    handleFiledChage
+    removeRequest,
+    handleFiledChage,
   };
 };
 

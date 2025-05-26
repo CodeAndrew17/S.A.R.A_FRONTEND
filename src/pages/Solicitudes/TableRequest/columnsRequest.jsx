@@ -51,7 +51,7 @@ const columnsRequest=({})=>[
         let color = '#0000'
         let hover =''
         
-        if( record.estado=='PE'){
+        if( record.estado=='PRO'){
             color='#07f53d'
             hover='#519CB2'
 

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Table from "../../components/table";
 import { useColumnsManage } from "./columnsAdmin";
 
-import Toolbar from "../../components/Toolbar";
+import Toolbar from "../../components/toolbar";
 import UserForm from "../../components/userForm";
 import { CheckboxDropdown } from "../../components/dropdownTwo";
 
@@ -119,7 +119,9 @@ function Administrar() {
     }
   };
 
+  const todosLosIDs = plans.map(plan => plan.id);
 
+  console.log("Estructura de carga: ",todosLosIDs)
   return (
     <div> 
       <Sidebar />

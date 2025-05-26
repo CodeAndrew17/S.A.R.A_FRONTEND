@@ -5,6 +5,7 @@ import {logout} from '../api/api_Manager';
 import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipboardList, FaSignOutAlt, FaUser } from "react-icons/fa";
 
 
+
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
@@ -15,7 +16,6 @@ const UserContainer = styled.div`
   margin-bottom: 10px;
   transition: padding 0.3s ease;
   position: relative; /* Para posicionar el pseudo-elemento */
-
 
   /* Aquí eliminamos el border-bottom */
   &::after {

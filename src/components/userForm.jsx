@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { validateCreateUserForm } from "../utils/validaciones";
 import Swal from "sweetalert2";
-
-// Importa tu imagen
-import logo from '../assets/images/iconForm.png';
+import logo from "../assets/images/iconForm.png";
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -17,7 +15,7 @@ const ModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  transition: all 0.3s in;
+  transition: all 0.3s ease;
 `;
 
 const FormContainer = styled.div`
@@ -37,8 +35,8 @@ const LogoContainer = styled.div`
   position: absolute;
   top: 20px;
   left: 20px;
-  width: 50px;  /* Más grande */
-  height: 50px; /* Más grande */
+  width: 50px;
+  height: 50px;
   
   img {
     width: 100%;
@@ -171,25 +169,25 @@ const UserForm = ({
   onFieldChange,
   successMessage = "Usuario creado con éxito",
   successDescription = "El usuario ha sido registrado correctamente",
-  initialValues = {}
+  initialValues = {},
 }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
- useEffect(() => {
-  const initialData = {};
-  fields.forEach((field) => {
-    if (initialValues && initialValues[field.name] !== undefined) {
-      initialData[field.name] = initialValues[field.name];
-    } else if (field.defaultValue !== undefined) {
-      initialData[field.name] = field.defaultValue;
-    } else {
-      initialData[field.name] = "";
-    }
-  });
-  
-  setFormData(initialData);
-}, [ ]);
+  useEffect(() => {
+    const initialData = {};
+    fields.forEach((field) => {
+      if (initialValues && initialValues[field.name] !== undefined) {
+        initialData[field.name] = initialValues[field.name];
+      } else if (field.defaultValue !== undefined) {
+        initialData[field.name] = field.defaultValue;
+      } else {
+        initialData[field.name] = "";
+      }
+    });
+    
+    setFormData(initialData);
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -198,12 +196,11 @@ const UserForm = ({
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-      if (typeof onFieldChange === 'function') {
-        onFieldChange(name, value);
-      }
-  };
 
-  
+    if (typeof onFieldChange === 'function') {
+      onFieldChange(name, value);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,18 +212,44 @@ const UserForm = ({
     }
   };
 
+  const renderSelectField = (field) => (
+    <>
+      <Select
+        name={field.name}
+        value={formData[field.name] ?? ""}
+        onChange={handleInputChange}
+        required={field.required}
+        disabled={field.disabled}
+        style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
+      >
+        {/* Opción en blanco siempre presente y seleccionable */}
+        <option value="" style={{ color: '#999' }}>
+          {field.placeholder || "Seleccione una opción"}
+        </option>
+        
+        {/* Opciones dinámicas (si existen) */}
+        {field.options?.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </Select>
+      <ErrorMessage>{errors[field.name]}</ErrorMessage>
+    </>
+  );
+
   return (
     <ModalContainer>
       <FormContainer>
         <LogoContainer>
           <img src={logo} alt="Logo del aplicativo" />
         </LogoContainer>
-        
+
         <FormHeader>
           <Title>{title}</Title>
           <Separator />
         </FormHeader>
-        
+
         <form onSubmit={handleSubmit}>
           <FormContent>
             {fields.map((field) => (
@@ -240,27 +263,9 @@ const UserForm = ({
                   {field.label || field.placeholder}
                   {field.required && <span style={{ color: "red" }}> *</span>}
                 </label>
+
                 {field.type === "select" ? (
-                  <>
-                    <Select
-                      name={field.name}
-                      value={formData[field.name] ?? ""}
-                      onChange={handleInputChange}
-                      required={field.required}
-                      disabled={field.disabled}
-                      style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
-                    >
-                      <option value="" disabled>
-                        {field.placeholder}
-                      </option>
-                      {field.options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </Select>
-                    <ErrorMessage>{errors[field.name]}</ErrorMessage>
-                  </>
+                  renderSelectField(field)
                 ) : field.type === "custom" ? (
                   <>
                     <label style={{ marginBottom: "8px", fontWeight: "500" }}>
@@ -286,7 +291,7 @@ const UserForm = ({
               </InputGroup>
             ))}
           </FormContent>
-          
+
           <ButtonContainer>
             <CancelButton type="button" onClick={onCancel}>
               Cancelar
