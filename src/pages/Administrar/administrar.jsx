@@ -7,6 +7,8 @@ import Toolbar from "../../components/toolbar";
 import UserForm from "../../components/userForm";
 import usePlansandVehicles from "./adminManager";
 import { toast } from "react-toastify";
+import Swal from 'sweetalert2';
+
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -41,12 +43,7 @@ function Administrar() {
 
   // Handlers
   const handleSelectionChange = (selectedRows) => {
-    setSelectedRows(selectedRows);
-    if (selectedRows.length > 0) {
-      setEditingPlan(plans.find(plan => plan.id === selectedRows[0]));
-    } else {
-      setEditingPlan(null);
-    }
+  setSelectedRows(selectedRows);
   };
 
   const handleCrearPlan = () => {
@@ -55,12 +52,25 @@ function Administrar() {
   };
 
   const handleEditPlan = () => {
-    if (selectedRows.length === 1) {
-      setActiveForm("edit");
-    } else {
-      toast.error("Por favor selecciona un solo plan para editar");
-    }
+  if (selectedRows.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Ningún plan seleccionado',
+      text: 'Por favor selecciona un plan para editar',
+    });
+  } else if (selectedRows.length > 1) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Demasiados planes seleccionados',
+      text: 'Solo puedes editar un plan a la vez',
+    });
+  } else {
+    const planToEdit = plans.find(plan => plan.id === selectedRows[0]);
+    setEditingPlan(planToEdit);
+    setActiveForm("edit");
+  }
   };
+
 
   const handleCreateSubmit = async (formData) => {
     try {
@@ -91,21 +101,42 @@ function Administrar() {
   const handleCancelForm = () => {
     setActiveForm(null);
     setEditingPlan(null);
+    setSelectedRows([]); // limpiamos la seleccion 
   };
 
   const handelDeletePlan = async () => {
+  if (selectedRows.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Ningún plan seleccionado',
+      text: 'Selecciona al menos un plan para eliminar',
+    });
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: `Estás a punto de eliminar ${selectedRows.length} plan(es). Esta acción no se puede deshacer.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (result.isConfirmed) {
     try {
-      if (selectedRows.length === 0) {
-        toast.error("Por favor selecciona al menos un plan");
-        return;
-      }
       await Promise.all(selectedRows.map(id => deletePlan(id)));
       toast.success("Planes eliminados correctamente");
+      setSelectedRows([]);
     } catch (error) {
       console.error("Error al eliminar planes", error);
       toast.error("Error al eliminar planes");
     }
+  }
   };
+
 
   // Filtrado
   const normalizeText = (text) =>

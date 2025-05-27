@@ -224,8 +224,8 @@ function Revisiones() {
         />
         <CustomButtonWrapper>
         <CustomButton
-          bgColor="#32d0ac"
-          hoverColor="#2bb597"
+          bgColor="#7C9BAF"
+          hoverColor="#5D7E93"
           width="130px"
           height="44px"
           onClick={() => {

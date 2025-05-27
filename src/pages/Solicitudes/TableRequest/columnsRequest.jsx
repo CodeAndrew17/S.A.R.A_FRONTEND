@@ -4,10 +4,10 @@ import { FolderCog } from "lucide-react";
 
 const columnsRequest=({})=>[
       
-    {key:'fecha', title:'Fecha'},
-    {key:'placa', title:'Placa'},
-    {key:'id_empleado',title:'Solicitante'},
-    {key: 'estado',title: 'Estado',
+    {key:'fecha', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Fecha</span>},
+    {key:'placa', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Placa</span>},
+    {key:'id_empleado',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Solicitante</span>},
+    {key: 'estado',title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Estado</span>,
         render: (estado) => {
             let color = '';
 
@@ -38,22 +38,22 @@ const columnsRequest=({})=>[
     );
   }
 },
-    {key:'id_plan',title:'Servicio'},
-    {key:'id_convenio', title:'Convenio'},
-    {key:'id_sucursal', title:'Sucursal'},
+    {key:'id_plan',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Servicio</span>},
+    {key:'id_convenio', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Convenio</span>},
+    {key:'id_sucursal', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Sucursal</span>},
 
 
-    {key:'observaciones',title:'Observaciones'},
+    {key:'observaciones',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Observaciones</span>},
     {
         key: 'actions',
-        title: 'Acciones',
+        title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
     render: (_, record) => {
         let color = '#0000'
         let hover =''
         
         if( record.estado=='PRO'){
-            color='#07f53d'
-            hover='#519CB2'
+            color='#20C997'
+            hover='#1BAF89'
 
 
         }else{

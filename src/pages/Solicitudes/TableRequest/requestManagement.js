@@ -51,7 +51,7 @@ const useRequestManage = () => {
         options: planList.map((p) => ({ value: p.id, label: p.nombre_plan })), 
         defaultValue: null, 
         required: true },
-      { name: "observaciones", label: "Observacion", type: "textarea", placeholder: "Escriba una recomendación del servicio",  defaultValue: null,fullWidth: true   }
+      { name: "observaciones", label: "Observación", type: "textarea", placeholder: "Escriba una recomendación del servicio",  defaultValue: null,fullWidth: true   }
     ]);
   }, [convenioList, sucursalList, empleadoList, tipovehiculoList, planList]);
 

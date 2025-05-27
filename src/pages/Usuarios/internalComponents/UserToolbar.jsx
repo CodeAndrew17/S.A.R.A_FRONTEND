@@ -95,7 +95,7 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
         </CustomButton>
 
         <SearchBar
-          placeholder="Cédula,Nombre o Sucursal"
+          placeholder="Buscar..."
           width="290px"
           maxWidth="400px"  
           responsiveWidth={isLandscape ? "70%" : "50%"}
