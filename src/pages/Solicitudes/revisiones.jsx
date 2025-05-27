@@ -9,13 +9,14 @@ import UserForm from "../../components/userForm";
 import Swal from "sweetalert2";
 import DateDropdown from "../../components/DateDropdown";
 import CustomButton from "../../components/button";
-import { LucideBrush } from "lucide-react";
+import { LucideBrush, FilterX } from "lucide-react";
 
 
 const CustomButtonWrapper = styled.div`
   transform: scale(0.85);
   transform-origin: left center;
   display: inline-block;
+  margin-top: -2px;
 `;
 
 
@@ -46,8 +47,8 @@ function Revisiones() {
   const [estadoFiltro, setEstadoFiltro] = useState("");
   const [filtroFecha, setFiltroFecha] = useState({ fecha: null, modo: "date" });
   const [fechaKey, setFechaKey] = useState(0)
-
   const [filteredRevisions, setFilteredRevisions] = useState([]);
+
 
   const {
     originalRequest,
@@ -57,6 +58,7 @@ function Revisiones() {
     fetchBaseData,
     createRequest,
     editingRequest,
+    removeRequest,
     handleFiledChage,
   } = useRequestManage();
 
@@ -132,7 +134,19 @@ function Revisiones() {
     setFilteredRevisions(resultados);
   };
 
+  const handledelete = async () => { removeRequest(selectedRequests) }
 
+  const handleSearch = (search) => {
+    setSearchInput(search);
+    aplicarFiltros(estadoFiltro, search, filtroFecha);
+  };
+
+  const handleFilterEstado = (estado) => {
+    setEstadoFiltro(estado);
+    aplicarFiltros(estado, searchInput, filtroFecha);
+  };
+
+  const handleCreateRequest = () => { setActiveForm("request"); };
 
 
   const handleSearch = (search) => {
@@ -151,7 +165,9 @@ function Revisiones() {
 
   const handleeditRequest = () => {
     if (selectedRequests.length === 1) {
-      setEditinRequest(selectedRequests[0]);
+      const selected = selectedRequests[0];
+      setEditinRequest(selected);
+
       setActiveForm("request");
     } else {
       Swal.fire({
@@ -162,6 +178,13 @@ function Revisiones() {
       });
     }
   };
+
+
+
+
+  const handlecCancelForm = () => {
+    setActiveForm(null)
+  }
 
   const handleFormSubmit = (data) => {
     if (editinRequest) {
@@ -190,7 +213,9 @@ function Revisiones() {
 
       <Toolbar
         onCreate={handleCreateRequest}
-        onEdit={handleeditRequest}>
+        onEdit={handleeditRequest}
+        onDelete={handledelete}
+      >
 
         <Toolbar.Search
           placeholder="Buscar..."
@@ -205,29 +230,29 @@ function Revisiones() {
           onSelect={handleFilterEstado}
         />
         <DateDropdown
-        key={fechaKey}
+          key={fechaKey}
           onSelect={(fecha, modo) => {
             setFiltroFecha({ fecha, modo });
             aplicarFiltros(estadoFiltro, searchInput, { fecha, modo });
           }}
         />
         <CustomButtonWrapper>
-        <CustomButton
-          bgColor="#32d0ac"
-          hoverColor="#32d0ac"
-          width="120px"
-          height="60px"
-          onClick={() => {
-            setFechaKey(prev => prev + 1);
-            setFiltroFecha({ fecha: null, modo: "date" });
-            aplicarFiltros(estadoFiltro, searchInput, { fecha: null, modo: "date" });
-          }}
-          style={null}
-          className="Boton extra"
-          icon={LucideBrush}
-        >
-          Limpiar filtro de fecha
-        </CustomButton>
+          <CustomButton
+            bgColor="#7C9BAF"
+            hoverColor="#5D7E93"
+            width="130px"
+            height="44px"
+            onClick={() => {
+              setFechaKey(prev => prev + 1);
+              setFiltroFecha({ fecha: null, modo: "date" });
+              aplicarFiltros(estadoFiltro, searchInput, { fecha: null, modo: "date" });
+            }}
+            style={null}
+            className="Boton extra"
+            icon={FilterX}
+          >
+            Limpiar Fecha
+          </CustomButton>
         </CustomButtonWrapper>
       </Toolbar>
 
@@ -239,8 +264,8 @@ function Revisiones() {
           const selectedItems = originalRequest.filter((item) =>
             selectedIds.includes(item.id)
           );
-          setEditinRequest(selectedItems[0]);
           setSelectedRequests(selectedItems);
+          setEditinRequest(selectedItems.length === 1 ? selectedItems[0] : null);
         }}
       />
 
@@ -251,9 +276,11 @@ function Revisiones() {
           onFieldChange={handleFiledChage}
           onCancel={handleCancelForm}
           onSubmit={handleFormSubmit}
-          initialValues={editinRequest}
+          initialValues={editinRequest || {}}
         />
+
       )}
+
     </div>
   );
 }

@@ -12,6 +12,10 @@
   "dependencies": {
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
+<<<<<<< HEAD
+=======
+    "date-picker": "^0.5.0",
+>>>>>>> 6621e6ea95589385fa303b0052e0c99c2fbe7a38
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",
     "react-datepicker": "^8.3.0",
