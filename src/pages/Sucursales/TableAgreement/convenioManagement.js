@@ -3,11 +3,15 @@ import { useState } from "react";
 import { getAgreement, addAgreement, deleteAgreement, getBranches ,editAgreement} from "../../../api/api_Convenios";
 import Swal from "sweetalert2";
 import { Search } from "lucide-react";
+import filterData from "../../../utils/unitySearch"; // funcion para filtrar los datos de la tabla
+
 
 const useAgreementManagement = () => {
   const [agreements, setAgreements] = useState([]); // Estado para convenios
   const [loading, setLoading] = useState(false); // Estado para el loading
   const [filteredAgreement, setFilteredAgreement] = useState([]);
+  const [statusFilter, setStatusFilter] = useState(""); //filtro añadido para estado
+  const [searchText, setSearchText] = useState(""); // estado para el texto de busqueda
 
 
   // Cargar los convenios desde la API
@@ -42,6 +46,14 @@ const useAgreementManagement = () => {
   
     setFilteredAgreement(filtered);
   };
+
+    const filteredData = filterData({
+    data: agreements, 
+    searchText,
+    searchFields: ["nombre", "nit"], // nombres de las columnas a buscar pasadas como array (solo nombres)
+    statusField: "estado", // nombre de la columna que contiene el estado
+    statusFilter // valor del filtro 
+  })
 
   
 
@@ -204,6 +216,9 @@ const useAgreementManagement = () => {
     removeAgreement,
     ConsultSearch,
     updateAgreement,
+    filteredData,
+    setStatusFilter,
+    setSearchText
   };
 };
 

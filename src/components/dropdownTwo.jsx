@@ -27,7 +27,7 @@ const DropdownButton = styled.button`
 
   &:hover {
     background:rgb(78, 143, 179);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 `;

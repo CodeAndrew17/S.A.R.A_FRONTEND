@@ -97,7 +97,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
   const [selected, setSelected] = useState([]); // Para los convenios seleccionados
   const [editinAgreement, setEditinAgreement] =  useState(null) //Datos para editar 
   const modalRef = useRef(null); // Referencia al modal
-
+  
 
   const {
     filteredAgreement,// Datos con Filtro
@@ -106,9 +106,12 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
     removeAgreement, // Funcion para eliminar convenios
     ConsultSearch, //Funcion Para buscar
     updateAgreement,
+    filteredData,
+    setStatusFilter,
+    setSearchText
   } = useAgreementManagement();
 
- 
+
   useEffect(() => {
     fetchAgreementData(); 
   }, []); 
@@ -171,7 +174,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
 
           <Toolbar.Search 
           placeholder="Buscar..."
-          onSearch={ConsultSearch} 
+          onSearch={(search) => setSearchText(search)} 
 
           />
           <Toolbar.Dropdown
@@ -180,7 +183,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
               "IN": "Inactivo",
               "": "Todos"
             }}            
-            onSelect={ConsultSearch}
+            onSelect={(option) => setStatusFilter(option)}
           />
         </Toolbar>
 
@@ -189,7 +192,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
         <Table
           containerStyle={{ margin: "5px 10px 5px 5px", width: "98%", overflow: "auto" ,  borderRadius: "0px"}}
           selectable={true}
-          data={filteredAgreement} // Usamos los convenios que vienen del hook
+          data={filteredData} // Usamos los convenios que vienen del hook
           columns={columnsAgreement({setEditinAgreement,setActiveForm})}
           onSelectionChange={handleSelected}
         />

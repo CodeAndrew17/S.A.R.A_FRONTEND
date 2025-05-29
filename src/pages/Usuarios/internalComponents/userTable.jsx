@@ -89,7 +89,12 @@ const TableHeader = styled.th`
 
 const TableRow = styled.tr`
   &:not(:last-child) {
-    border-bottom: 1px solid #e0e0e0; /* Línea para todas las filas excepto la última */
+    border-bottom: 1px solid #e0e0e0; 
+  }
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05); 
+    transition: background-color 0.1s ease;
   }
 `;
 
@@ -107,6 +112,7 @@ const TableCell = styled.td`
     min-width: 200px; /* Ancho mínimo */
     overflow: visible; /* Permite que el texto se muestre completo */
     white-space: normal; /* Permite múltiples líneas si es necesario */
+    margin-top: 12px; /* Espacio superior */
   }
 
   @media (max-width: 1024px) {

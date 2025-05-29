@@ -1,8 +1,7 @@
-
 import CustomButton from "../../../components/button";
 import { FolderCog } from "lucide-react";
 
-const columnsRequest=({})=>[
+const columnsRequest=({navigate})=>[
       
     {key:'fecha', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Fecha</span>},
     {key:'placa', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Placa</span>},
@@ -48,6 +47,7 @@ const columnsRequest=({})=>[
         key: 'actions',
         title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
     render: (_, record) => {
+
         let color = '#0000'
         let hover =''
         
@@ -67,6 +67,10 @@ const columnsRequest=({})=>[
         hoverColor={hover}
         width="100px"
         height="35px"
+        onClick={() => navigate("/forms", {state: { solicitud_id: record.id, 
+          placa:record.placa, 
+          plan: record.id_plan, 
+          id_plan: record.id_real_plan}})} //redirigimos a la ruta q nececitamos llevandonos los valores q nececitamos para los formularios
         icon={FolderCog}
       >
         Ejecutar

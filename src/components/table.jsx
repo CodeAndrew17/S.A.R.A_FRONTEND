@@ -91,8 +91,8 @@ const EstadoBadge = styled.span`
   border-radius: 12px;
   font-size: 12px;
   font-weight: bold;
-  background-color: ${({ estado }) => estado === 'AC' ? '#d4edda' : '#f8d7da'};
-  color: ${({ estado }) => estado === 'AC' ? '#155724' : '#721c24'};
+  background-color: ${({ $estado }) => $estado === 'AC' ? '#d4edda' : '#f8d7da'};
+  color: ${({ $estado }) => $estado === 'AC' ? '#155724' : '#721c24'};
 `;
 
 const CheckboxCell = styled.td`
@@ -194,7 +194,7 @@ const Table = ({
                       {column.render 
                         ? column.render(item[column.key], item) 
                         : column.key === 'estado'
-                          ? <EstadoBadge estado={item[column.key]}>{item[column.key]}</EstadoBadge>
+                          ? <EstadoBadge $estado={item[column.key]}>{item[column.key]}</EstadoBadge>
                           : item[column.key]
                       }
                     </TableCell>
