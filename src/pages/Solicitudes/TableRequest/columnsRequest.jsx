@@ -70,7 +70,7 @@ const columnsRequest=({navigate})=>[
         onClick={() => navigate("/forms", {state: { solicitud_id: record.id, 
           placa:record.placa, 
           plan: record.id_plan, 
-          id_plan: record.id_real_plan}})} //redirigimos a la ruta q nececitamos llevandonos los valores q nececitamos para los formularios
+          id_plan: record.id_real_plan}})} //redirigimos a la ruta q nececitamos llevandonos los valores q nececitamos para los formularios haciendo uso del hook useLocation
         icon={FolderCog}
       >
         Ejecutar

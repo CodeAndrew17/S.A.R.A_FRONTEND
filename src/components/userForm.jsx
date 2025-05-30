@@ -78,7 +78,7 @@ const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 8px;
-  grid-column: ${({ fullWidth }) => fullWidth ? '1 / -1' : 'auto'};
+  grid-column: ${({ $fullWidth }) => $fullWidth ? '1 / -1' : 'auto'};
 `;
 
 const Input = styled.input`
@@ -241,7 +241,7 @@ const UserForm = ({
   };
 
   const renderSelectField = (field) => (
-    <InputGroup fullWidth={field.fullWidth}>
+    <InputGroup $fullWidth={field.fullWidth}>
       <label style={{ 
         marginBottom: "8px", 
         fontWeight: "500",
@@ -273,7 +273,7 @@ const UserForm = ({
   );
 
   const renderInputField = (field) => (
-    <InputGroup fullWidth={field.fullWidth}>
+    <InputGroup $fullWidth={field.fullWidth}>
       <label style={{ 
         marginBottom: "8px", 
         fontWeight: "500",
@@ -297,7 +297,7 @@ const UserForm = ({
   );
 
   const renderTextAreaField = (field) => (
-    <InputGroup fullWidth={field.fullWidth}>
+    <InputGroup $fullWidth={field.fullWidth}>
       <label style={{ 
         marginBottom: "8px", 
         fontWeight: "500",
@@ -333,20 +333,32 @@ const UserForm = ({
 
         <form onSubmit={handleSubmit}>
           <FormContent>
-            {fields.map((field) => {
+            {fields.map((field, index) => {
               if (field.type === "select") {
-                return renderSelectField(field);
+                return (
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
+                    {renderSelectField(field)}
+                  </InputGroup>
+                );
               } else if (field.type === "textarea") {
-                return renderTextAreaField(field);
+                return (
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
+                    {renderTextAreaField(field)}
+                  </InputGroup>
+                );
               } else if (field.type === "custom") {
                 return (
-                  <InputGroup fullWidth={field.fullWidth} key={field.name}>
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
                     {field.component}
                     <ErrorMessage>{errors[field.name]}</ErrorMessage>
                   </InputGroup>
                 );
               } else {
-                return renderInputField(field);
+                return (
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
+                    {renderInputField(field)}
+                  </InputGroup>
+                );
               }
             })}
           </FormContent>

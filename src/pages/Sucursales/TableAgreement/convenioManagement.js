@@ -177,37 +177,44 @@ const useAgreementManagement = () => {
 
   
   const updateAgreement = async (formData) => {
-    console.log("Asieno un PUT")
+    console.log("Haciendo un PUT");
+
     try {
-      const agreement = agreements.find(a => a.nit === formData.nit);
-      const telefono = parseInt(formData.telefono, 10);
+        const agreement = agreements.find(a => a.nit === formData.nit);
+        const telefono = parseInt(formData.telefono, 10);
 
-      if (isNaN(telefono)) {
-        throw new Error("El teléfono no es válido.");
-      }
-      console.log(agreement.id)
-      const dataToSend = { ...formData, telefono };
-      const agreementNew = await editAgreement(agreement.id,dataToSend);
+        if (isNaN(telefono)) {
+            throw new Error("El teléfono no es válido.");
+        }
 
-      if (agreementNew) {
-        Swal.fire({
-          title: "Éxito",
-          text: "El convenio se ha creado correctamente.",
-          icon: "success",
-          confirmButtonText: "Aceptar",
-        });
-        fetchAgreementData();
-      }
+        if (!agreement) {
+            throw new Error(`No se encontró un convenio con el NIT ${formData.nit}`);
+        }
+
+        console.log(agreement.id);
+        const dataToSend = { ...formData, telefono };
+        const agreementNew = await editAgreement(agreement.id, dataToSend);
+
+        if (agreementNew) {
+            Swal.fire({
+                title: "Éxito",
+                text: "El convenio se ha actualizado correctamente.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+            });
+            fetchAgreementData();
+        }
     } catch (error) {
-      console.error("Error al crear el convenio:", error);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo crear el convenio. Verifica los datos ingresados.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
+        console.error("Error al crear el convenio:", error);
+        Swal.fire({
+            title: "Error",
+            text: error.message || "No se pudo crear el convenio. Verifica los datos ingresados.",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+        });
     }
-  };
+};
+
 
   return {
     filteredAgreement,

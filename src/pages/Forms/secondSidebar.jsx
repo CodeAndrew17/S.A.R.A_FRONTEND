@@ -66,7 +66,7 @@ const Sidebar = ({ onSelect,
   }) => {
   React.useEffect(() => {
     if (id_plan) {
-      sessionStorage.setItem("id_plan", id_plan);
+      sessionStorage.setItem("id_plan", id_plan); //depuracion no se utiliza ya q usamos el hook useLocation y lo recibe formsview
     }
   }, [id_plan]);
 
@@ -83,7 +83,7 @@ const Sidebar = ({ onSelect,
 
       <h4 style={{ marginTop: '1rem',fontSize: '1.5rem' }}>Formularios Principales</h4>
       {formulariosPrincipales.length === 0 && <p>No hay formularios principales</p>}
-      {formulariosPrincipales.map(form => (
+      {formulariosPrincipales.map(form => ( //mapeamos por cada formulario principal para extraer el nombre y mostrarlo el id ya esta en la key para realizar con cada uno la accion q se requiera
         <MenuItem key={form.id} onClick={() => onSelect(form.nombre_formulario)}>
           {form.nombre_formulario}
         </MenuItem>
@@ -91,7 +91,7 @@ const Sidebar = ({ onSelect,
 
       <h4 style={{ marginTop: '1rem', fontSize: '1.5rem' }}>Formularios Adicionales</h4>
       {formulariosAdicionales.length === 0 && <p>No hay formularios adicionales</p>}
-      {formulariosAdicionales.map(form => (
+      {formulariosAdicionales.map(form => ( //mismo caso de arriba pero con los adicionaesl 
         <MenuItem key={form.id} onClick={() => onSelect(form.nombre_formulario)}>
           {form.nombre_formulario}
         </MenuItem>
