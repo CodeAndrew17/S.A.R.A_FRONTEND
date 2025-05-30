@@ -176,23 +176,34 @@ const useAgreementManagement = () => {
   };
 
   
-  const updateAgreement = async (formData) => {
+ const updateAgreement = async (formData, originalNit) => {
     console.log("Haciendo un PUT");
+    console.log("NIT enviado desde el formulario:", formData.nit);
+    console.log("NIT original del convenio:", originalNit);
 
     try {
-        const agreement = agreements.find(a => a.nit === formData.nit);
-        const telefono = parseInt(formData.telefono, 10);
+        // Buscar el convenio por NIT original
+        const agreement = agreements.find(a => a.nit === originalNit);
+
+        if (!agreement) {
+            throw new Error(`No se encontró un convenio con el NIT original ${originalNit}`);
+        }
+
+        // Validación y conversión segura del teléfono
+        const telefono = Number.isInteger(formData.telefono) 
+            ? formData.telefono 
+            : parseInt(String(formData.telefono).replace(/\D/g, ''), 10);
 
         if (isNaN(telefono)) {
             throw new Error("El teléfono no es válido.");
         }
 
-        if (!agreement) {
-            throw new Error(`No se encontró un convenio con el NIT ${formData.nit}`);
-        }
+        console.log(`Actualizando convenio con ID: ${agreement.id}`);
 
-        console.log(agreement.id);
+        // Datos a enviar
         const dataToSend = { ...formData, telefono };
+
+        // Llamada a la API para editar el convenio
         const agreementNew = await editAgreement(agreement.id, dataToSend);
 
         if (agreementNew) {
@@ -205,15 +216,17 @@ const useAgreementManagement = () => {
             fetchAgreementData();
         }
     } catch (error) {
-        console.error("Error al crear el convenio:", error);
+        console.error("Error al actualizar el convenio:", error);
         Swal.fire({
             title: "Error",
-            text: error.message || "No se pudo crear el convenio. Verifica los datos ingresados.",
+            text: error.message || "No se pudo actualizar el convenio. Verifica los datos ingresados.",
             icon: "error",
             confirmButtonText: "Aceptar",
         });
     }
 };
+
+
 
 
   return {

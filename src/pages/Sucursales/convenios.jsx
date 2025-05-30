@@ -129,7 +129,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
   const handleFormSubmit= async(newData)=>{
     try{
       if(editinAgreement){
-        await updateAgreement( newData)
+        await updateAgreement( newData, editinAgreement.nit) //arreglo de funcion editar pasamos el nit original 
       }else{
         await createAgreement(newData);
 
