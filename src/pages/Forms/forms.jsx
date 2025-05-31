@@ -28,6 +28,15 @@ function FormsView() {
   //Accede a las propiedades de la data para mostrar por cada item su nombre, y tipo
   const mappedFields = formData.map(field => {
     const idCat = field.id_items.id_categoria_opciones;
+    if(idCat == "16"){
+      return {
+      name: `item_${field.id}`,
+      label: field.id_items.nombre_items || '',
+      type: 'text',
+      placeholder: '',
+      required: false
+    };
+    }
     if (idCat) {
       // Transforma las opciones al formato { value, label }
       const opciones = (categoriaOpciones[idCat] || []).map(opt => ({
@@ -43,13 +52,6 @@ function FormsView() {
         required: false
       };
     }
-    return {
-      name: `item_${field.id}`,
-      label: field.id_items.nombre_items || '',
-      type: 'text',
-      placeholder: '',
-      required: false
-    };
   });
 
 
@@ -70,7 +72,7 @@ function FormsView() {
       }
     };
 
-    if (formulariosPrincipales.length > 0 && formulariosAdicionales.length > 0) {
+    if (formulariosPrincipales.length > 0) {
       fetchItems();
     }
   }, [formulariosPrincipales, formulariosAdicionales])

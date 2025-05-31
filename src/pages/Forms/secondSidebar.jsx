@@ -96,6 +96,8 @@ const Sidebar = ({ onSelect,
       {formulariosAdicionales.map(form => ( //mismo caso de arriba pero con los adicionaesl 
         <MenuItem key={form.id} onClick={() => onSelect({id: form.id, nombre: form.nombre_formulario})}>
           {form.nombre_formulario}
+          <br />
+          {form.id}
         </MenuItem>
       ))}
 
