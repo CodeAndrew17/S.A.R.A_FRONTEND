@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { validateCreateUserForm } from "../utils/validaciones";
 import Swal from "sweetalert2";
-
-// Importa tu imagen
-import logo from '../assets/images/iconForm.png';
+import logo from "../assets/images/iconForm.png";
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -17,7 +15,6 @@ const ModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  transition: all 0.3s in;
 `;
 
 const FormContainer = styled.div`
@@ -26,19 +23,19 @@ const FormContainer = styled.div`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   width: 680px;
-  height: auto;
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: all 0.3s ease;
+  overflow-y: auto;
 `;
 
 const LogoContainer = styled.div`
   position: absolute;
   top: 20px;
   left: 20px;
-  width: 50px;  /* Más grande */
-  height: 50px; /* Más grande */
+  width: 50px;
+  height: 50px;
   
   img {
     width: 100%;
@@ -59,6 +56,7 @@ const Title = styled.h1`
   margin: 0;
   padding: 0;
   margin-bottom: 15px;
+  font-size: 24px;
 `;
 
 const Separator = styled.div`
@@ -73,12 +71,14 @@ const FormContent = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   width: 100%;
+  padding-right: 10px;
 `;
 
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 8px;
+  grid-column: ${({ $fullWidth }) => $fullWidth ? '1 / -1' : 'auto'};
 `;
 
 const Input = styled.input`
@@ -89,11 +89,12 @@ const Input = styled.input`
   border-radius: 6px;
   box-sizing: border-box;
   font-size: 14px;
-  transition: border 0.3s;
+  transition: all 0.3s;
 
   &:focus {
     border-color: rgb(95, 200, 214);
     outline: none;
+    box-shadow: 0 0 0 2px rgba(95, 200, 214, 0.2);
   }
 `;
 
@@ -106,11 +107,36 @@ const Select = styled.select`
   background-color: white;
   box-sizing: border-box;
   font-size: 14px;
-  transition: border 0.3s;
+  transition: all 0.3s;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23999%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px auto;
 
   &:focus {
     border-color: rgb(95, 200, 214);
     outline: none;
+    box-shadow: 0 0 0 2px rgba(95, 200, 214, 0.2);
+  }
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+  min-height: 100px;
+  resize: vertical;
+  transition: all 0.3s;
+
+  &:focus {
+    border-color: rgb(95, 200, 214);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(95, 200, 214, 0.2);
   }
 `;
 
@@ -171,7 +197,7 @@ const UserForm = ({
   onFieldChange,
   successMessage = "Usuario creado con éxito",
   successDescription = "El usuario ha sido registrado correctamente",
-  initialValues = {}
+  initialValues = {},
 }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
@@ -187,6 +213,7 @@ const UserForm = ({
         initialData[field.name] = "";
       }
     });
+    
     setFormData(initialData);
   }, []);
 
@@ -197,12 +224,11 @@ const UserForm = ({
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-      if (typeof onFieldChange === 'function') {
-        onFieldChange(name, value);
-      }
-  };
 
-  
+    if (typeof onFieldChange === 'function') {
+      onFieldChange(name, value);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -214,78 +240,129 @@ const UserForm = ({
     }
   };
 
+  const renderSelectField = (field) => (
+    <InputGroup $fullWidth={field.fullWidth}>
+      <label style={{ 
+        marginBottom: "8px", 
+        fontWeight: "500",
+        color: "#555",
+        fontSize: "14px"
+      }}>
+        {field.label || field.placeholder}
+        {field.required && <span style={{ color: "red" }}> *</span>}
+      </label>
+      <Select
+        name={field.name}
+        value={formData[field.name] ?? ""}
+        onChange={handleInputChange}
+        required={field.required}
+        disabled={field.disabled}
+        style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
+      >
+        <option value="" style={{ color: '#999' }}>
+          {field.placeholder || "Seleccione una opción"}
+        </option>
+        {field.options?.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </Select>
+      <ErrorMessage>{errors[field.name]}</ErrorMessage>
+    </InputGroup>
+  );
+
+  const renderInputField = (field) => (
+    <InputGroup $fullWidth={field.fullWidth}>
+      <label style={{ 
+        marginBottom: "8px", 
+        fontWeight: "500",
+        color: "#555",
+        fontSize: "14px"
+      }}>
+        {field.label || field.placeholder}
+        {field.required && <span style={{ color: "red" }}> *</span>}
+      </label>
+      <Input
+        type={field.type || "text"}
+        name={field.name}
+        placeholder={field.placeholder}
+        value={formData[field.name] ?? ""}
+        onChange={handleInputChange}
+        required={field.required}
+        style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
+      />
+      <ErrorMessage>{errors[field.name]}</ErrorMessage>
+    </InputGroup>
+  );
+
+  const renderTextAreaField = (field) => (
+    <InputGroup $fullWidth={field.fullWidth}>
+      <label style={{ 
+        marginBottom: "8px", 
+        fontWeight: "500",
+        color: "#555",
+        fontSize: "14px"
+      }}>
+        {field.label || field.placeholder}
+        {field.required && <span style={{ color: "red" }}> *</span>}
+      </label>
+      <TextArea
+        name={field.name}
+        placeholder={field.placeholder}
+        value={formData[field.name] ?? ""}
+        onChange={handleInputChange}
+        required={field.required}
+        style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
+      />
+      <ErrorMessage>{errors[field.name]}</ErrorMessage>
+    </InputGroup>
+  );
+
   return (
     <ModalContainer>
       <FormContainer>
         <LogoContainer>
           <img src={logo} alt="Logo del aplicativo" />
         </LogoContainer>
-        
+
         <FormHeader>
           <Title>{title}</Title>
           <Separator />
         </FormHeader>
-        
+
         <form onSubmit={handleSubmit}>
           <FormContent>
-            {fields.map((field) => (
-              <InputGroup key={field.name}>
-                <label style={{ 
-                  marginBottom: "8px", 
-                  fontWeight: "500",
-                  color: "#555",
-                  fontSize: "14px"
-                }}>
-                  {field.label || field.placeholder}
-                  {field.required && <span style={{ color: "red" }}> *</span>}
-                </label>
-                {field.type === "select" ? (
-                  <>
-                    <Select
-                      name={field.name}
-                      value={formData[field.name] ?? ""}
-                      onChange={handleInputChange}
-                      required={field.required}
-                      disabled={field.disabled}
-                      style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
-                    >
-                      <option value="" disabled>
-                        {field.placeholder}
-                      </option>
-                      {field.options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </Select>
-                    <ErrorMessage>{errors[field.name]}</ErrorMessage>
-                  </>
-                ) : field.type === "custom" ? (
-                  <>
-                    <label style={{ marginBottom: "8px", fontWeight: "500" }}>
-                      {field.placeholder}
-                    </label>
+            {fields.map((field, index) => {
+              if (field.type === "select") {
+                return (
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
+                    {renderSelectField(field)}
+                  </InputGroup>
+                );
+              } else if (field.type === "textarea") {
+                return (
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
+                    {renderTextAreaField(field)}
+                  </InputGroup>
+                );
+              } else if (field.type === "custom") {
+                return (
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
                     {field.component}
                     <ErrorMessage>{errors[field.name]}</ErrorMessage>
-                  </>
-                ) : (
-                  <>
-                    <Input
-                      type={field.type || "text"}
-                      name={field.name}
-                      placeholder={field.placeholder}
-                      value={formData[field.name] ?? ""}
-                      onChange={handleInputChange}
-                      required={field.required}
-                      style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
-                    />
-                    <ErrorMessage>{errors[field.name]}</ErrorMessage>
-                  </>
-                )}
-              </InputGroup>
-            ))}
+                  </InputGroup>
+                );
+              } else {
+                return (
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
+                    {renderInputField(field)}
+                  </InputGroup>
+                );
+              }
+            })}
           </FormContent>
-          
+
           <ButtonContainer>
             <CancelButton type="button" onClick={onCancel}>
               Cancelar

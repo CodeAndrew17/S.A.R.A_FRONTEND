@@ -42,7 +42,7 @@ const CreateForm = ({ showForm, setShowForm, handleFormSubmit }) => {
                         { value: "IN", label: "Inactivo" }
                     ],
                     required: true,
-                    defaultValue: "Activo"
+                    defaultValue: "AC"
                 },
                 {
                     name: "id_sucursal",

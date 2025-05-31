@@ -49,17 +49,27 @@ const TableContainer = styled.div`
 
 const StyledTable = styled.table`
   width: 100%;
-  min-width: 1200px; 
-  table-layout: auto;
+  min-width: 1200px;
+  table-layout: auto; /* Cambiado de fixed a auto para anchos flexibles */
   border-collapse: collapse;
+  border-spacing: 0;
 
+  /* Define anchos específicos para columnas */
+  th:nth-child(1), td:nth-child(1) { width: 50px; } /* Seleccionar */
+  th:nth-child(2), td:nth-child(2) { width: 150px; } /* Nombres */
+  th:nth-child(3), td:nth-child(3) { width: 150px; } /* Apellidos */
+  th:nth-child(4), td:nth-child(4) { width: 120px; } /* Cédula */
+  th:nth-child(5), td:nth-child(5) { width: 250px; } /* Correo (más ancho) */
+  th:nth-child(6), td:nth-child(6) { width: 80px; } /* Estado */
+  th:nth-child(7), td:nth-child(7) { width: 150px; } /* Sucursal */
+  th:nth-child(8), td:nth-child(8) { width: 150px; } /* Usuario */
 
   @media (max-width: 1024px) and (min-width: 768px) {
-    min-width: 1100px; /* Ancho que garantiza scroll en 768px */
+    min-width: 1100px;
   }
 
   @media (max-width: 767px) {
-    min-width: 900px; 
+    min-width: 900px;
   }
 `;
 
@@ -68,7 +78,7 @@ const TableHeader = styled.th`
   color: white;
   padding: 16px 12px;
   text-align: left;
-  font-size: 15px;
+  font-size: 14px;
   border-bottom: 2px solid #ddd;
 
   @media (max-width: 1024px) {
@@ -78,49 +88,57 @@ const TableHeader = styled.th`
 `;
 
 const TableRow = styled.tr`
-  &:last-child {
-    td {
-      border-bottom: 1px solid #e0e0e0;
-    }
+  &:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0; 
+  }
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05); 
+    transition: background-color 0.1s ease;
   }
 `;
 
 const TableCell = styled.td`
-  padding: 14px 12px;
+  padding: 12px 8px; /* Aumenta el padding para mejor legibilidad */
   font-size: 14px;
-  border-bottom: 1px solid #e0e0e0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-bottom: none;
 
-  @media (max-width: 1024px) {
-    padding: 12px 8px;
-    font-size: 13px;
+  /* Estilo específico para columna de correo */
+  &.columna-correo {
+    max-width: 250px; /* Ancho máximo */
+    min-width: 200px; /* Ancho mínimo */
+    overflow: visible; /* Permite que el texto se muestre completo */
+    white-space: normal; /* Permite múltiples líneas si es necesario */
+    margin-top: 12px; /* Espacio superior */
   }
 
-  &.columna-seleccionar { padding-left: 50px; }
-  &.columna-nombres { padding-left: 60px; }
-  &.columna-apellidos { padding-left: 60px; }
-  &.columna-cedula { padding-left: 40px; }
-  &.columna-correo { padding-left: 30px; }
-  &.columna-estado { padding-left: 15px; }
-  &.columna-sucursal { padding-right: 45px; }
-  &.columna-usuario { padding-right: 30px; }
-
-  @media (max-width: 768px) {
-    &.columna-seleccionar { padding-left: 30px; }
-    &.columna-nombres { padding-left: 40px; }
-    &.columna-apellidos { padding-left: 40px; }
-    &.columna-cedula { padding-left: 30px; }
-    &.columna-correo { padding-left: 20px; }
+  @media (max-width: 1024px) {
+    padding: 12px 6px;
+    font-size: 13px;
   }
 `;
 
 const CheckBoxCell = styled.td`
-  text-align: center;
+  text-align: left;
   padding: 14px 12px;
   padding-left: 110px;
   position: relative;
+  
+  /* Estilos para el checkbox y cursor */
+  & input[type="checkbox"] {
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    accent-color:rgb(117, 117, 117); /* Color que coincide con tu tema */
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: scale(1); /* Efecto sutil al pasar el mouse */
+    }
+  }
 
   @media (max-width: 1024px) {
     padding-left: 90px;
@@ -350,12 +368,12 @@ const UserTable = ({
       <StyledTable>
         <thead>
           <tr>
-            <TableHeader style={{paddingLeft: "165px"}}>Seleccionar</TableHeader>
-            <TableHeader style={{paddingLeft: "60px"}}>Nombres</TableHeader>
-            <TableHeader style={{paddingLeft: "60px"}}>Apellidos</TableHeader>
-            <TableHeader style={{paddingLeft: "38px"}}>Cédula</TableHeader>
-            <TableHeader style={{paddingLeft: "28px"}}>Correo</TableHeader>
-            <TableHeader style={{paddingLeft: "2px"}}>Estado</TableHeader>
+            <TableHeader style={{paddingLeft: "165px"}}></TableHeader>
+            <TableHeader style={{paddingLeft: "9px"}}>Nombres</TableHeader>
+            <TableHeader style={{paddingLeft: "8px"}}>Apellidos</TableHeader>
+            <TableHeader style={{paddingLeft: "8px"}}>Cédula</TableHeader>
+            <TableHeader style={{paddingLeft: "8px"}}>Correo</TableHeader>
+            <TableHeader style={{paddingLeft: "10px"}}>Estado</TableHeader>
             <TableHeader style={{paddingLeft: "15px"}}>Sucursal</TableHeader>
             <TableHeader style={{paddingLeft: "25px"}}>Usuario</TableHeader>
           </tr>
@@ -373,10 +391,22 @@ const UserTable = ({
                     />
                   </CheckBoxCell>
                   
-                  <TableCell className="columna-nombres">{usuario.nombres}</TableCell>
+                  <TableCell className="columna-nombres" >{usuario.nombres}</TableCell>
                   <TableCell className="columna-apellidos">{usuario.apellidos}</TableCell>
                   <TableCell className="columna-cedula">{usuario.cedula}</TableCell>
-                  <TableCell className="columna-correo">{usuario.correo}</TableCell>
+                  <TableCell 
+                    className="columna-correo"
+                    style={{ 
+                      maxWidth: '250px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: 'inline-block'
+                    }}
+                    title={usuario.correo} /* Mmuestra todo el campo  */
+                  >
+                    {usuario.correo}
+                  </TableCell>
                   <TableCell className="columna-estado" style={{color: usuario.estado === "AC" ? "green" : "red", fontWeight: "bold", textTransform: "uppercase" }}>
                     {usuario.estado}
                   </TableCell>

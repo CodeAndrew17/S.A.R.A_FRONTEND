@@ -8,6 +8,7 @@ import {getBranches, getAgreement} from "../../api/api_Convenios";
 import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de los convenios
 import columnsBranch from "./TableBranches/columnsBranches"; // columnas de las sucursales
 import Toolbar from "../../components/toolbar";
+import filterData from "../../utils/unitySearch"; // funcion para filtrar los datos de la tabla
 
 
 import {handleSucursalSubmit, handleDeleteBranches, handleUpdateBranches} from "./TableBranches/sucursalManagement"; //funciones tipo crud de sucursales
@@ -47,6 +48,8 @@ const Sucursales = () => {
   const [sucursalesConvenios, setSucursalesConvenios] = useState([]);
   const [filteredSucursales, setFilteredSucursales] = useState([]); //estado para el filtro de las sucursales filtradas 
   const [searchInput, setSearchInput] = useState("");
+  const [statusFilter, setStatusFilter] = useState(""); //filtro añadido para estado
+  const [searchText, setSearchText] = useState(""); // estado para el texto de busqueda
 
   //effect para cargar las sucursales relacionadas con sus convenios al renderizar el componente 
   useEffect(() => {
@@ -188,8 +191,8 @@ const Sucursales = () => {
       const direccionMatch = sucursal.direccion?.toLowerCase().includes(sanitizedSearch);
       const convenioMatch = sucursal.convenio?.toLowerCase().includes(sanitizedSearch);
 
-      const estadoTexto = sucursal.estado === "AC" ? "activo" :
-                        sucursal.estado === "IN" ? "inactivo" : "";
+      const estadoTexto = sucursal.estado === "IN" ? "IN" :
+                        sucursal.estado === "AC" ? "AC" : "";
       const estadoMatch = estadoTexto.includes(sanitizedSearch);
   
       return ciudadMatch || nombreMatch || direccionMatch || convenioMatch || estadoMatch;
@@ -199,6 +202,15 @@ const Sucursales = () => {
   };
 
   const dataToShow = searchInput.trim() ? filteredSucursales : sucursalesConvenios;
+
+
+  const filteredData = filterData({
+    data: sucursalesConvenios, 
+    searchText,
+    searchFields: ["nombre", "ciudad", "direccion", "convenio"], // nombres de las columnas a buscar pasadas como array (solo nombres)
+    statusField: "estado", // nombre de la columna que contiene el estado
+    statusFilter // valor del filtro 
+  })
 
   return (
     <div style={{border:'3px solid #0000'}}>
@@ -217,24 +229,15 @@ const Sucursales = () => {
       >
         <Toolbar.Search 
           placeholder="Buscar..." 
-          onSearch={handleSearch} 
+          onSearch={(search) => setSearchText(search)} 
         />
-        <Toolbar.Dropdown 
+        <Toolbar.Dropdown
           options={{
-            "activo": "Activo", 
-            "inactivo": "Inactivo",
+            "AC": "Activo", 
+            "IN": "Inactivo",
             "": "Todos"
-          }}
-          onSelect={(option) => {
-            if (option === "") {
-              setFilteredSucursales(sucursalesConvenios);
-            } else {
-              const filtered = sucursalesConvenios.filter(
-                sucursal => sucursal.estado === (option === "activo" ? "AC" : "IN")
-              );
-              setFilteredSucursales(filtered);
-            }
-          }}
+          }}            
+          onSelect={(option) => setStatusFilter(option)} 
         />
       </Toolbar>
 
@@ -245,7 +248,7 @@ const Sucursales = () => {
       ) : (
           <Table
             containerStyle={{fontSize: "13px"}}
-            data={dataToShow}
+            data={filteredData}
             columns={columnsBranch({ setEditingBranch, setActiveForm })}
             selectable={true}
             onSelectionChange={handleSelectionChange}

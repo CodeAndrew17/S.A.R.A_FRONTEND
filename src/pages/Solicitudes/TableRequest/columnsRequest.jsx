@@ -1,13 +1,12 @@
-
 import CustomButton from "../../../components/button";
 import { FolderCog } from "lucide-react";
 
-const columnsRequest=({})=>[
+const columnsRequest=({navigate})=>[
       
-    {key:'fecha', title:'Fecha'},
-    {key:'placa', title:'Placa'},
-    {key:'id_empleado',title:'Solicitante'},
-    {key: 'estado',title: 'Estado',
+    {key:'fecha', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Fecha</span>},
+    {key:'placa', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Placa</span>},
+    {key:'id_empleado',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Solicitante</span>},
+    {key: 'estado',title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Estado</span>,
         render: (estado) => {
             let color = '';
 
@@ -38,22 +37,23 @@ const columnsRequest=({})=>[
     );
   }
 },
-    {key:'id_plan',title:'Servicio'},
-    {key:'id_convenio', title:'Convenio'},
-    {key:'id_sucursal', title:'Sucursal'},
+    {key:'id_plan',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Servicio</span>},
+    {key:'id_convenio', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Convenio</span>},
+    {key:'id_sucursal', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Sucursal</span>},
 
 
-    {key:'observaciones',title:'Observaciones'},
+    {key:'observaciones',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Observaciones</span>},
     {
         key: 'actions',
-        title: 'Acciones',
+        title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
     render: (_, record) => {
+
         let color = '#0000'
         let hover =''
         
-        if( record.estado=='PE'){
-            color='#07f53d'
-            hover='#519CB2'
+        if( record.estado=='PRO'){
+            color='#20C997'
+            hover='#1BAF89'
 
 
         }else{
@@ -67,6 +67,10 @@ const columnsRequest=({})=>[
         hoverColor={hover}
         width="100px"
         height="35px"
+        onClick={() => navigate("/forms", {state: { solicitud_id: record.id, 
+          placa:record.placa, 
+          plan: record.id_plan, 
+          id_plan: record.id_real_plan}})} //redirigimos a la ruta q nececitamos llevandonos los valores q nececitamos para los formularios haciendo uso del hook useLocation
         icon={FolderCog}
       >
         Ejecutar

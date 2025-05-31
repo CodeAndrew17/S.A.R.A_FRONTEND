@@ -3,11 +3,15 @@ import { useState } from "react";
 import { getAgreement, addAgreement, deleteAgreement, getBranches ,editAgreement} from "../../../api/api_Convenios";
 import Swal from "sweetalert2";
 import { Search } from "lucide-react";
+import filterData from "../../../utils/unitySearch"; // funcion para filtrar los datos de la tabla
+
 
 const useAgreementManagement = () => {
   const [agreements, setAgreements] = useState([]); // Estado para convenios
   const [loading, setLoading] = useState(false); // Estado para el loading
   const [filteredAgreement, setFilteredAgreement] = useState([]);
+  const [statusFilter, setStatusFilter] = useState(""); //filtro añadido para estado
+  const [searchText, setSearchText] = useState(""); // estado para el texto de busqueda
 
 
   // Cargar los convenios desde la API
@@ -42,6 +46,14 @@ const useAgreementManagement = () => {
   
     setFilteredAgreement(filtered);
   };
+
+    const filteredData = filterData({
+    data: agreements, 
+    searchText,
+    searchFields: ["nombre", "nit"], // nombres de las columnas a buscar pasadas como array (solo nombres)
+    statusField: "estado", // nombre de la columna que contiene el estado
+    statusFilter // valor del filtro 
+  })
 
   
 
@@ -164,38 +176,58 @@ const useAgreementManagement = () => {
   };
 
   
-  const updateAgreement = async (formData) => {
-    console.log("Asieno un PUT")
+ const updateAgreement = async (formData, originalNit) => {
+    console.log("Haciendo un PUT");
+    console.log("NIT enviado desde el formulario:", formData.nit);
+    console.log("NIT original del convenio:", originalNit);
+
     try {
-      const agreement = agreements.find(a => a.nit === formData.nit);
-      const telefono = parseInt(formData.telefono, 10);
+        // Buscar el convenio por NIT original
+        const agreement = agreements.find(a => a.nit === originalNit);
 
-      if (isNaN(telefono)) {
-        throw new Error("El teléfono no es válido.");
-      }
-      console.log(agreement.id)
-      const dataToSend = { ...formData, telefono };
-      const agreementNew = await editAgreement(agreement.id,dataToSend);
+        if (!agreement) {
+            throw new Error(`No se encontró un convenio con el NIT original ${originalNit}`);
+        }
 
-      if (agreementNew) {
-        Swal.fire({
-          title: "Éxito",
-          text: "El convenio se ha creado correctamente.",
-          icon: "success",
-          confirmButtonText: "Aceptar",
-        });
-        fetchAgreementData();
-      }
+        // Validación y conversión segura del teléfono
+        const telefono = Number.isInteger(formData.telefono) 
+            ? formData.telefono 
+            : parseInt(String(formData.telefono).replace(/\D/g, ''), 10);
+
+        if (isNaN(telefono)) {
+            throw new Error("El teléfono no es válido.");
+        }
+
+        console.log(`Actualizando convenio con ID: ${agreement.id}`);
+
+        // Datos a enviar
+        const dataToSend = { ...formData, telefono };
+
+        // Llamada a la API para editar el convenio
+        const agreementNew = await editAgreement(agreement.id, dataToSend);
+
+        if (agreementNew) {
+            Swal.fire({
+                title: "Éxito",
+                text: "El convenio se ha actualizado correctamente.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+            });
+            fetchAgreementData();
+        }
     } catch (error) {
-      console.error("Error al crear el convenio:", error);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo crear el convenio. Verifica los datos ingresados.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
+        console.error("Error al actualizar el convenio:", error);
+        Swal.fire({
+            title: "Error",
+            text: error.message || "No se pudo actualizar el convenio. Verifica los datos ingresados.",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+        });
     }
-  };
+};
+
+
+
 
   return {
     filteredAgreement,
@@ -204,6 +236,9 @@ const useAgreementManagement = () => {
     removeAgreement,
     ConsultSearch,
     updateAgreement,
+    filteredData,
+    setStatusFilter,
+    setSearchText
   };
 };
 

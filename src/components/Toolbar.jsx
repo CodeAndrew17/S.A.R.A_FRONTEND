@@ -224,7 +224,7 @@ Toolbar.Search = (props) => <SearchBar {...props} />;
 Toolbar.Dropdown = ({ 
   options = {},
   onSelect, 
-  defaultOption = "Selecciona" 
+  defaultOption = "Estado" 
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState(defaultOption);
