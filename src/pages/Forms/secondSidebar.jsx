@@ -84,16 +84,20 @@ const Sidebar = ({ onSelect,
       <h4 style={{ marginTop: '1rem',fontSize: '1.5rem' }}>Formularios Principales</h4>
       {formulariosPrincipales.length === 0 && <p>No hay formularios principales</p>}
       {formulariosPrincipales.map(form => ( //mapeamos por cada formulario principal para extraer el nombre y mostrarlo el id ya esta en la key para realizar con cada uno la accion q se requiera
-        <MenuItem key={form.id} onClick={() => onSelect(form.nombre_formulario)}>
+        <MenuItem key={form.id} onClick={() => onSelect({id: form.id, nombre: form.nombre_formulario})}>
           {form.nombre_formulario}
+          <br />
+          {form.id}
         </MenuItem>
       ))}
 
       <h4 style={{ marginTop: '1rem', fontSize: '1.5rem' }}>Formularios Adicionales</h4>
       {formulariosAdicionales.length === 0 && <p>No hay formularios adicionales</p>}
       {formulariosAdicionales.map(form => ( //mismo caso de arriba pero con los adicionaesl 
-        <MenuItem key={form.id} onClick={() => onSelect(form.nombre_formulario)}>
+        <MenuItem key={form.id} onClick={() => onSelect({id: form.id, nombre: form.nombre_formulario})}>
           {form.nombre_formulario}
+          <br />
+          {form.id}
         </MenuItem>
       ))}
 

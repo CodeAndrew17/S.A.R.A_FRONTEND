@@ -16,25 +16,34 @@ const TableContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   overflow-x: auto; /* Scroll horizontal */
-  -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+  overflow-y: auto; /* Scroll vertical */
+  max-height: 600px; /* Altura máxima */
+  -webkit-overflow-scrolling: touch;
   margin-top: -20px;
   margin-bottom: 0;
 
-  /* Scrollbar styling */
+  /* Scrollbar styling - Más sutil */
   &::-webkit-scrollbar {
-    height: 10px; 
+    height: 6px; /* Más delgado */
+    width: 6px;  /* Más delgado */
   }
+ 
   &::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 10px;
-    margin: 0 20px;
+    border-radius: 3px;
+    margin: 2px; /* Menos margen */
   }
+ 
   &::-webkit-scrollbar-thumb {
-    background: #5FB8D6;
-    border-radius: 10px;
+    background: #888; /* Gris más neutro */
+    border-radius: 3px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
   }
+ 
   &::-webkit-scrollbar-thumb:hover {
-    background: #4a9db8;
+    background: #777; /* Un poco más oscuro al hover */
+    opacity: 0.9;
   }
 
   @media (max-width: 1024px) {
@@ -44,8 +53,10 @@ const TableContainer = styled.div`
   @media (max-width: 768px) {
     margin: 15px 0;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    max-height: 500px;
   }
 `;
+
 
 const StyledTable = styled.table`
   width: 100%;

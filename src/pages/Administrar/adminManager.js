@@ -18,8 +18,8 @@ const usePlansandVehicles = () => {
                 ]);
 
                 const cuestionariosMap = {
-                    1 : "Avaluo Comercial",
-                    2 : "Inspeccion",
+                    1 : "Avalúo Comercial",
+                    2 : "Inspección",
                     3 : "Adicionales"
                 }
 

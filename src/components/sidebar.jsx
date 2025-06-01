@@ -59,7 +59,7 @@ const ToggleButton = styled.button`
   cursor: pointer;
   position: absolute;
   top: 20px;
-  left: 10px;
+  left: 18px;
   transition: transform 0.3s ease;
 
   &:hover {
