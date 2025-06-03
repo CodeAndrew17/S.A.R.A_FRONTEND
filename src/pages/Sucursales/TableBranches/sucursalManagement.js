@@ -1,6 +1,7 @@
 import { addBranches, getBranches, deleteBranches, getAgreement, 
     editBranches //funcion para editarsucursales 
 } from "../../../api/api_Convenios";
+import {getEmployees} from "../../../api/api_Usuarios";
 import Swal from "sweetalert2"; 
 
 
@@ -63,7 +64,7 @@ const refreshData = async (setConvenios, setSucursalesConvenios) => {
   };
 
 const handleDeleteBranches = async (selectedIDs, setConvenios, setSucursalesConvenios) => {
-    if (selectedIDs.length === 0) { //existen los seleccionados?
+    if (selectedIDs.length === 0) {
         await Swal.fire({
             icon: 'warning',
             title: 'Oops...',
@@ -72,22 +73,44 @@ const handleDeleteBranches = async (selectedIDs, setConvenios, setSucursalesConv
         return { success: false };
     }
 
+    const usuarios = await getEmployees();
+
+    for (const id of selectedIDs) {
+        const usuariosAsociados = usuarios.filter(u => u.id_sucursal === id).length;
+
+        if (usuariosAsociados > 0) {
+            const confirmar = await Swal.fire({
+                title: 'Atención',
+                text: `Esta sucursal tiene ${usuariosAsociados} ${usuariosAsociados === 1 ? 'usuario' : 'usuarios'} asociados. ¿Deseas continuar con la eliminación?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+            });
+
+            if (!confirmar.isConfirmed) {
+                return { success: false };
+            }
+        }
+    }
+
+    // Confirmación general para todas las sucursales
     const result = await Swal.fire({
         title: '¿Estás seguro?',
-        text: `Vas a eliminar ${selectedIDs.length} sucursal(es)`,
+        text: `Vas a eliminar ${selectedIDs.length} sucursal(es). Esta acción no se puede deshacer.`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
         confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
     });
 
     if (!result.isConfirmed) return { success: false };
 
     try {
-        const results = await Promise.all( // realisamos las peticiones en paralelo para mayor eficiencia
-            selectedIDs.map(async (id) => { //mapeamos por cada id seleccionado para ejcutar la peticion
+        const results = await Promise.all(
+            selectedIDs.map(async (id) => {
                 try {
                     await deleteBranches(id);
                     return { success: true, id };
@@ -99,21 +122,19 @@ const handleDeleteBranches = async (selectedIDs, setConvenios, setSucursalesConv
         );
 
         const successfulDeletes = results.filter(r => r.success);
-        
-        // Actualización condicional
+
         await refreshData(setConvenios, setSucursalesConvenios);
 
         await Swal.fire({
             icon: 'success',
             title: '¡Éxito!',
-            text: `Se eliminaron ${successfulDeletes.length}/${selectedIDs.length} sucursales`,
+            text: `Se eliminaron ${successfulDeletes.length}/${selectedIDs.length} sucursales.`,
         });
 
-        return { 
+        return {
             success: successfulDeletes.length > 0,
-            deletedCount: successfulDeletes.length
+            deletedCount: successfulDeletes.length,
         };
-
     } catch (error) {
         console.error('Error general:', error);
         await Swal.fire({
@@ -124,6 +145,8 @@ const handleDeleteBranches = async (selectedIDs, setConvenios, setSucursalesConv
         return { success: false, error };
     }
 };
+
+
 
 const handleUpdateBranches = async (id, newData) => {
     try {

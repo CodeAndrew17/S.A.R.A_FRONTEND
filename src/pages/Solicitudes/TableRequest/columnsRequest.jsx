@@ -48,6 +48,7 @@ const columnsRequest=({navigate})=>[
         title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
     render: (_, record) => {
 
+        const isDisabled = record.estado !== "PRO" //desabilitar si no es pro 
         let color = '#0000'
         let hover =''
         
@@ -67,7 +68,9 @@ const columnsRequest=({navigate})=>[
         hoverColor={hover}
         width="100px"
         height="35px"
-        onClick={() => navigate("/forms", {state: { solicitud_id: record.id, 
+        disabled={isDisabled}
+        onClick={() => 
+          navigate("/forms", {state: { solicitud_id: record.id, 
           placa:record.placa, 
           plan: record.id_plan, 
           id_plan: record.id_real_plan}})} //redirigimos a la ruta q nececitamos llevandonos los valores q nececitamos para los formularios haciendo uso del hook useLocation

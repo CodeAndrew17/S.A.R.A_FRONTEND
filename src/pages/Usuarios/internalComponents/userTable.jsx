@@ -40,7 +40,7 @@ const TableContainer = styled.div`
     opacity: 0.7;
     transition: opacity 0.2s;
   }
- 
+
   &::-webkit-scrollbar-thumb:hover {
     background: #777; /* Un poco más oscuro al hover */
     opacity: 0.9;

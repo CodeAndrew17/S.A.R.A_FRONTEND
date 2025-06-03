@@ -19,27 +19,37 @@ const StyledButton = styled.button`
   gap: 6px;
   box-sizing: border-box;
 
-  &:hover {
+  /* Estilos para estado deshabilitado */
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: ${(props) => props.$bgColor || "#5FB8D6"}; 
+    transform: none !important; /* Anima efectos de hover/active */
+  }
+
+  /* Efecto hover solo si no está deshabilitado */
+  &:not(:disabled):hover {
     background-color: ${(props) => props.$hoverColor || "black"};
     transform: translateY(-1px);
   }
 
-  &:active {
+  &:not(:disabled):active {
     transform: translateY(0);
   }
 
   svg {
     width: 16px;
     height: 16px;
-    flex-shrink: 0; /* Evita que el íconos se deforme */
+    flex-shrink: 0;
     transition: transform 0.2s ease;
   }
 
-  &:hover svg {
+  /* Efecto en ícono solo si no está deshabilitado */
+  &:not(:disabled):hover svg {
     transform: scale(1.05);
   }
 
-  /* Media queries progresivos */
+  /* Media queries (se mantienen igual) */
   @media (min-width: 480px) {
     width: ${(props) => props.width || "auto"};
     padding: 8px 16px;
@@ -64,8 +74,7 @@ const StyledButton = styled.button`
   }
 
   @media (min-width: 1024px) {
-    &:hover {
-      transform: translateY(-1px);
+    &:not(:disabled):hover {
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
   }

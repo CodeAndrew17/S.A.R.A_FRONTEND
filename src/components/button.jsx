@@ -11,6 +11,7 @@ const CustomButton = ({
   height,
   style,
   className,
+  disabled
 }) => {
   return (
     <Button
@@ -18,9 +19,14 @@ const CustomButton = ({
       $hoverColor={hoverColor}
       width={width}
       height={height}
-      onClick={onClick}
-      style={style}
+      onClick={!disabled ?onClick : undefined}
+      style={{
+        ...style,
+        cursor: disabled ? 'not-allowed' : 'pointer', 
+        opacity: disabled ? 0.6 : 1, 
+      }}
       className={className}
+      disabled={disabled}
     >
       {Icon && <Icon />}
       {children}

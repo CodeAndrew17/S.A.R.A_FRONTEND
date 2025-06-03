@@ -42,7 +42,11 @@ function Administrar() {
 
   // Handlers
   const handleSelectionChange = (selectedRows) => {
-  setSelectedRows(selectedRows);
+    console.log("Selected rows:", selectedRows); // Para depuración
+    setSelectedRows(prev => {
+      console.log("Previous state:", prev); // Para depuración
+      return selectedRows;
+    });
   };
 
   const handleCrearPlan = () => {
@@ -100,7 +104,7 @@ function Administrar() {
   const handleCancelForm = () => {
     setActiveForm(null);
     setEditingPlan(null);
-    setSelectedRows([]); // limpiamos la seleccion 
+    // setSelectedRows([]);  // <-- Esto es lo que causa el problema
   };
 
   const handelDeletePlan = async () => {
@@ -113,28 +117,15 @@ function Administrar() {
     return;
   }
 
-  const result = await Swal.fire({
-    title: '¿Estás seguro?',
-    text: `Estás a punto de eliminar ${selectedRows.length} plan(es). Esta acción no se puede deshacer.`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar'
-  });
-
-  if (result.isConfirmed) {
-    try {
-      await Promise.all(selectedRows.map(id => deletePlan(id)));
-      toast.success("Planes eliminados correctamente");
-      setSelectedRows([]);
-    } catch (error) {
-      console.error("Error al eliminar planes", error);
-      toast.error("Error al eliminar planes");
-    }
+  try {
+    await deletePlan(selectedRows);
+    toast.success("Planes eliminados correctamente");
+    //setSelectedRows([]);
+  } catch (error) {
+    console.error("Error al eliminar planes", error);
+    toast.error("Error al eliminar planes");
   }
-  };
+};
 
 
   // Filtrado
@@ -275,7 +266,7 @@ function Administrar() {
               options: [
                 {value: 1, label: "Avaluo Comercial"},
                 {value: 2, label: "Inspección"},
-                {value: 3, label: "Adicionales"}
+
               ],
               placeholder: "Seleccionar",
               required: true

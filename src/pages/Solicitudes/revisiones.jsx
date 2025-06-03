@@ -14,12 +14,17 @@ import { useNavigate } from "react-router-dom"; // hook para navegar a la ruta d
 
 
 const CustomButtonWrapper = styled.div`
-  transform: scale(0.85);
-  transform-origin: left center;
-  display: inline-block;
-  margin-top: -2px;
-`;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -80px;
+  padding-right: 40px;
+  flex-wrap: wrap;
 
+  @media (max-width: 600px) { 
+    margin-top: 0;
+    justify-content: center; 
+  }
+`;
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
@@ -225,13 +230,15 @@ function Revisiones() {
             aplicarFiltros(estadoFiltro, searchInput, { fecha, modo });
           }}
         />
-        {showButton && (
+      </Toolbar>
+
+      {showButton && (
           <CustomButtonWrapper>
           <CustomButton
             bgColor="#7C9BAF"
             hoverColor="#5D7E93"
             width="130px"
-            height="44px"
+            height="30px"
             onClick={() => {
               setFechaKey(prev => prev + 1);
               setFiltroFecha({ fecha: null, modo: "date" });
@@ -246,7 +253,6 @@ function Revisiones() {
           </CustomButton>
           </CustomButtonWrapper>
         )}
-      </Toolbar>
 
       <Table
         columns={ColumnsRequest({navigate})} //navigate para permitir el redireccionamiento al presionar boton 

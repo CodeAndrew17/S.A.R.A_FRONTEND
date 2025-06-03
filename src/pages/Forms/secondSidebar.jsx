@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { FaWpforms, FaUsers, FaClipboardList } from 'react-icons/fa';
 
 const SidebarContainer = styled.div`
-  width: 240px;
+  width: 250px;
   height: 100vh;
-  background: linear-gradient(180deg, #104E8B, #1D6E94, #2A8E9B);
+  background: linear-gradient(180deg, #1B3A66, #2A587E, #3B6D90);
   color: white;
   display: flex;
   flex-direction: column;
@@ -15,6 +15,7 @@ const SidebarContainer = styled.div`
   left: 0;
   overflow: auto;
 `;
+
 
 const Logo = styled.h1`
   font-size: 1.5rem;

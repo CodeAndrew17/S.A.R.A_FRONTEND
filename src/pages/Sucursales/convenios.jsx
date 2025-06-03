@@ -50,11 +50,11 @@ const ModalContainer = styled.div`
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  overflow-y: auto; /* Permite scroll si el contenido del modal es muy largo */
+  overflow-y: auto;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Cambiado de 'center' a 'flex-start' para alinear arriba */
-  padding: 20px 0; /* Espacio vertical */
+  align-items: flex-start;
+  padding: 20px 0;
 `;
 
 const ContainerAgreement = styled.div`
@@ -62,22 +62,34 @@ const ContainerAgreement = styled.div`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   width: 100%;
-  max-width: 1200px; /* Ancho máximo para pantallas grandes */
-  min-height: 90vh; /* Altura mínima */
-  max-height: 90vh; /* Altura máxima con scroll interno */
+  max-width: 1200px;
+  min-height: 90vh;
+  max-height: 90vh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   padding: 20px;
-  margin: 20px; /* Margen en dispositivos pequeños */
-  
-  /* Media queries para diferentes tamaños */
+  margin: 20px;
+
+  /* Animación de entrada desde abajo */
+  animation: fadeSlideUp 0.3s ease-out;
+
+  @keyframes fadeSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px); /* Subirá desde 20px abajo */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @media (min-width: 768px) {
     padding: 30px;
     margin: 0;
   }
 
-  /* Estilos de scroll */
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -91,6 +103,8 @@ const ContainerAgreement = styled.div`
     border-radius: 3px;
   }
 `;
+
+
 
 const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = false, data = null }) => {
   const [activeForm, setActiveForm] = useState(false); // Para mostrar el formulario

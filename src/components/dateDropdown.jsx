@@ -109,26 +109,57 @@ const DropdownContainer = styled.div`
 `;
 
 const DropdownButton = styled.button`
-  background-color: white;
-  color: black;
-  padding: 10px 20px;
-  padding-left: 11px;
-  border: 2px #a9a9a9 solid;
-  border-radius: 4px;
+  max-width: 100%;
+  background-color: ${({ bgColor }) => bgColor || 'white'};
+  color: ${({ color }) => color || 'black'};
+  padding: ${({ padding }) => padding || '10px 16px'};
+  border: 2px solid ${({ borderColor }) => borderColor || '#a9a9a9'};
+  border-radius: ${({ borderRadius }) => borderRadius || '4px'};
   cursor: pointer;
-  width: 120px;
-  text-align: left;
   position: relative;
+  width: ${({ width }) => width || 'auto'};
+  min-width: ${({ minWidth }) => minWidth || '120px'};
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ focusBorderColor }) => focusBorderColor || '#555'};
+    box-shadow: 0 0 3px ${({ focusBorderColor }) => focusBorderColor || '#555'};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 
   &::after {
     content: "";
     position: absolute;
-    right: 17px;
+    right: 16px;
     top: 50%;
-    transform: translateY(-50%);
+    width: 0;
+    height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid black;
+    border-top: 6px solid ${({ arrowColor }) => arrowColor || 'black'};
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px); /* Sube un poquito */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(1px); /* Baja como si lo presionaras */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 `;
 
