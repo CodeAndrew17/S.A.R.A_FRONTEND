@@ -47,7 +47,6 @@ const SearchContainer = styled.div`
       padding: 8px 10px;
     }
   }
-
 `;
 
 const SearchIcon = styled(Search)`

@@ -10,8 +10,7 @@ import Swal from "sweetalert2";
 import DateDropdown from "../../components/DateDropdown";
 import CustomButton from "../../components/button";
 import { LucideBrush, FilterX } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // hook para navegar a la ruta de form de esa solicitud 
-
+import { useNavigate } from "react-router-dom";
 
 const CustomButtonWrapper = styled.div`
   display: flex;
@@ -24,38 +23,56 @@ const CustomButtonWrapper = styled.div`
     margin-top: 0;
     justify-content: center; 
   }
+
+  @media (min-width: 556px) and (max-width: 720px) { 
+    margin-top: -20px; /* Lo bajamos un poco más */
+    justify-content: center;
+  }
+
+  @media (max-width: 520px) { 
+    margin-top: -20px; 
+    justify-content: center;
+  }
+
+  @media (min-width: 1012px) and (max-width: 1320px) {
+    margin-top: -30px;
+    justify-content: center;
+  }
 `;
+
+
+
 
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
   border-radius: 8px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 30px 20px 20px; /* Más espacio arriba */
+  padding: 30px 20px 20px;
   text-align: center;
   margin-top: 10px;
-  height: auto; /* ¡No fijes altura si no es necesario! */
+  height: auto;
 `;
-
 
 const TitleText = styled.h1`
   color: #000;
   font-size: 32px;
-  line-height: 1.2; /* Mucho mejor que usar pixeles fijos */
+  line-height: 1.2;
   margin: 0;
 `;
 
 function Revisiones() {
-  const [activeForm, setActiveForm] = useState(true);
-  const [editinRequest, setEditinRequest] = useState(null);
+  const [activeForm, setActiveForm] = useState(null);
+  const [editingRequestData, setEditingRequestData] = useState(null);
   const [selectedRequests, setSelectedRequests] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [estadoFiltro, setEstadoFiltro] = useState("");
   const [filtroFecha, setFiltroFecha] = useState({ fecha: null, modo: "date" });
-  const [fechaKey, setFechaKey] = useState(0)
+  const [fechaKey, setFechaKey] = useState(0);
   const [filteredRevisions, setFilteredRevisions] = useState([]);
-  const [showButton, setShowButton] = useState(false); // estado para controlar la visbilidad del boton limpiar fecha
+  const [showButton, setShowButton] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
-  const navigate = useNavigate();// llamamos al hook para naegar a la nueva ruta 
+  const navigate = useNavigate();
 
   const {
     originalRequest,
@@ -64,27 +81,31 @@ function Revisiones() {
     fetchRequest,
     fetchBaseData,
     createRequest,
-    editingRequest,
+    editingRequest: editRequestApi, //cambiamos nombre para eviatr confuciones 
     removeRequest,
     handleFiledChage,
   } = useRequestManage();
 
   useEffect(() => {
     const init = async () => {
-      await fetchBaseData();
-      await fetchRequest();
+      setIsLoading(true);
+      try {
+        await fetchBaseData();
+        await fetchRequest();
+      } finally {
+        setIsLoading(false);
+      }
     };
     init();
   }, []);
 
   useEffect(() => {
     aplicarFiltros(estadoFiltro, searchInput, filtroFecha);
-  }, [dataRequest]);
+  }, [dataRequest, estadoFiltro, searchInput, filtroFecha]);
 
   const aplicarFiltros = (estado, texto, filtroFecha) => {
     let resultados = dataRequest;
 
-    // Filtro por estado
     if (estado) {
       resultados = resultados.filter((solicitud) => {
         const estadoTexto =
@@ -99,7 +120,6 @@ function Revisiones() {
       });
     }
 
-    // Filtro por texto
     if (texto.trim()) {
       const textoLower = texto.trim().toLowerCase();
       resultados = resultados.filter((solicitud) => {
@@ -107,12 +127,12 @@ function Revisiones() {
         const convenioMatch = solicitud.id_convenio?.toLowerCase().includes(textoLower);
         const sucursalMatch = solicitud.id_sucursal?.toLowerCase().includes(textoLower);
         const fechaMatch = solicitud.fecha?.includes(textoLower);
+        const planMatch = solicitud.id_plan?.toLowerCase().includes(textoLower);
 
-        return placaMatch || convenioMatch || sucursalMatch || fechaMatch;
+        return placaMatch || convenioMatch || sucursalMatch || fechaMatch || planMatch;
       });
     }
 
-    // Filtro por fecha (como string)
     if (filtroFecha.fecha) {
       const selectedDate = new Date(filtroFecha.fecha);
       const selectedYear = selectedDate.getFullYear();
@@ -141,63 +161,84 @@ function Revisiones() {
     setFilteredRevisions(resultados);
   };
 
-  const handledelete = async()=>{removeRequest(selectedRequests)}
+  const handledelete = async () => {
+    await removeRequest(selectedRequests);
+    setSelectedRequests([]);
+  };
 
   const handleSearch = (search) => {
     setSearchInput(search);
-    aplicarFiltros(estadoFiltro, search, filtroFecha);
   };
 
   const handleFilterEstado = (estado) => {
     setEstadoFiltro(estado);
-    aplicarFiltros(estado, searchInput, filtroFecha);
   };
 
-  const handleCreateRequest = () => {setActiveForm("request");};
+  const handleCreateRequest = () => {
+    setEditingRequestData(null);
+    setActiveForm("request");
+  };
 
-  const handleeditRequest = () => {
+  const handleeditRequest = async () => {
     if (selectedRequests.length === 1) {
-      const selected = selectedRequests[0];
-      setEditinRequest(selected);
-      
-      setActiveForm("request");
+      setIsLoading(true);
+      try {
+        await fetchRequest(); //con esto refrescamos 
+        
+        const updatedRequest = originalRequest.find( //obtenemos el ultimo elemento para actualizarlo en el form 
+          item => item.id === selectedRequests[0].id
+        );
+        
+        setEditingRequestData(updatedRequest || selectedRequests[0]); //usamos los datos mas frescos para evitar problemas de dessincronizacion 
+        setActiveForm("request");
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       Swal.fire({
         title: "Error",
-        text: "No se pudo modificar la solicitud. Verifica los datos ingresados.",
+        text: "Debes seleccionar exactamente una solicitud para editar",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
     }
   };
 
-
-
-
-  const handlecCancelForm = ()=>{
-    setActiveForm(null)
-  }
-
-  const handleFormSubmit = (data) => {
-    console.log("Datos recibidos:", data); // <-- Añade esto
-
-    if(editinRequest){
-      const dataWithId = {
-      ...data,
-      id: editinRequest.id
-      };
-      console.log("ingresar al edit ",dataWithId)
-      
-      editingRequest(dataWithId)
-
-    }else{
-      createRequest(data);
-    }
-    setActiveForm(null)
-    setEditinRequest(null)
-    
+  const handlecCancelForm = () => {
+    setActiveForm(null);
+    setEditingRequestData(null); 
   };
-    return (
+
+  const handleFormSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      if (editingRequestData) {
+        const dataWithId = {
+          ...data,
+          id: editingRequestData.id
+        };
+        await editRequestApi(dataWithId); //usamos la funcion renombrada 
+      } else {
+        await createRequest(data);
+      }
+      
+      setActiveForm(null);
+      setEditingRequestData(null);
+      await fetchRequest(); //frozar actualizacion 
+    } catch (error) {
+      console.error("Error al procesar el formulario:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al procesar la solicitud",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
     <div>
       <Sidebar />
       <TitleWrapper>
@@ -208,11 +249,11 @@ function Revisiones() {
         onCreate={handleCreateRequest}
         onEdit={handleeditRequest}
         onDelete={handledelete}
-        >
-
+      >
         <Toolbar.Search
           placeholder="Buscar..."
-          onSearch={handleSearch} />
+          onSearch={handleSearch}
+        />
         <Toolbar.Dropdown
           options={{
             "activo": "Activo",
@@ -223,39 +264,37 @@ function Revisiones() {
           onSelect={handleFilterEstado}
         />
         <DateDropdown
-        key={fechaKey}
+          key={fechaKey}
           onSelect={(fecha, modo) => {
             setFiltroFecha({ fecha, modo });
-            setShowButton(!!fecha); // Mostrar el boton si hay una fecha seleccionada
-            aplicarFiltros(estadoFiltro, searchInput, { fecha, modo });
+            setShowButton(!!fecha);
           }}
         />
       </Toolbar>
 
       {showButton && (
-          <CustomButtonWrapper>
+        <CustomButtonWrapper>
           <CustomButton
             bgColor="#7C9BAF"
             hoverColor="#5D7E93"
-            width="130px"
+            width="110px"
             height="30px"
             onClick={() => {
               setFechaKey(prev => prev + 1);
               setFiltroFecha({ fecha: null, modo: "date" });
-              setShowButton(false); //ocultamos boton despues de limpiar fecha    
-              aplicarFiltros(estadoFiltro, searchInput, { fecha: null, modo: "date" });
+              setShowButton(false);
             }}
             style={null}
             className="Boton extra"
             icon={FilterX}
           >
-            Limpiar Fecha
+            Limpiar
           </CustomButton>
-          </CustomButtonWrapper>
-        )}
+        </CustomButtonWrapper>
+      )}
 
       <Table
-        columns={ColumnsRequest({navigate})} //navigate para permitir el redireccionamiento al presionar boton 
+        columns={ColumnsRequest({navigate})}
         data={filteredRevisions}
         selectable={true}
         onSelectionChange={(selectedIds) => {
@@ -263,23 +302,22 @@ function Revisiones() {
             selectedIds.includes(item.id)
           );
           setSelectedRequests(selectedItems);
-          setEditinRequest(selectedItems.length === 1 ? selectedItems[0] : null);
+          setEditingRequestData( // actualizar ambos estados al mismo tiempo 
+            selectedItems.length === 1 ? selectedItems[0] : null
+          );
         }}
-
       />
 
       {activeForm === "request" && (
         <UserForm
-          title="Prueba de Creación"
+          title={editingRequestData ? "Editar Solicitud" : "Nueva Solicitud"}
           fields={formsData}
           onFieldChange={handleFiledChage}
           onCancel={handlecCancelForm}
           onSubmit={handleFormSubmit}
-          initialValues={editinRequest || {}}
+          initialValues={editingRequestData || {}}
         />
-    
-        )}
-
+      )}
     </div>
   );
 }

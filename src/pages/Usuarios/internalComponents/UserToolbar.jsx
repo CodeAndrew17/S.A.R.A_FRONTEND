@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Dropdown from "../../../components/Dropdown";
 import SearchBar from "../../../components/SearchBar";
 import CustomButton from "../../../components/button";
-import { Trash, Edit, Plus } from "lucide-react";
+import { Trash2, Edit, Plus } from "lucide-react";
 
 const ToolbarWrapper = styled.div`
   display: flex;
@@ -21,7 +21,7 @@ const ToolbarContent = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   max-width: 1000px;
 
   @media (max-width: 768px) {
@@ -81,7 +81,7 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
           onClick={onDelete}
           isLandscape={isLandscape}
         >
-          <Trash /> Eliminar
+          <Trash2 /> Eliminar
         </CustomButton>
         <CustomButton 
           bgColor="#5A9AC6" 

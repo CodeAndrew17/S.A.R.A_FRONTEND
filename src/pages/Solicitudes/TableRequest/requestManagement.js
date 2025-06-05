@@ -144,32 +144,31 @@ const useRequestManage = () => {
 
   //Funcion para editar Revisiones 
   const editingRequest = async (data) => {
-    try {
-
-      const response = await patchRequest(data.id, data);
-
-      if (response) {
-        Swal.fire({
-          title: "Éxito",
-          text: "La solicitud se ha modificado correctamente.",
-          icon: "success",
-          confirmButtonText: "Aceptar",
-        });
-        fetchRequest();
-      }else{
-              console.error("Error al modificar la solicitud:");
-
-      }
-    } catch (error) {
-      console.error("Error al modificar la solicitud:", error);
+  try {
+    const response = await patchRequest(data.id, data);
+    if (response) {
       Swal.fire({
-        title: "Error",
-        text: "No se pudo modificar la solicitud. Verifica los datos ingresados.",
-        icon: "error",
+        title: "Éxito",
+        text: "La solicitud se ha modificado correctamente.",
+        icon: "success",
         confirmButtonText: "Aceptar",
       });
+      
+      // Actualizar el estado local inmediatamente
+      setDataRequest(prev => prev.map(item => 
+        item.id === data.id ? {...item, ...data} : item
+      ));
+      setOriginalRequest(prev => prev.map(item => 
+        item.id === data.id ? {...item, ...data} : item
+      ));
+      
+      // Luego hacer el fetch para asegurar consistencia con el servidor
+      await fetchRequest();
     }
-  };
+  } catch (error) {
+    // Manejo de errores...
+  }
+};
 
   //Funcion para aplicar filtros
   const handleFiledChage = (name, value,) => {
