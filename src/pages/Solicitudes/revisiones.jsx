@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import DateDropdown from "../../components/DateDropdown";
 import CustomButton from "../../components/button";
 import { LucideBrush, FilterX } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // hook para navegar a la ruta de form de esa solicitud 
 
 
 const CustomButtonWrapper = styled.div`
@@ -48,7 +49,9 @@ function Revisiones() {
   const [filtroFecha, setFiltroFecha] = useState({ fecha: null, modo: "date" });
   const [fechaKey, setFechaKey] = useState(0)
   const [filteredRevisions, setFilteredRevisions] = useState([]);
-
+  const [showButton, setShowButton] = useState(false); // estado para controlar la visbilidad del boton limpiar fecha
+  
+  const navigate = useNavigate();// llamamos al hook para naegar a la nueva ruta 
 
   const {
     originalRequest,
@@ -148,26 +151,11 @@ function Revisiones() {
 
   const handleCreateRequest = () => { setActiveForm("request"); };
 
-
-  const handleSearch = (search) => {
-    setSearchInput(search);
-    aplicarFiltros(estadoFiltro, search, filtroFecha);
-  };
-
-  const handleFilterEstado = (estado) => {
-    setEstadoFiltro(estado);
-    aplicarFiltros(estado, searchInput, filtroFecha);
-  };
-
-  const handleCreateRequest = () => {
-    setActiveForm("request");
-  };
-
   const handleeditRequest = () => {
     if (selectedRequests.length === 1) {
       const selected = selectedRequests[0];
       setEditinRequest(selected);
-
+      
       setActiveForm("request");
     } else {
       Swal.fire({
@@ -208,14 +196,14 @@ function Revisiones() {
     <div>
       <Sidebar />
       <TitleWrapper>
-        <TitleText>Revisiones</TitleText>
+        <TitleText> Panel de Revisiones</TitleText>
       </TitleWrapper>
 
       <Toolbar
         onCreate={handleCreateRequest}
         onEdit={handleeditRequest}
         onDelete={handledelete}
-      >
+        >
 
         <Toolbar.Search
           placeholder="Buscar..."
@@ -233,10 +221,12 @@ function Revisiones() {
           key={fechaKey}
           onSelect={(fecha, modo) => {
             setFiltroFecha({ fecha, modo });
+            setShowButton(!!fecha); // Mostrar el boton si hay una fecha seleccionada
             aplicarFiltros(estadoFiltro, searchInput, { fecha, modo });
           }}
         />
-        <CustomButtonWrapper>
+        {showButton && (
+          <CustomButtonWrapper>
           <CustomButton
             bgColor="#7C9BAF"
             hoverColor="#5D7E93"
@@ -245,6 +235,7 @@ function Revisiones() {
             onClick={() => {
               setFechaKey(prev => prev + 1);
               setFiltroFecha({ fecha: null, modo: "date" });
+              setShowButton(false); //ocultamos boton despues de limpiar fecha    
               aplicarFiltros(estadoFiltro, searchInput, { fecha: null, modo: "date" });
             }}
             style={null}
@@ -253,11 +244,12 @@ function Revisiones() {
           >
             Limpiar Fecha
           </CustomButton>
-        </CustomButtonWrapper>
+          </CustomButtonWrapper>
+        )}
       </Toolbar>
 
       <Table
-        columns={ColumnsRequest({})}
+        columns={ColumnsRequest({navigate})} //navigate para permitir el redireccionamiento al presionar boton 
         data={filteredRevisions}
         selectable={true}
         onSelectionChange={(selectedIds) => {
@@ -278,8 +270,8 @@ function Revisiones() {
           onSubmit={handleFormSubmit}
           initialValues={editinRequest || {}}
         />
-
-      )}
+    
+        )}
 
     </div>
   );

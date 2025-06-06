@@ -8,6 +8,7 @@ import {getBranches, getAgreement} from "../../api/api_Convenios";
 import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de los convenios
 import columnsBranch from "./TableBranches/columnsBranches"; // columnas de las sucursales
 import Toolbar from "../../components/toolbar";
+import filterData from "../../utils/unitySearch"; // funcion para filtrar los datos de la tabla
 
 
 import {handleSucursalSubmit, handleDeleteBranches, handleUpdateBranches} from "./TableBranches/sucursalManagement"; //funciones tipo crud de sucursales

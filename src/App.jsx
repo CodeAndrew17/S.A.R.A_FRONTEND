@@ -8,7 +8,7 @@ import Administrar from './pages/Administrar/administrar';
 import Estadisticas from './pages/estadisticas';
 import Sucursales from './pages/Sucursales/sucursales';
 import Revisiones from './pages/Solicitudes/revisiones';
-import Configuracion from './pages/configuracion';
+import FormView from './pages/Forms/forms';
 
 
 //estilos globales para la configuracion de las paginas 
@@ -63,7 +63,7 @@ function App(){
       <Route path="/estadisticas" element={<ProtectedRoute><Estadisticas /></ProtectedRoute>} />
       <Route path="/administrar" element={<ProtectedRoute><Administrar /></ProtectedRoute>} />
       <Route path="/revisiones" element={<ProtectedRoute><Revisiones /></ProtectedRoute>} />
-      <Route path="/configuracion" element={<ProtectedRoute><Configuracion /></ProtectedRoute>} />
+      <Route path="/forms" element={<ProtectedRoute><FormView /></ProtectedRoute>} />
     </Routes>
     </BrowserRouter>
   </>

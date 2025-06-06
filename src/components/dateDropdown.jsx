@@ -116,7 +116,7 @@ const DropdownButton = styled.button`
   border: 2px #a9a9a9 solid;
   border-radius: 4px;
   cursor: pointer;
-  width: 150px;
+  width: 120px;
   text-align: left;
   position: relative;
 
@@ -151,8 +151,8 @@ const ModeButtons = styled.div`
 
 const ModeButton = styled.button`
   padding: 6px 12px;
-  background-color: ${({ active }) => (active ? "#4a90e2" : "white")};
-  color: ${({ active }) => (active ? "white" : "black")};
+  background-color: ${({ $active }) => ($active ? "#4a90e2" : "white")};
+  color: ${({ $active }) => ($active ? "white" : "black")};
   border: 1px solid #5FB8D6;
   border-radius: 4px;
   cursor: pointer;
@@ -160,7 +160,7 @@ const ModeButton = styled.button`
   width: 320px;
 
   &:hover {
-    background-color: ${({ active }) => (active ? "#4a90e2" : "#63d8d9")};
+    background-color: ${({ $active }) => ($active ? "#4a90e2" : "#63d8d9")};
   }
 `;
 
@@ -190,7 +190,7 @@ function DateDropdown({ onSelect }) {
   };
 
   const formatLabel = () => {
-    if (!selectedDate) return "Selecciona fecha";
+    if (!selectedDate) return "Fecha";
 
     switch (mode) {
       case "date":
@@ -211,9 +211,9 @@ function DateDropdown({ onSelect }) {
       {isOpen && (
         <DropdownMenu>
           <ModeButtons>
-            <ModeButton onClick={() => setMode("date")} active={mode === "date"}>Día</ModeButton>
-            <ModeButton onClick={() => setMode("month")} active={mode === "month"}>Mes</ModeButton>
-            <ModeButton onClick={() => setMode("year")} active={mode === "year"}>Año</ModeButton>
+            <ModeButton onClick={() => setMode("date")} $active={mode === "date"}>Día</ModeButton>
+            <ModeButton onClick={() => setMode("month")} $active={mode === "month"}>Mes</ModeButton>
+            <ModeButton onClick={() => setMode("year")} $active={mode === "year"}>Año</ModeButton>
           </ModeButtons>
           <DatePicker locale="es"
             selected={selectedDate}

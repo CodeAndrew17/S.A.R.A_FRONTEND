@@ -99,7 +99,8 @@ const useRequestManage = () => {
           id_sucursal: sucursalMatch?.nombre || "Sin sucursal",
           id_convenio: convenioMatch?.nombre || "Sin convenio",
           id_empleado: empleadoMatch?.correo ||  "Sin empleado",
-          id_plan: planMatch?.nombre_plan || "Sin plan",
+          id_plan: planMatch?.nombre_plan || "Sin plan", //nombre del plan 
+          id_real_plan: planMatch?.id || null, // este es el ID real del plan (para no confundirse)
         };
       });
 

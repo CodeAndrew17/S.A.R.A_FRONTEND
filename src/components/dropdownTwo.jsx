@@ -27,7 +27,7 @@ const DropdownButton = styled.button`
 
   &:hover {
     background:rgb(78, 143, 179);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 `;
@@ -47,14 +47,14 @@ const DropdownContent = styled.div`
   margin-top: 0px;
 
   /* Posicionamiento dinámico */
-  ${({ position }) => position && `
-    top: ${position.top}px;
-    left: ${position.left}px;
+  ${({ $position }) => $position && `
+    top: ${$position.top}px;
+    left: ${$position.left}px;
   `}
 
   &.open-up {
     bottom: auto;
-    top: ${({ position }) => position ? `${position.top - 250}px` : 'auto'};
+    top: ${({ $position }) => $position ? `${$position.top - 250}px` : 'auto'};
   }
 `;
 
@@ -243,7 +243,7 @@ export const CheckboxDropdown = ({ options, selectedValues, onChange, onSave }) 
       {isOpen && (
         <DropdownContent 
           className={openUpward ? "open-up" : ""}
-          position={position}
+          $position={position}
         >
           <ScrollableCheckboxes>
             {options.map((option) => (

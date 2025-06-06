@@ -273,11 +273,11 @@ const Sidebar = () => {
   const menuItems = [
     { icon: <FaHome />, text: "Inicio", path: "/inicio" },
     { icon: <FaFileAlt />, text: "Sucursales", path: "/sucursales" },
-    { icon: <FaTools />, text: "Revisiones", path: "/revisiones" },
-    { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
-    { icon: <FaChartBar />, text: "Estadísticas", path: "/estadisticas" },
     { icon: <FaUsers />, text: "Usuarios", path: "/usuarios" },
-    { icon: <FaCog />, text: "Configuración", path: "/configuracion" },
+    { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
+    { icon: <FaTools />, text: "Revisiones", path: "/revisiones" },
+    { icon: <FaChartBar />, text: "Estadísticas", path: "/estadisticas" },
+    { icon: <FaCog />, text: "Formularios/prueba", path: "/forms" },
   ];
 
   const iconPositions = [180, 240, 300, 360, 420, 480, 540];
