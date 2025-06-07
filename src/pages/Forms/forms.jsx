@@ -3,7 +3,7 @@ import Sidebar from "./secondSidebar";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
 import UserForm from '../../components/userForm';
-import { getCategoryOptions, getFormItems } from '../../api/api_Forms';
+import { getCategoryOptions, getFormItems, addAnswers } from '../../api/api_Forms';
 
 function FormsView() {
   const [selected, setSelected] = useState(''); //estados para los seleccionados
@@ -11,14 +11,21 @@ function FormsView() {
   const [formulariosAdicionales, setFormulariosAdicionales] = useState([]); //estado para alamcenar los adicionales
   const [formData, setformData] = useState([]);
   const [categoriaOpciones, setCategoriaOpciones] = useState({});
-
+  const [selectedCategoria, setSelectedCategoria] = useState({});
 
   const location = useLocation();
-  const { id_plan, placa, plan } = location.state || {}; //usamos useLocation (hook de react) lo usamos para datos desde la vista de revisiones hasta aca siun mostrarlo en la url
+  const { id_plan, placa, plan, solicitud_id } = location.state || {}; //usamos useLocation (hook de react) lo usamos para datos desde la vista de revisiones hasta aca siun mostrarlo en la url
 
   const handleFormulariosLoaded = (principales, adicionales) => { //funcion q recibe los dos tanto principales como adicionales
     setFormulariosPrincipales(principales);
     setFormulariosAdicionales(adicionales);
+  };
+
+  const handleChangeCategoria = (itemId, opcionId) => {
+    setSelectedCategoria(prev => ({
+      ...prev,
+      [itemId]: opcionId
+    }));
   };
 
   const handleClose = () => {
@@ -28,14 +35,15 @@ function FormsView() {
   //Accede a las propiedades de la data para mostrar por cada item su nombre, y tipo
   const mappedFields = formData.map(field => {
     const idCat = field.id_items.id_categoria_opciones;
-    if(idCat == "16"){
+    if (idCat == "16") {
       return {
-      name: `item_${field.id}`,
-      label: field.id_items.nombre_items || '',
-      type: 'text',
-      placeholder: '',
-      required: false
-    };
+        name: `item_${field.id}`,
+        label: field.id_items.nombre_items || '',
+        type: 'text',
+        placeholder: '',
+        required: false,
+        id_items: field.id_items.id
+      };
     }
     if (idCat) {
       // Transforma las opciones al formato { value, label }
@@ -49,7 +57,8 @@ function FormsView() {
         type: 'select',
         options: opciones,
         placeholder: '',
-        required: false
+        required: false,
+        id_items: field.id_items.id
       };
     }
   });
@@ -116,6 +125,35 @@ function FormsView() {
       loadOptions();
   }, [formData])
 
+
+  const handleSubmitForm = async () => {
+    let ArrayData = [];
+    for (let item = 0; item < formData.length; item++) {
+      const itemId = formData[item].id_items.id;
+      const opcionId = selectedCategoria[itemId] || "";
+      const idCat = formData[item].id_items.id_categoria_opciones;
+
+      if (String(idCat) === "16") {
+        ArrayData.push([itemId, opcionId]); // texto, deja como string
+      } else {
+        ArrayData.push([itemId, opcionId !== "" ? parseInt(opcionId, 10) : ""]); // convierte a número si no está vacío
+      }
+    }
+
+    const dataToSend = {
+      solicitud: solicitud_id,
+      formulario: selected.id,
+      resultados: ArrayData
+    };
+
+    try {
+      const response = await addAnswers(dataToSend);
+      console.log("Respuesta: ", response);
+    } catch (error) {
+      console.error("error al enviar las respuestas: ", error);
+    }
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       <Sidebar
@@ -140,6 +178,9 @@ function FormsView() {
             fields={mappedFields}
             title={selected.nombre}
             onCancel={handleClose}
+            onSubmit={handleSubmitForm}
+            onFieldChange={handleChangeCategoria}
+            selectedCategoria={selectedCategoria}
           />
         )}
       </div>

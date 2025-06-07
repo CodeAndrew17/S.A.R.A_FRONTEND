@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getPlans, getForms } from '../../api/api_Admin';
+import { useLocation } from 'react-router-dom';
 
-const MiComponente = ({ idPlan, onFormulariosLoaded }) => {
+
+const MiComponente = ({ idPlan, onFormulariosLoaded, solicitud_id }) => {
   const [planFiltrado, setPlanFiltrado] = useState(null); //para los planes 
   const [error, setError] = useState(null); //errores
 
