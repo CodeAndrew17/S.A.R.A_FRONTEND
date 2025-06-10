@@ -15,14 +15,6 @@ const ModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  opacity: 0;
-  animation: smoothFadeIn 0.3s ease-out forwards;
-  will-change: opacity; /* Optimización para el navegador */
-
-  @keyframes smoothFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
 `;
 
 const FormContainer = styled.div`
@@ -36,21 +28,6 @@ const FormContainer = styled.div`
   flex-direction: column;
   position: relative;
   overflow-y: auto;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: smoothSlideIn 0.25s 0.1s ease-out forwards;
-  will-change: transform, opacity; /* Optimización */
-
-  @keyframes smoothSlideIn {
-    from { 
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to { 
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 `;
 
 const LogoContainer = styled.div`
@@ -236,7 +213,7 @@ const UserForm = ({
         initialData[field.name] = "";
       }
     });
-    
+
     setFormData(initialData);
   }, []);
 
@@ -249,7 +226,11 @@ const UserForm = ({
     }
 
     if (typeof onFieldChange === 'function') {
-      onFieldChange(name, value);
+      // Busca el field correspondiente para extraer id_items
+      const field = fields.find(f => f.name === name);
+      if (field && field.id_items) {
+        onFieldChange(field.id_items, value);
+      }
     }
   };
 
@@ -265,8 +246,8 @@ const UserForm = ({
 
   const renderSelectField = (field) => (
     <InputGroup $fullWidth={field.fullWidth}>
-      <label style={{ 
-        marginBottom: "8px", 
+      <label style={{
+        marginBottom: "8px",
         fontWeight: "500",
         color: "#555",
         fontSize: "14px"
@@ -297,8 +278,8 @@ const UserForm = ({
 
   const renderInputField = (field) => (
     <InputGroup $fullWidth={field.fullWidth}>
-      <label style={{ 
-        marginBottom: "8px", 
+      <label style={{
+        marginBottom: "8px",
         fontWeight: "500",
         color: "#555",
         fontSize: "14px"
@@ -321,8 +302,8 @@ const UserForm = ({
 
   const renderTextAreaField = (field) => (
     <InputGroup $fullWidth={field.fullWidth}>
-      <label style={{ 
-        marginBottom: "8px", 
+      <label style={{
+        marginBottom: "8px",
         fontWeight: "500",
         color: "#555",
         fontSize: "14px"
