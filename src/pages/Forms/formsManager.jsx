@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getPlans, getForms } from '../../api/api_Admin';
 import { useLocation } from 'react-router-dom';
+import CustomButton from '../../components/userForm';
+
 
 
 const MiComponente = ({ idPlan, onFormulariosLoaded, solicitud_id }) => {
@@ -45,14 +47,17 @@ const MiComponente = ({ idPlan, onFormulariosLoaded, solicitud_id }) => {
   }, [idPlan]); // Solo idPlan en las dependencias
 
   if (error) return <div style={{ color: 'red' }}>Error: {error}</div>;
-  if (!planFiltrado) return <div>Cargando plan filtrado...</div>; //muestra el plan filtrado y lo renderiza en el return (depuracion)
+  if (!planFiltrado) 
+    return <div>Cargando datos...</div>; //muestra el plan filtrado y lo renderiza en el return (depuracion)
 
   return (
-    <div>
-      <h2>Plan filtrado:</h2>
-      <pre>{JSON.stringify(planFiltrado, null, 2)}</pre>
-    </div>
-  );
+      <div>
+        {/*<h2>Plan filtrado:</h2>  */}
+        {/*<pre>{JSON.stringify(planFiltrado, null, 2)}</pre> */}
+        
+      </div>
+    );
 };
+
 
 export default MiComponente;

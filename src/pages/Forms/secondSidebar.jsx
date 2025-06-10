@@ -6,7 +6,12 @@ import {useNavigate} from 'react-router-dom';
 const SidebarContainer = styled.div`
   width: 300px;
   height: 100vh;
-  background: linear-gradient(180deg, #0f1e33, #1e3a5f, #305a89);
+  background: linear-gradient(
+    to bottom,
+    #104E8B 0%,     /* Azul profesional profundo */
+    #1D6E94 70%,    /* Azul más suave para transición */
+    #2A8E9B 100%    /* Verde agua marina apagado para acento */
+  );
   color: white;
   display: flex;
   flex-direction: column;

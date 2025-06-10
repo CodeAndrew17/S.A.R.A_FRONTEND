@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import { validateCreateUserForm } from "../utils/validaciones";
 import Swal from "sweetalert2";
 import logo from "../assets/images/iconForm.png";
+
+const slideUp = keyframes`
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`;
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -28,6 +39,9 @@ const FormContainer = styled.div`
   flex-direction: column;
   position: relative;
   overflow-y: auto;
+  animation: ${slideUp} 0.5s ease-out forwards;
+  transform: translateY(50px);
+  opacity: 0;
 `;
 
 const LogoContainer = styled.div`

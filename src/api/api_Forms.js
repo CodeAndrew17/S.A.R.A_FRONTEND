@@ -31,4 +31,14 @@ const addAnswers = async (answerData) => {
     }
 }
 
-export {getFormItems, getCategoryOptions, addAnswers}
+const getAnswers = async (id) => {
+    try {
+        const response = await axiosWithAuth("/result/api/resultado/get/", "GET", id)
+        return response
+    } catch (error) {
+        console.error("Error al enviar las respuestas: ", error)
+        throw error;
+    }
+}
+
+export {getFormItems, getCategoryOptions, addAnswers, getAnswers}
