@@ -15,6 +15,16 @@ const slideUp = keyframes`
   }
 `;
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+
 const ModalContainer = styled.div`
   position: fixed;
   top: 0;
@@ -26,7 +36,10 @@ const ModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: ${fadeIn} 0.3s ease-out forwards;
+  opacity: 0;
 `;
+
 
 const FormContainer = styled.div`
   padding: 30px;
@@ -39,7 +52,7 @@ const FormContainer = styled.div`
   flex-direction: column;
   position: relative;
   overflow-y: auto;
-  animation: ${slideUp} 0.5s ease-out forwards;
+  animation: ${slideUp} 0.3s ease-out forwards;
   transform: translateY(50px);
   opacity: 0;
 `;
@@ -86,7 +99,12 @@ const FormContent = styled.div`
   gap: 20px;
   width: 100%;
   padding-right: 10px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
+
 
 const InputGroup = styled.div`
   display: flex;

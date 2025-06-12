@@ -50,7 +50,7 @@
                 setFilteredEmployees(employees); 
                 return;
             }
-          
+        
             
         
             const sanitizedSearch = search.trim().toLowerCase(); 

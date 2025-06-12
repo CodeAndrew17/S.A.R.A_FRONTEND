@@ -274,8 +274,8 @@ const Sidebar = () => {
     { icon: <FaHome />, text: "Inicio", path: "/inicio" },
     { icon: <FaFileAlt />, text: "Sucursales", path: "/sucursales" },
     { icon: <FaUsers />, text: "Usuarios", path: "/usuarios" },
-    { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
     { icon: <FaTools />, text: "Revisiones", path: "/revisiones" },
+    { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
     { icon: <FaChartBar />, text: "Estadísticas", path: "/estadisticas" },
     { icon: <FaCog />, text: "Formularios/prueba", path: "/forms" },
   ];

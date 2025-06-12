@@ -8,7 +8,10 @@ const TableContainer = styled.div`
   width: 93.5%;
   margin: 20px auto 20px 85px;
   position: relative; /* Añadido */
-  z-index: 1; /* Añadido */
+
+  @media (max-width: 500px) {
+    margin: 20px auto 0px 45px;
+  }
 `;
 
 const ScrollWrapper = styled.div`

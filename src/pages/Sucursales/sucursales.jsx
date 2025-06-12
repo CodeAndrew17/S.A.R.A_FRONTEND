@@ -9,6 +9,7 @@ import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de
 import columnsBranch from "./TableBranches/columnsBranches"; // columnas de las sucursales
 import Toolbar from "../../components/toolbar";
 import filterData from "../../utils/unitySearch"; // funcion para filtrar los datos de la tabla
+import getOrderRegister from "../../utils/getLastRegister";
 
 
 import {handleSucursalSubmit, handleDeleteBranches, handleUpdateBranches} from "./TableBranches/sucursalManagement"; //funciones tipo crud de sucursales
@@ -212,6 +213,8 @@ const Sucursales = () => {
     statusFilter // valor del filtro 
   })
 
+  const orderData = getOrderRegister({data: filteredData})
+
   return (
     <div style={{border:'3px solid #0000'}}>
       <Sidebar />
@@ -248,7 +251,7 @@ const Sucursales = () => {
       ) : (
           <Table
             containerStyle={{fontSize: "13px"}}
-            data={filteredData}
+            data={orderData}
             columns={columnsBranch({ setEditingBranch, setActiveForm })}
             selectable={true}
             onSelectionChange={handleSelectionChange}

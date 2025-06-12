@@ -41,8 +41,6 @@ const columnsRequest=({navigate})=>[
     {key:'id_convenio', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Convenio</span>},
     {key:'id_sucursal', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Sucursal</span>},
 
-
-    {key:'observaciones',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Observaciones</span>},
     {
         key: 'actions',
         title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
@@ -72,7 +70,8 @@ const columnsRequest=({navigate})=>[
         onClick={() => 
           navigate("/forms", {state: { solicitud_id: record.id, 
           placa:record.placa, 
-          plan: record.id_plan, 
+          plan: record.id_plan,
+          observaciones: record.observaciones,
           id_plan: record.id_real_plan}})} //redirigimos a la ruta q nececitamos llevandonos los valores q nececitamos para los formularios haciendo uso del hook useLocation
         icon={FolderCog}
       >

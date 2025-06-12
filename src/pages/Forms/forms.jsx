@@ -4,18 +4,28 @@ import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
 import UserForm from '../../components/userForm';
 import { getCategoryOptions, getFormItems, addAnswers } from '../../api/api_Forms';
+import CustomButton from '../../components/button';
+import { useNavigate } from 'react-router-dom';
+import { Undo2, CheckCircle, Info } from 'lucide-react';
+import logo from "../../assets/images/iconForm.png";
+
+
 
 function FormsView() {
-  const [selected, setSelected] = useState(''); //estados para los seleccionados
+  const [selected, setSelected] = useState(null); //estados para los seleccionados
   const [formulariosPrincipales, setFormulariosPrincipales] = useState([]); //estado para alamcenamr los formularios principales de su categoia 
   const [formulariosAdicionales, setFormulariosAdicionales] = useState([]); //estado para alamcenar los adicionales
   const [formData, setformData] = useState([]);
   const [categoriaOpciones, setCategoriaOpciones] = useState({});
   const [selectedCategoria, setSelectedCategoria] = useState({});
+  const navigate = useNavigate();
+  const [mostrarAlerta, setMostrarAlerta] = useState(true);
 
   const location = useLocation();
-  const { id_plan, placa, plan, solicitud_id } = location.state || {}; //usamos useLocation (hook de react) lo usamos para datos desde la vista de revisiones hasta aca siun mostrarlo en la url
+  const { id_plan, placa, plan, solicitud_id, observaciones } = location.state || {}; //usamos useLocation (hook de react) lo usamos para datos desde la vista de revisiones hasta aca siun mostrarlo en la url
 
+
+  const observacionesPlan = observaciones;
   const handleFormulariosLoaded = (principales, adicionales) => { //funcion q recibe los dos tanto principales como adicionales
     setFormulariosPrincipales(principales);
     setFormulariosAdicionales(adicionales);
@@ -89,7 +99,10 @@ function FormsView() {
   //Escucha cuando selectedForm cambia
   useEffect(() => {
     const fetchFormData = async () => {
-      if (!selected) return;
+      if (!selected) {
+        setformData([])
+      return;   
+    }
 
       try {
         const data = await getFormItems(selected.id);
@@ -166,6 +179,62 @@ function FormsView() {
       />
 
       <div style={{ marginLeft: '240px', padding: '2rem', flex: 1 }}>
+
+{mostrarAlerta && (
+  <div style={{
+    marginBottom: '1.5rem',
+    backgroundColor: '#FFF3CD',
+    color: '#856404',
+    padding: '1rem 2rem',
+    border: '1px solid #ffeeba',
+    borderRadius: '8px',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    maxWidth: '60%',
+    paddingLeft: '280px'
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <CheckCircle size={20} color="#856404" />
+      <span><strong>Importante:</strong> Presione <strong>"Confirmar"</strong> para guardar las respuestas de cada formulario.</span>
+    </div>
+    <button 
+      onClick={() => setMostrarAlerta(false)} 
+      style={{
+        background: 'none',
+        border: 'none',
+        fontSize: '16px',
+        cursor: 'pointer',
+        color: '#856404'
+      }}
+    >
+      ✕
+    </button>
+  </div>
+)}
+
+        <div style = {{display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '1rem'}} >
+          <h4> A continuacion se muestran las observaciones de este plan: <strong>{observacionesPlan} </strong></h4>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
+          <CustomButton 
+          width={"110px"}
+          bgColor={"#5FB8D6"}
+          hoverColor={"#48A2BF"}
+          onClick={() => navigate("/revisiones")}><Undo2></Undo2>Volver</CustomButton>
+          <CustomButton 
+          width={"110px"}
+          bgColor={"#5FB8D6"}
+          hoverColor={"#48A2BF"}
+          onClick={() => console.log("finalizar")} /*disabled={!formulariosCompletos}*/> 
+            <CheckCircle></CheckCircle>Finalizar
+          </CustomButton>
+        </div>
+
+
+
         {/* Le paso id_plan directamente */}
         <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
 
@@ -173,7 +242,7 @@ function FormsView() {
         {selected === 'formularios' && <div>Formulario general</div>}
         {selected === 'solicitudes' && <div>Formulario de solicitudes</div>}
         {console.log(formData)}
-        {selected && formData && (
+        {selected?.id && mappedFields.length > 0 && (
           <UserForm
             fields={mappedFields}
             title={selected.nombre}
@@ -183,6 +252,7 @@ function FormsView() {
             selectedCategoria={selectedCategoria}
           />
         )}
+
       </div>
     </div>
   );

@@ -8,6 +8,8 @@ import UserForm from "../../components/userForm";
 import usePlansandVehicles from "./adminManager";
 import { toast } from "react-toastify";
 import Swal from 'sweetalert2';
+import getOrderRegister from "../../utils/getLastRegister";
+
 
 
 const TitleWrapper = styled.div`
@@ -148,6 +150,8 @@ function Administrar() {
     return matchesSearch && matchesStatus;
   });
 
+  const orderData = getOrderRegister({data: filteredPlans})
+
   // Render
   return (
     <div> 
@@ -179,7 +183,7 @@ function Administrar() {
       </Toolbar>
 
       <Table
-        data={filteredPlans}
+        data={orderData}
         onSelectionChange={handleSelectionChange}
         selectable={true}
         columns={columns}

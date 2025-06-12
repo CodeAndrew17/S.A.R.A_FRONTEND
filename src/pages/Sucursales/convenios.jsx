@@ -1,6 +1,6 @@
 import Table from "../../components/table";
 import Toolbar from "../../components/toolbar";
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import columnsAgreement from "./TableAgreement/columnsAgreement";
 import UserForm from "../../components/userForm";
 import { useState, useEffect, useRef } from "react";
@@ -42,34 +42,51 @@ const TitleText = styled.h1`
   }
 `;
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+
 const ModalContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  overflow-y: auto;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  padding: 20px 0;
+  z-index: 1000;
+  animation: ${fadeIn} 0.3s ease-out forwards;
+  opacity: 0;
 `;
+
+  /*border-radius: 5px;
+  width: 70%;
+  height: 89vh;
+
+
+  display: flex;
+  flex-direction: column;
+  padding: 20px;*/
+
 
 const ContainerAgreement = styled.div`
   background-color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-  width: 100%;
-  max-width: 1200px;
-  min-height: 90vh;
-  max-height: 90vh;
-  overflow-y: auto;
-  display: flex;
   flex-direction: column;
   padding: 20px;
-  margin: 20px;
+  width: 70%;
+  height: 90vh;
+
+
 
   /* Animación de entrada desde abajo */
   animation: fadeSlideUp 0.3s ease-out;
@@ -121,6 +138,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
     ConsultSearch, //Funcion Para buscar
     updateAgreement,
     filteredData,
+    orderData,
     setStatusFilter,
     setSearchText
   } = useAgreementManagement();
@@ -204,13 +222,14 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
         {/* Mostrar tabla con los convenios */}
 
         <Table
-          containerStyle={{ margin: "5px 10px 5px 5px", width: "98%", overflow: "auto" ,  borderRadius: "0px"}}
+          containerStyle={{ margin: "5px 10px 5px 5px", width: "99%", overflowY: "hidden" ,  borderRadius: "0px", maxHeight: "60vh"
+}}
           selectable={true}
-          data={filteredData} // Usamos los convenios que vienen del hook
+          data={orderData} // Usamos los convenios que vienen del hook
           columns={columnsAgreement({setEditinAgreement,setActiveForm})}
           onSelectionChange={handleSelected}
         />
-        <div style={{ alignSelf: 'center', marginTop: '20px' }}>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
           <CustomButton 
             bgColor="#6F6F6F"
             hoverColor="#898989" 
@@ -220,6 +239,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
             Cerrar
           </CustomButton>
         </div>
+
 
 
         {/* Mostrar el formulario si es necesario */}

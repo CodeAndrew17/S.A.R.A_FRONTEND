@@ -95,9 +95,7 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
         </CustomButton>
 
         <SearchBar
-          placeholder="Buscar..."
-          width="290px"
-          maxWidth="400px"  
+          placeholder="Buscar..." 
           responsiveWidth={isLandscape ? "70%" : "50%"}
           responsiveMaxWidth="300px"
           mobileWidth="90%"

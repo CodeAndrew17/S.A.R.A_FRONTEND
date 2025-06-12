@@ -11,6 +11,8 @@ import DateDropdown from "../../components/DateDropdown";
 import CustomButton from "../../components/button";
 import { LucideBrush, FilterX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import getOrderRegister from "../../utils/getLastRegister";
+
 
 const CustomButtonWrapper = styled.div`
   display: flex;
@@ -39,8 +41,6 @@ const CustomButtonWrapper = styled.div`
     justify-content: center;
   }
 `;
-
-
 
 
 const TitleWrapper = styled.div`
@@ -161,6 +161,7 @@ function Revisiones() {
     setFilteredRevisions(resultados);
   };
 
+
   const handledelete = async () => {
     await removeRequest(selectedRequests);
     setSelectedRequests([]);
@@ -238,6 +239,8 @@ function Revisiones() {
     }
   };
 
+  const orderData = getOrderRegister({data: filteredRevisions})
+
   return (
     <div>
       <Sidebar />
@@ -295,7 +298,7 @@ function Revisiones() {
 
       <Table
         columns={ColumnsRequest({navigate})}
-        data={filteredRevisions}
+        data={orderData}
         selectable={true}
         onSelectionChange={(selectedIds) => {
           const selectedItems = originalRequest.filter((item) =>

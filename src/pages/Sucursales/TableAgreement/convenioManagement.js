@@ -4,6 +4,7 @@ import { getAgreement, addAgreement, deleteAgreement, getBranches ,editAgreement
 import Swal from "sweetalert2";
 import { Search } from "lucide-react";
 import filterData from "../../../utils/unitySearch"; // funcion para filtrar los datos de la tabla
+import getOrderRegister from "../../../utils/getLastRegister";
 
 
 const useAgreementManagement = () => {
@@ -55,7 +56,7 @@ const useAgreementManagement = () => {
     statusFilter // valor del filtro 
   })
 
-  
+  const orderData = getOrderRegister({data: filteredData});
 
   /*
         const handleBuscar = (search) => {
@@ -238,7 +239,8 @@ const useAgreementManagement = () => {
     updateAgreement,
     filteredData,
     setStatusFilter,
-    setSearchText
+    setSearchText,
+    orderData,
   };
 };
 
