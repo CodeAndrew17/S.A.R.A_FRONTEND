@@ -97,8 +97,6 @@ const Toolbar = ({ onSearch, onDelete, onEdit, onCreate }) => {
         <SearchBar
           placeholder="Buscar..." 
           responsiveWidth={isLandscape ? "70%" : "50%"}
-          responsiveMaxWidth="300px"
-          mobileWidth="90%"
           onSearch={onSearch}
         />
         <Dropdown

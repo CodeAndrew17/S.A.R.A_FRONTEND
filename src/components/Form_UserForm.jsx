@@ -245,7 +245,7 @@ const UserForm = ({
         initialData[field.name] = "";
       }
     });
-    
+
     setFormData(initialData);
   }, []);
 
@@ -258,7 +258,11 @@ const UserForm = ({
     }
 
     if (typeof onFieldChange === 'function') {
-      onFieldChange(name, value);
+      // Busca el field correspondiente para extraer id_items
+      const field = fields.find(f => f.name === name);
+      if (field && field.id_items) {
+        onFieldChange(field.id_items, value);
+      }
     }
   };
 
@@ -274,8 +278,8 @@ const UserForm = ({
 
   const renderSelectField = (field) => (
     <InputGroup $fullWidth={field.fullWidth}>
-      <label style={{ 
-        marginBottom: "8px", 
+      <label style={{
+        marginBottom: "8px",
         fontWeight: "500",
         color: "#555",
         fontSize: "14px"
@@ -306,8 +310,8 @@ const UserForm = ({
 
   const renderInputField = (field) => (
     <InputGroup $fullWidth={field.fullWidth}>
-      <label style={{ 
-        marginBottom: "8px", 
+      <label style={{
+        marginBottom: "8px",
         fontWeight: "500",
         color: "#555",
         fontSize: "14px"
@@ -330,8 +334,8 @@ const UserForm = ({
 
   const renderTextAreaField = (field) => (
     <InputGroup $fullWidth={field.fullWidth}>
-      <label style={{ 
-        marginBottom: "8px", 
+      <label style={{
+        marginBottom: "8px",
         fontWeight: "500",
         color: "#555",
         fontSize: "14px"

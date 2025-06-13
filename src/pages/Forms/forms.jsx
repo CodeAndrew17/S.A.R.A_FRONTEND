@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from "./secondSidebar";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
-import UserForm from '../../components/userForm';
+import UserForm from '../../components/Form_UserForm';
 import { getCategoryOptions, getFormItems, addAnswers } from '../../api/api_Forms';
 import CustomButton from '../../components/button';
 import { useNavigate } from 'react-router-dom';
