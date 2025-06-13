@@ -37,7 +37,7 @@ const columnsRequest=({navigate})=>[
     );
   }
 },
-    {key:'id_plan',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Servicio</span>},
+    {key:'id_plan',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Plan</span>},
     {key:'id_convenio', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Convenio</span>},
     {key:'id_sucursal', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Sucursal</span>},
 

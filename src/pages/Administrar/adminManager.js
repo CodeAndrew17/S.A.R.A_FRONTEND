@@ -75,7 +75,7 @@ const usePlansandVehicles = () => {
         const solicitudes = await getRequest();
         const relacionadas = solicitudes.filter(s => idList.includes(s.id_plan));
 
-        if (relacionadas.length > 0) {
+        if (relacionadas.length > 0 && relacionadas.some(r => r.estado !== "CAL" )) {
             Swal.fire({
                 title: "No se puede eliminar",
                 text: `Hay ${relacionadas.length} ${relacionadas.length === 1 ? "solicitud" : "solicitudes"} asociadas a los planes. Finaliza o cancela las revisiones asociadas con este plan antes de eliminarlo.`,
