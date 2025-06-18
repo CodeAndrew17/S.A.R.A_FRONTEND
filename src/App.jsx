@@ -38,7 +38,6 @@ const GlobalStyle = createGlobalStyle`
           border-radius: 3px;
         }
 `;
-    
 
 
 //Funcion para la proteccion de rutas

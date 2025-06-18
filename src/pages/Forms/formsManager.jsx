@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { getPlans, getForms } from '../../api/api_Admin';
 import { useLocation } from 'react-router-dom';
+import CustomButton from '../../components/userForm';
+
 
 
 const MiComponente = ({ idPlan, onFormulariosLoaded, solicitud_id }) => {
   const [planFiltrado, setPlanFiltrado] = useState(null); //para los planes 
   const [error, setError] = useState(null); //errores
+  
 
   useEffect(() => {
     if (!idPlan) {
@@ -20,6 +23,7 @@ const MiComponente = ({ idPlan, onFormulariosLoaded, solicitud_id }) => {
 
         const matchedPlan = allPlans.find(plan => plan.id === Number(idPlan)); //cojemos todos los planes y filtramos dinamicamente por el pla id 
         setPlanFiltrado(matchedPlan); //pasamos el plan filtrado al state
+        // PlanContext.jsx
 
         if (matchedPlan) { //si el plan buscado existe buscamos los formularios principales de ese plan tipo avaluo o inspeccion
           const principales = allForms.filter(form => 
@@ -29,7 +33,7 @@ const MiComponente = ({ idPlan, onFormulariosLoaded, solicitud_id }) => {
           const adicionalesIds = (matchedPlan.lista_adicionales || []).map(id => Number(id)); //mapeamos los id de los formularios adicionales
           const adicionales = allForms.filter(form => adicionalesIds.includes(Number(form.id))); //filtramos los formularios adicionales por id
 
-          onFormulariosLoaded(principales, adicionales); //pasamos parametros al state
+          onFormulariosLoaded(principales, adicionales, matchedPlan); //pasamos parametros al state
         } else {
           onFormulariosLoaded([], []);
         }
@@ -45,14 +49,18 @@ const MiComponente = ({ idPlan, onFormulariosLoaded, solicitud_id }) => {
   }, [idPlan]); // Solo idPlan en las dependencias
 
   if (error) return <div style={{ color: 'red' }}>Error: {error}</div>;
-  if (!planFiltrado) return <div>Cargando plan filtrado...</div>; //muestra el plan filtrado y lo renderiza en el return (depuracion)
+  if (!planFiltrado) 
+    return <div>Cargando datos...</div>; //muestra el plan filtrado y lo renderiza en el return (depuracion)
+
 
   return (
-    <div>
-      <h2>Plan filtrado:</h2>
-      <pre>{JSON.stringify(planFiltrado, null, 2)}</pre>
-    </div>
-  );
+      <div>
+        {/*<h2>Plan filtrado:</h2>  */}
+        {/*<pre>{JSON.stringify(planFiltrado, null, 2)}</pre> */}
+        
+      </div>
+    );
 };
+
 
 export default MiComponente;

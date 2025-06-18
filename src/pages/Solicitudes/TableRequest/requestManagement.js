@@ -4,6 +4,8 @@ import { getBranches, getAgreement } from "../../../api/api_Convenios";
 import { getEmployees } from "../../../api/api_Usuarios";
 import { getPlanes } from "../../../api/api_Solicitudes";
 import Swal from "sweetalert2";
+import {handleAxiosError} from "../../../utils/alertUnauthorized";
+
 
 const useRequestManage = () => {
   const [originalRequest, setOriginalRequest] = useState([]);
@@ -144,32 +146,31 @@ const useRequestManage = () => {
 
   //Funcion para editar Revisiones 
   const editingRequest = async (data) => {
-    try {
-
-      const response = await patchRequest(data.id, data);
-
-      if (response) {
-        Swal.fire({
-          title: "Éxito",
-          text: "La solicitud se ha modificado correctamente.",
-          icon: "success",
-          confirmButtonText: "Aceptar",
-        });
-        fetchRequest();
-      }else{
-              console.error("Error al modificar la solicitud:");
-
-      }
-    } catch (error) {
-      console.error("Error al modificar la solicitud:", error);
+  try {
+    const response = await patchRequest(data.id, data);
+    if (response) {
       Swal.fire({
-        title: "Error",
-        text: "No se pudo modificar la solicitud. Verifica los datos ingresados.",
-        icon: "error",
+        title: "Éxito",
+        text: "La solicitud se ha modificado correctamente.",
+        icon: "success",
         confirmButtonText: "Aceptar",
       });
+      
+      // Actualizar el estado local inmediatamente
+      setDataRequest(prev => prev.map(item => 
+        item.id === data.id ? {...item, ...data} : item
+      ));
+      setOriginalRequest(prev => prev.map(item => 
+        item.id === data.id ? {...item, ...data} : item
+      ));
+      
+      // Luego hacer el fetch para asegurar consistencia con el servidor
+      await fetchRequest();
     }
-  };
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
 
   //Funcion para aplicar filtros
   const handleFiledChage = (name, value,) => {
@@ -257,11 +258,7 @@ const useRequestManage = () => {
 
     } catch (errors) {
       console.log(errors);
-      Swal.fire({
-        title: "Error al eliminar",
-        text: `No se pudo completar la eliminación: ${errors}`,
-        icon: "error",
-      });
+      handleAxiosError(errors);
       return false;
     }
   };

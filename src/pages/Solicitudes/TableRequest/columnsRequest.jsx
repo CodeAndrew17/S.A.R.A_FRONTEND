@@ -37,17 +37,17 @@ const columnsRequest=({navigate})=>[
     );
   }
 },
-    {key:'id_plan',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Servicio</span>},
+    {key:'id_plan',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Plan</span>},
     {key:'id_convenio', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Convenio</span>},
     {key:'id_sucursal', title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Sucursal</span>},
 
-
-    {key:'observaciones',title:<span style={{ fontSize: '14px', fontWeight: 'bold' }}>Observaciones</span>},
     {
         key: 'actions',
         title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
     render: (_, record) => {
+      console.log("record de revisones", record)
 
+        const isDisabled = record.estado !== "PRO" //desabilitar si no es pro 
         let color = '#0000'
         let hover =''
         
@@ -67,9 +67,14 @@ const columnsRequest=({navigate})=>[
         hoverColor={hover}
         width="100px"
         height="35px"
-        onClick={() => navigate("/forms", {state: { solicitud_id: record.id, 
+        disabled={isDisabled}
+        onClick={() => 
+          navigate("/forms", {state: { solicitud_id: record.id, 
           placa:record.placa, 
-          plan: record.id_plan, 
+          plan: record.id_plan,
+          convenio: record.id_convenio,
+          sucursal: record.id_sucursal,
+          observaciones: record.observaciones,
           id_plan: record.id_real_plan}})} //redirigimos a la ruta q nececitamos llevandonos los valores q nececitamos para los formularios haciendo uso del hook useLocation
         icon={FolderCog}
       >

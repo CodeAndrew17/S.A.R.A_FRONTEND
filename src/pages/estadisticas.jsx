@@ -2,9 +2,11 @@ import React from "react";
 import Sidebar from "../components/sidebar"; 
 import styled from "styled-components";
 import CustomButton from "../components/button"; // Asegúrate de que la ruta sea correcta
-import { AppWindow, Square } from "lucide-react"; // Asegúrate de que la ruta sea correcta
+import { AppWindow, Navigation, Square } from "lucide-react"; // Asegúrate de que la ruta sea correcta
 import { useState } from "react";
 import UserForm from "../components/userForm";
+import { useNavigate } from "react-router-dom";
+
 const TitleWrapper = styled.div`
   background-color: #f0f0f0;
   border-radius: 8px;
@@ -42,6 +44,7 @@ const municipios = [
 ];
 
 const Estadisticas = () => {
+  const navigate = useNavigate();
   const [formFields, setFormFields] = useState([
     {
       name: "departamento",
@@ -95,7 +98,7 @@ const Estadisticas = () => {
       title="Formulario dinámico"
       fields={formFields}
       onSubmit={handleFormSubmit}
-      onCancel={handleCancel}
+      onCancel={() => navigate("/revisiones")}
       onFieldChange={handleFieldChange}
     />
   );

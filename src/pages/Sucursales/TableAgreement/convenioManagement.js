@@ -4,6 +4,9 @@ import { getAgreement, addAgreement, deleteAgreement, getBranches ,editAgreement
 import Swal from "sweetalert2";
 import { Search } from "lucide-react";
 import filterData from "../../../utils/unitySearch"; // funcion para filtrar los datos de la tabla
+import getOrderRegister from "../../../utils/getLastRegister";
+import {handleAxiosError} from '../../../utils/alertUnauthorized';
+
 
 
 const useAgreementManagement = () => {
@@ -55,7 +58,7 @@ const useAgreementManagement = () => {
     statusFilter // valor del filtro 
   })
 
-  
+  const orderData = getOrderRegister({data: filteredData});
 
   /*
         const handleBuscar = (search) => {
@@ -106,12 +109,7 @@ const useAgreementManagement = () => {
       }
     } catch (error) {
       console.error("Error al crear el convenio:", error);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo crear el convenio. Verifica los datos ingresados.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
+      handleAxiosError(error);
     }
   };
 
@@ -152,7 +150,7 @@ const useAgreementManagement = () => {
     try {
       // Eliminar todos los convenios en paralelo (si el backend lo permite)
       for (const id of ids) {
-        deleteAgreement(id)
+        await deleteAgreement(id)
         console.log("eliminados ", id )
       };
       await Swal.fire({
@@ -165,12 +163,7 @@ const useAgreementManagement = () => {
       
     } catch (error) {
       console.error("Hubo un error al eliminar los convenios.", error);
-      await Swal.fire({
-        title: "Error",
-        text: "Ocurrió un error al eliminar los convenios. Intenta nuevamente.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
+      handleAxiosError(error);
       return false;
     }
   };
@@ -217,12 +210,7 @@ const useAgreementManagement = () => {
         }
     } catch (error) {
         console.error("Error al actualizar el convenio:", error);
-        Swal.fire({
-            title: "Error",
-            text: error.message || "No se pudo actualizar el convenio. Verifica los datos ingresados.",
-            icon: "error",
-            confirmButtonText: "Aceptar",
-        });
+        handleAxiosError(error);
     }
 };
 
@@ -238,7 +226,8 @@ const useAgreementManagement = () => {
     updateAgreement,
     filteredData,
     setStatusFilter,
-    setSearchText
+    setSearchText,
+    orderData,
   };
 };
 

@@ -1,54 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Search } from "lucide-react";
 
 const SearchContainer = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 8px; 
-  padding: 12px 15px; /* Más padding para mejor tacto */
+  gap: 8px;
+  padding: 12px 15px;
   border: 2px solid #ccc;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   background: rgb(230, 227, 227);
-  height: 10px; /* Altura flexible */
-  min-height: auto; /*
   transition: all 0.3s ease;
-  width: ${props => props.$width || "10%"};
-  max-width: ${props => props.$maxWidth || "100px"};
+  width: ${(props) => props.$width || "100%"};
+  max-width: ${(props) => props.$maxWidth || "210px"};
+  height: ${(props) => props.$height || "1.8vh"};
 
-}  &:hover {
+  &:hover {
     border-color: #aaa;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-}  &:focus-within {
+  &:focus-within {
     border-color: #4a90e2;
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
   }
 
-}  @media (max-width: 768px) {
-    width: ${props => props.$responsiveWidth || "10%"};
-    max-width: ${props => props.$responsiveMaxWidth || "10%"};
+  @media (max-width: 768px) {
+    width: ${(props) => props.$responsiveWidth || "10%"};
+    max-width: ${(props) => props.$responsiveMaxWidth || "10%"};
     gap: 6px;
     padding: 10px 12px;
   }
 
-}  @media (max-width: 480px) {
-    width: ${props => props.$mobileWidth || "20%"};
+  @media (max-width: 480px) {
+    width: ${(props) => props.$mobileWidth || "20%"};
     min-width: 0;
     border-radius: 6px;
     padding: 8px 12px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    
-    /* Opcional: full-width en móviles muy pequeños */
-    @media (max-width: 320px) {
-      border-radius: 4px;
-      padding: 8px 10px;
-    }
   }
 
+  @media (max-width: 320px) {
+    border-radius: 4px;
+    padding: 8px 10px;
+  }
 `;
+
 
 const SearchIcon = styled(Search)`
   width: 20px;
@@ -56,7 +54,6 @@ const SearchIcon = styled(Search)`
   color: #888;
   background: rgb(230, 227, 227);
   flex-shrink: 0;
-  margin-right: 2px;
 `;
 
 const SearchInput = styled.input`
@@ -73,17 +70,40 @@ const SearchInput = styled.input`
   }
 `;
 
-const SearchBar = ({ 
-  placeholder, 
-  onSearch, 
-  width, 
+const ClearButton = styled.button`
+  background: transparent;
+  border: none;
+  color: #999;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+
+  &:hover {
+    color: #333;
+  }
+`;
+
+const SearchBar = ({
+  placeholder,
+  onSearch,
+  width,
   maxWidth,
   responsiveWidth,
   responsiveMaxWidth,
-  mobileWidth 
+  mobileWidth,
 }) => {
+  const [inputValue, setInputValue] = useState("");
+
   const handleChange = (event) => {
-    if (onSearch) onSearch(event.target.value);
+    const value = event.target.value;
+    setInputValue(value);
+    if (onSearch) onSearch(value);
+  };
+
+  const handleClear = () => {
+    setInputValue("");
+    if (onSearch) onSearch("");
   };
 
   return (
@@ -95,11 +115,13 @@ const SearchBar = ({
       $mobileWidth={mobileWidth}
     >
       <SearchIcon />
-      <SearchInput 
-        type="text" 
-        placeholder={placeholder || "Buscar..."} 
-        onChange={handleChange} 
+      <SearchInput
+        type="text"
+        value={inputValue}
+        placeholder={placeholder || "Buscar..."}
+        onChange={handleChange}
       />
+      {inputValue && <ClearButton onClick={handleClear}>✕</ClearButton>}
     </SearchContainer>
   );
 };

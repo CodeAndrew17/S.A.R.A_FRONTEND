@@ -14,6 +14,87 @@ const ContainerToolbar = styled.div`
   margin: 20px 0;
   gap: 15px;
   flex-wrap: wrap;
+
+  /* Estilo por defecto (horizontal) */
+  .buttons-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  /* Estilo para móviles muy pequeños (opcional) */
+  @media (max-width: 400px) {
+    .buttons-group {
+      width: 100%;
+      > button {
+        width: 100%;
+      }
+    }
+  }
+
+  /* Rango específico donde queremos columna (520px-1000px) */
+  @media (min-width: 520px) and (max-width: 1123px) {
+    flex-direction: column;
+    align-items: center; /* Cambiado de stretch a center */
+    
+    .buttons-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .search-bar-wrapper,
+    .dropdown-wrapper {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .search-bar-wrapper > *,
+    .dropdown-wrapper > * {
+      width: 100%;
+    }
+  }
+     /* Rango específico donde queremos columna (520px-1000px) */
+  @media (min-width: 300px) and (max-width: 518px) {
+    flex-direction: column;
+    align-items: center; /* Cambiado de stretch a center */
+    
+    .buttons-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .search-bar-wrapper,
+    .dropdown-wrapper {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .search-bar-wrapper > *,
+    .dropdown-wrapper > * {
+      width: 100%;
+      justify-content: center;
+      margin-top: -15px;
+    }
+  }
+
+  /* Pantallas muy grandes (opcional) */
+  @media (min-width: 1600px) {
+    justify-content: space-between;
+    padding: 20px 5%;
+  }
 `;
 
 const BaseButton = styled.button`
@@ -94,57 +175,95 @@ const DropdownContainer = styled.div`
 
 const DropdownButton = styled.button`
   max-width: 100%;
-  background-color: rgb(255, 255, 255);
-  color: black;
-  padding: 10px 20px;
-  padding-left: 11px;
-  border: 2px solid #a9a9a9;
-  border-radius: 4px;
+  background-color: ${({ bgColor }) => bgColor || 'white'};
+  color: ${({ color }) => color || 'black'};
+  padding: ${({ padding }) => padding || '10px 16px'};
+  border: 2px solid ${({ borderColor }) => borderColor || '#a9a9a9'};
+  border-radius: ${({ borderRadius }) => borderRadius || '4px'};
   cursor: pointer;
   position: relative;
-  width: 120px;
+  width: ${({ width }) => width || 'auto'};
+  min-width: ${({ minWidth }) => minWidth || '120px'};
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ focusBorderColor }) => focusBorderColor || '#555'};
+    box-shadow: 0 0 3px ${({ focusBorderColor }) => focusBorderColor || '#555'};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 
   &::after {
     content: "";
     position: absolute;
-    right: 17px;
-    top: 55%;
+    right: 16px;
+    top: 50%;
     width: 0;
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid black;
+    border-top: 6px solid ${({ arrowColor }) => arrowColor || 'black'};
     transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 `;
 
 const DropdownMenu = styled.div`
-  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
   position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: ${({ bgColor }) => bgColor || '#f9f9f9'};
+  min-width: ${({ minWidth }) => minWidth || '160px'};
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  border-radius: 4px;
+  padding: 4px 0;
+  user-select: none;
+
+  transition: opacity 0.2s ease;
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
 `;
 
 const DropdownItem = styled.button`
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
+  color: ${({ color }) => color || 'black'};
+  padding: ${({ padding }) => padding || '12px 16px'};
   background: none;
   border: none;
   width: 100%;
-  height: 50px;
   text-align: left;
   cursor: pointer;
+  font-size: ${({ fontSize }) => fontSize || '1rem'};
 
-  &:hover {
-    background-color: #f1f1f1;
+  &:hover,
+  &:focus {
+    background-color: ${({ hoverBg }) => hoverBg || '#f1f1f1'};
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 `;
 
@@ -177,7 +296,7 @@ const Toolbar = ({
   return (
     <ContainerToolbar style={style}>
       {showDefaultButtons && (
-        <>
+        <div className="buttons-group">
           <Button
             icon={Plus}
             onClick={onCreate}
@@ -208,7 +327,7 @@ const Toolbar = ({
               {editLabel}
             </Button>
           )}
-        </>
+        </div>
       )}
       {children}
     </ContainerToolbar>
@@ -219,7 +338,11 @@ const Toolbar = ({
 
 Toolbar.Button = Button;
 
-Toolbar.Search = (props) => <SearchBar {...props} />;
+Toolbar.Search = (props) => (
+  <div className="search-bar-wrapper">
+    <SearchBar {...props} />
+  </div>
+);
 
 Toolbar.Dropdown = ({ 
   options = {},

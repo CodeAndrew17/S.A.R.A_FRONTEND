@@ -74,7 +74,7 @@ const Usuarios = () => {
 
     } catch (error) {
       console.error("Error al actualizar:", error);
-      Swal.fire("Error", "No se pudieron guardar los cambios", "error");
+      Swal.fire("Error", "No se pudieron guardar los cambios. Recuerda que los permisos de tu rol determinan tus accesos y acciones.", "error");
     }
   };
 
@@ -139,7 +139,7 @@ const Usuarios = () => {
       console.error("Error al crear el usuario:", error);
       Swal.fire({
         title: "Error",
-        text: "No se pudo crear el usuario. Verifica los datos ingresados.",
+        text: "No se pudo crear el usuario. Recuerda que los permisos de tu rol determinan tus accesos y acciones.",
         icon: "error",
         confirmButtonText: "Aceptar"
       });
@@ -191,7 +191,7 @@ const Usuarios = () => {
       console.error("Error al asignar la cuenta:", error);
       Swal.fire({
         title: "Error",
-        text: "La cuenta no pudo ser asignada. El campo de usuario debe contener al menos 8 caracteres. Por favor, ingrese un valor válido y vuelva a intentarlo. ",
+        text: "La cuenta no pudo ser asignada. Recuerda que los permisos de tu rol determinan tus accesos y acciones. ",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
@@ -231,7 +231,7 @@ const Usuarios = () => {
       Swal.fire("¡Éxito!", "Cambios guardados", "success");
       
     } catch (error) {
-      Swal.fire("Error", "No se pudieron guardar los cambios", "error");
+      Swal.fire("Error", "No se pudieron guardar los cambios. Recuerda que los permisos de tu rol determinan tus accesos y acciones.", "error");
     }
   };
 
@@ -318,7 +318,7 @@ const Usuarios = () => {
       console.error("Hubo un error al eliminar los usuarios.", error);
       Swal.fire({
         title: "Error",
-        text: "Ocurrió un error al eliminar los usuarios. Intenta nuevamente.",
+        text: "Ocurrió un error al eliminar los usuarios. Recuerda que los permisos de tu rol determinan tus accesos y acciones.",
         icon: "error",
         confirmButtonText: "Aceptar"
       });

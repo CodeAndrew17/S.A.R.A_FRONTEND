@@ -8,31 +8,56 @@ const DropdownContainer = styled.div`
 
 const DropdownButton = styled.button`
   max-width: 100%;
-  background-color: rgb(255, 255, 255);
-  color: black;
-  padding: 10px 20px;
-  padding-left: 11px;
-  border: 2px #a9a9a9 solid;
-  border-radius: 4px;
+  background-color: ${({ bgColor }) => bgColor || 'white'};
+  color: ${({ color }) => color || 'black'};
+  padding: ${({ padding }) => padding || '10px 16px'};
+  border: 2px solid ${({ borderColor }) => borderColor || '#a9a9a9'};
+  border-radius: ${({ borderRadius }) => borderRadius || '4px'};
   cursor: pointer;
   position: relative;
-  width: 120px;
+  width: ${({ width }) => width || 'auto'};
+  min-width: ${({ minWidth }) => minWidth || '120px'};
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ focusBorderColor }) => focusBorderColor || '#555'};
+    box-shadow: 0 0 3px ${({ focusBorderColor }) => focusBorderColor || '#555'};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 
   &::after {
     content: "";
     position: absolute;
-    right: 17px;
-    top: 55%;
+    right: 16px;
+    top: 50%;
     width: 0;
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid black;
+    border-top: 6px solid ${({ arrowColor }) => arrowColor || 'black'};
     transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px); /* Sube un poquito */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(1px); /* Baja como si lo presionaras */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -65,7 +90,7 @@ const DropdownItem = styled.button`
 function Dropdown({ 
   options = {},   // Recibimos un objeto {valor: label}
   onSelect, 
-  defaultOption = "Todos"
+  defaultOption = "Estado"
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState(defaultOption);

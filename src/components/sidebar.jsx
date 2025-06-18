@@ -59,7 +59,7 @@ const ToggleButton = styled.button`
   cursor: pointer;
   position: absolute;
   top: 20px;
-  left: 10px;
+  left: 18px;
   transition: transform 0.3s ease;
 
   &:hover {
@@ -190,7 +190,7 @@ const RoleContainer = styled.div`
 
 const SidebarContainer = styled.div`
   width: ${({ $isOpen }) => ($isOpen ? "250px" : "80px")};
-  height: 100vh;
+  height: 100%;
   background: linear-gradient(
     to bottom,
     #104E8B 0%,     /* Azul profesional profundo */
@@ -274,8 +274,8 @@ const Sidebar = () => {
     { icon: <FaHome />, text: "Inicio", path: "/inicio" },
     { icon: <FaFileAlt />, text: "Sucursales", path: "/sucursales" },
     { icon: <FaUsers />, text: "Usuarios", path: "/usuarios" },
-    { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
     { icon: <FaTools />, text: "Revisiones", path: "/revisiones" },
+    { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
     { icon: <FaChartBar />, text: "Estadísticas", path: "/estadisticas" },
     { icon: <FaCog />, text: "Formularios/prueba", path: "/forms" },
   ];
