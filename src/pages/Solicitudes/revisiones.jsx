@@ -164,7 +164,7 @@ function Revisiones() {
 
   const handledelete = async () => {
     await removeRequest(selectedRequests);
-    setSelectedRequests([]);
+    //setSelectedRequests([]);
   };
 
   const handleSearch = (search) => {

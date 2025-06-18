@@ -334,7 +334,7 @@ const UserTable = ({
       console.error("Error al eliminar:", error);
       Swal.fire(
         'Error',
-        error.response?.data?.message || 'No se pudo eliminar la cuenta de usuario',
+        error.response?.data?.message || 'No se pudo eliminar la cuenta de usuario. Recuerda que los permisos de tu rol determinan tus accesos y acciones.',
         'error'
       );
     }
@@ -563,7 +563,7 @@ const UserTable = ({
               Swal.fire("¡Éxito!", "Cambios guardados", "success");
               
             } catch (error) {
-              Swal.fire("Error", "No se pudieron guardar los cambios", "error");
+              Swal.fire("Error", "No se pudieron guardar los cambios. Recuerda que los permisos de tu rol determinan tus accesos y acciones.", "error");
             }
           }}
           setShowForm={setShowUpdateForm}

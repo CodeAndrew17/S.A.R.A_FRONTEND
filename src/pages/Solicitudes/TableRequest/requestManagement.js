@@ -4,6 +4,8 @@ import { getBranches, getAgreement } from "../../../api/api_Convenios";
 import { getEmployees } from "../../../api/api_Usuarios";
 import { getPlanes } from "../../../api/api_Solicitudes";
 import Swal from "sweetalert2";
+import {handleAxiosError} from "../../../utils/alertUnauthorized";
+
 
 const useRequestManage = () => {
   const [originalRequest, setOriginalRequest] = useState([]);
@@ -166,7 +168,7 @@ const useRequestManage = () => {
       await fetchRequest();
     }
   } catch (error) {
-    // Manejo de errores...
+    handleAxiosError(error);
   }
 };
 
@@ -256,11 +258,7 @@ const useRequestManage = () => {
 
     } catch (errors) {
       console.log(errors);
-      Swal.fire({
-        title: "Error al eliminar",
-        text: `No se pudo completar la eliminación: ${errors}`,
-        icon: "error",
-      });
+      handleAxiosError(errors);
       return false;
     }
   };

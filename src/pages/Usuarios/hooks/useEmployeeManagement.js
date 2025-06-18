@@ -1,7 +1,8 @@
     import { useState, useEffect } from "react";
     import { getEmployees, deleteEmployees, editEmployees, addEmployees, getUsers,getBranches } from "../../../api/api_Usuarios";
+    import {handleAxiosError} from '../../../utils/alertUnauthorized';
 
-    
+
     const useEmployeeManagement = () => {
         const [employees, setEmployees] = useState([]);
         const [filteredEmployees, setFilteredEmployees] = useState([]);
@@ -68,35 +69,50 @@
             setFilteredEmployees(filtered); 
         };
         
-        const handleEliminar = async () => {
-            if (selectedEmployees.length === 0) {
-                console.error("No hay empleados seleccionados");
-                alert("Por favor seleccione un empleado para eliminar.");
-                return;
-            }
+const handleEliminar = async () => {
+    if (selectedEmployees.length === 0) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Sin selección',
+            text: 'Por favor seleccione al menos un empleado para eliminar.',
+        });
+        return;
+    }
 
-            const confirmacion = window.confirm("Está seguro que desea eliminar los usuarios seleccionados?, Esta acción no se puede deshacer");
-            if (!confirmacion) return;
+    const confirmacion = await Swal.fire({
+        title: '¿Está seguro?',
+        text: 'Está a punto de eliminar los usuarios seleccionados. Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+    });
 
-            try {
-                for (const id of selectedEmployees) {
-                    await deleteEmployees(id); //Elimina cada empleado segun ID
-                }
+    if (!confirmacion.isConfirmed) return;
 
-                const empleadosActualizados = employees.filter(
-                    (emp) => !selectedEmployees.includes(emp.id)
-                );
-                setEmployees(empleadosActualizados);
-                setFilteredEmployees(empleadosActualizados);
-                setSelectedEmployees([]) //Limpia los empleados seleccionados
+    try {
+        for (const id of selectedEmployees) {
+            await deleteEmployees(id); // Asegúrate de que esta función lance el error si falla
+        }
 
-                console.log("Empleados eliminados correctamente.");
-                alert("Eliminación exitosa.");
-            } catch (error) {
-                console.error("Error al eliminar empleados", error);
-                alert("Ocurrio un error al intentar eliminar los empleados.")
-            }
-        };
+        const empleadosActualizados = employees.filter(
+            (emp) => !selectedEmployees.includes(emp.id)
+        );
+        setEmployees(empleadosActualizados);
+        setFilteredEmployees(empleadosActualizados);
+        setSelectedEmployees([]);
+
+        await Swal.fire({
+            icon: 'success',
+            title: '¡Eliminados!',
+            text: 'Los empleados fueron eliminados correctamente.',
+        });
+
+    } catch (error) {
+        console.error("Error al eliminar empleados", error);
+        handleAxiosError(error); // Esto debe mostrar el Swal si es error 403 u otro
+    }
+};
         
         const handleCheckboxChange = (id) => {
             setSelectedEmployees(prev => {

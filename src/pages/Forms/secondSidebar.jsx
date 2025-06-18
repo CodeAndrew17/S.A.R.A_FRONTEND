@@ -2,10 +2,11 @@ import React, {useRef, useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown } from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
+import autosef from "../../assets/images/autosef.png"
 
 const SidebarContainer = styled.div`
-  width: 300px;
-  height: 100vh;
+  width: 260px;
+  height: 100%;
   background: linear-gradient(to bottom, #104E8B 0%, #1D6E94 70%, #2A8E9B 100%);
   color: white;
   display: flex;
@@ -28,9 +29,26 @@ const SidebarContainer = styled.div`
   }
 `;
 
+const LogoImage = styled.img`
+  width: 80%;
+  max-width: 180px;
+  margin: 0 auto 1.5 rem auto;
+  padding-bottom: 1.5rem;
+  display: block;
+  object-fit: contain;
+  padding-left: 35px;
+
+  @media (max-width : 768px) {
+    width: 70%;
+    max-width: 140px;
+    margin-bottom: 0.8rem;
+    padding-left: 15px;
+  }
+`;
+
 const ScrollIndicator = styled.div`
   position: fixed;
-  left: 150px;
+  left: 125px;
   bottom: 15px;
   color: white;
   opacity: ${({ $visible }) => ($visible ? 0.7 : 0)};
@@ -67,36 +85,23 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const Logo = styled.h1`
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: #ffffff;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  padding-bottom: 1.2rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
-
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-  }
-`;
-
 const InfoBox = styled.div`
   background-color: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 1.2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   font-size: 1.5rem;
   line-height: 1.6;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  height: 15px;
+  width: 225px;
 
   @media (max-width: 768px) {
     padding: 1rem;
     font-size: 0.95rem;
+    width: 120px;
+    height: 7px;
   }
 `;
 
@@ -159,18 +164,36 @@ const MenuItem = styled.button`
 `;
 
 const SectionTitle = styled.h4`
-  margin: 1.2rem 0 0.8rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #a0c4ff;
-  padding-bottom: 0.6rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  margin: 2rem 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color:rgb(148, 225, 255);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  position: relative;
+
+  &::before {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25));
+    border-radius: 1px;
+  }
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.25));
+    border-radius: 1px;
+  }
 
   @media (max-width: 768px) {
-    font-size: 1.1rem;
-    margin: 1rem 0 0.7rem 0;
+    font-size: 1rem;
+    margin: 1.5rem 0 0.8rem;
   }
 `;
 
@@ -232,8 +255,30 @@ const VolverButton = styled.button`
   }
 `;
 
+const PlacaHeading = styled.h4`
+  margin-top: -3px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-weight: 650;
+  font-size: clamp(0.95rem, 1.2vw, 1.2rem);  /* Se adapta dinámicamente */
+
+  @media (max-width: 500px) {
+    font-weight: 500;
+  }
+`;
+
 // El componente Sidebar permanece exactamente igual
-const Sidebar = ({ onSelect, onBack, id_plan, placa, plan, formulariosPrincipales = [], formulariosAdicionales = [] }) => {
+const Sidebar = ({
+  onSelect,
+  onBack,
+  id_plan,
+  placa,
+  plan,
+  formulariosPrincipales = [],
+  formulariosAdicionales = [],
+  onContarFormularios
+}) => {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
   const [arrowTop, setArrowTop] = useState(0); 
@@ -268,19 +313,22 @@ const Sidebar = ({ onSelect, onBack, id_plan, placa, plan, formulariosPrincipale
     };
   }, []);
 
+  useEffect(() => {
+  if (typeof onContarFormularios === "function") {
+    onContarFormularios(formulariosPrincipales.length, formulariosAdicionales.length);
+  }
+}, [formulariosPrincipales, formulariosAdicionales]);
+
   return (
     <SidebarContainer ref={sidebarRef}>
       <ContentWrapper>
-        <Logo>Formularios de Inspección</Logo>
+          <LogoImage src={autosef} alt="Autosef logo" />
 
-        {placa && plan && (
           <InfoBox>
-            <div><Label>Placa:</Label> <Value>{placa}</Value></div>
-            <div><Label>Plan:</Label> <Value>{plan}</Value></div>
+            <PlacaHeading>{placa}</PlacaHeading>
           </InfoBox>
-        )}
 
-        <SectionTitle>Formularios Principales</SectionTitle>
+        <SectionTitle><span>Formularios Principales</span></SectionTitle>
         {formulariosPrincipales.length === 0 && <EmptyMessage>No hay formularios principales</EmptyMessage>}
         {formulariosPrincipales.map(form => (
           <MenuItem key={form.id} onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}>
@@ -289,7 +337,7 @@ const Sidebar = ({ onSelect, onBack, id_plan, placa, plan, formulariosPrincipale
           </MenuItem>
         ))}
 
-        <SectionTitle>Formularios Adicionales</SectionTitle>
+        <SectionTitle><span>Formularios Adicionales</span></SectionTitle>
         {formulariosAdicionales.length === 0 && <EmptyMessage>No hay formularios adicionales</EmptyMessage>}
         {formulariosAdicionales.map(form => (
           <MenuItem key={form.id} onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}>

@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {getPlans, getVehicles, addPlans, deletePlans, editPlans} from "../../api/api_Admin";
 import {getRequest} from "../../api/api_Solicitudes";
 import Swal from "sweetalert2";
+import {handleAxiosError} from "../../utils/alertUnauthorized";
 
 const usePlansandVehicles = () => {
     const [plans, setPlans] = useState([]); // Estado para almacenar los planes
@@ -62,7 +63,7 @@ const usePlansandVehicles = () => {
 
         } catch (error){
             setError(error); 
-            Swal.fire("Error", "Hubo un problema al crear el plan", "error");
+            handleAxiosError(error)
         }
     };
 
@@ -100,26 +101,33 @@ const usePlansandVehicles = () => {
 
         // Eliminar los planes
         const results = await Promise.all(
-            idList.map(async (id) => {
-                try {
-                    await deletePlans(id);
-                    return { success: true, id };
-                } catch (error) {
-                    console.error(`Error eliminando plan ${id}:`, error);
-                    return { success: false, id, error };
-                }
-            })
-        );
+  idList.map(async (id) => {
+    try {
+      await deletePlans(id);
+      return { success: true, id };
+    } catch (error) {
+      console.error(`Error eliminando plan ${id}:`, error);
+      return { success: false, id, error };
+    }
+  })
+);
 
-        const exitosos = results.filter(r => r.success);
-        fetchAll();
+const exitosos = results.filter(r => r.success);
+const fallidos = results.filter(r => !r.success);
 
-        Swal.fire("Éxito", `Se eliminaron ${exitosos.length}/${idList.length} plan(es) correctamente.`, "success");
+fetchAll();
+
+if (fallidos.length > 0) {
+  const err = fallidos[0].error;
+  console.log("Error de Axios detectado:", err);
+  handleAxiosError(err);
+}
 
     } catch (error) {
         setError(error);
         console.error("Error al eliminar planes", error);
-        Swal.fire("Error", "Ocurrió un error durante el proceso", "error");
+        console.log("pasando el catch")
+        handleAxiosError(error)
     }
 };
 
@@ -145,7 +153,7 @@ const usePlansandVehicles = () => {
         } catch (error) {
             setError(error);
             console.error("Error al editar plan", error);
-            Swal.fire("Error", "Hubo un problema al editar el plan", "error");
+            handleAxiosError(error)
         }
     };
 

@@ -14,6 +14,87 @@ const ContainerToolbar = styled.div`
   margin: 20px 0;
   gap: 15px;
   flex-wrap: wrap;
+
+  /* Estilo por defecto (horizontal) */
+  .buttons-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  /* Estilo para móviles muy pequeños (opcional) */
+  @media (max-width: 400px) {
+    .buttons-group {
+      width: 100%;
+      > button {
+        width: 100%;
+      }
+    }
+  }
+
+  /* Rango específico donde queremos columna (520px-1000px) */
+  @media (min-width: 520px) and (max-width: 1123px) {
+    flex-direction: column;
+    align-items: center; /* Cambiado de stretch a center */
+    
+    .buttons-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .search-bar-wrapper,
+    .dropdown-wrapper {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .search-bar-wrapper > *,
+    .dropdown-wrapper > * {
+      width: 100%;
+    }
+  }
+     /* Rango específico donde queremos columna (520px-1000px) */
+  @media (min-width: 300px) and (max-width: 518px) {
+    flex-direction: column;
+    align-items: center; /* Cambiado de stretch a center */
+    
+    .buttons-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    
+    .search-bar-wrapper,
+    .dropdown-wrapper {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .search-bar-wrapper > *,
+    .dropdown-wrapper > * {
+      width: 100%;
+      justify-content: center;
+      margin-top: -15px;
+    }
+  }
+
+  /* Pantallas muy grandes (opcional) */
+  @media (min-width: 1600px) {
+    justify-content: space-between;
+    padding: 20px 5%;
+  }
 `;
 
 const BaseButton = styled.button`
@@ -137,12 +218,12 @@ const DropdownButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    transform: translateY(-1px); /* Sube un poquito */
+    transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   }
 
   &:active {
-    transform: translateY(1px); /* Baja como si lo presionaras */
+    transform: translateY(1px);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 `;
@@ -160,7 +241,6 @@ const DropdownMenu = styled.div`
   padding: 4px 0;
   user-select: none;
 
-  /* Opcional: transición para abrir/cerrar */
   transition: opacity 0.2s ease;
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
 `;
@@ -216,7 +296,7 @@ const Toolbar = ({
   return (
     <ContainerToolbar style={style}>
       {showDefaultButtons && (
-        <>
+        <div className="buttons-group">
           <Button
             icon={Plus}
             onClick={onCreate}
@@ -247,7 +327,7 @@ const Toolbar = ({
               {editLabel}
             </Button>
           )}
-        </>
+        </div>
       )}
       {children}
     </ContainerToolbar>
@@ -258,7 +338,11 @@ const Toolbar = ({
 
 Toolbar.Button = Button;
 
-Toolbar.Search = (props) => <SearchBar {...props} />;
+Toolbar.Search = (props) => (
+  <div className="search-bar-wrapper">
+    <SearchBar {...props} />
+  </div>
+);
 
 Toolbar.Dropdown = ({ 
   options = {},

@@ -7,6 +7,7 @@ import { getCategoryOptions, getFormItems, addAnswers } from '../../api/api_Form
 import CustomButton from '../../components/button';
 import { useNavigate } from 'react-router-dom';
 import { Undo2, CheckCircle, Info } from 'lucide-react';
+import GlassCard from "../../components/glassCard"
 import logo from "../../assets/images/iconForm.png";
 
 
@@ -20,15 +21,20 @@ function FormsView() {
   const [selectedCategoria, setSelectedCategoria] = useState({});
   const navigate = useNavigate();
   const [mostrarAlerta, setMostrarAlerta] = useState(true);
+  const [planFiltrado, setPlanFiltrado] = useState(null);
+  const [conteoPrincipales, setConteoPrincipales] = useState(0);
+  const [conteoAdicionales, setConteoAdicionales] = useState(0);
+
 
   const location = useLocation();
-  const { id_plan, placa, plan, solicitud_id, observaciones } = location.state || {}; //usamos useLocation (hook de react) lo usamos para datos desde la vista de revisiones hasta aca siun mostrarlo en la url
+  const { id_plan, placa, plan, solicitud_id, observaciones, sucursal, convenio } = location.state || {}; //usamos useLocation (hook de react) lo usamos para datos desde la vista de revisiones hasta aca siun mostrarlo en la url
 
 
   const observacionesPlan = observaciones;
-  const handleFormulariosLoaded = (principales, adicionales) => { //funcion q recibe los dos tanto principales como adicionales
+  const handleFormulariosLoaded = (principales, adicionales, plan) => { //funcion q recibe los dos tanto principales como adicionales
     setFormulariosPrincipales(principales);
     setFormulariosAdicionales(adicionales);
+    setPlanFiltrado(plan);
   };
 
   const handleChangeCategoria = (itemId, opcionId) => {
@@ -59,7 +65,7 @@ function FormsView() {
       // Transforma las opciones al formato { value, label }
       const opciones = (categoriaOpciones[idCat] || []).map(opt => ({
         value: opt.id,
-        label: opt.nombre_opcione
+        label: opt.nombre_opcion
       }));
       return {
         name: `item_${field.id}`,
@@ -72,8 +78,6 @@ function FormsView() {
       };
     }
   });
-
-
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -175,48 +179,29 @@ function FormsView() {
         placa={placa} // tambien lo traemos de solicitudes
         plan={plan} //tambien lo traemos de alli para mostrar la informacion
         formulariosPrincipales={formulariosPrincipales} // formularios principales 
-        formulariosAdicionales={formulariosAdicionales} // formularios adicionales (separacion clara de los dos )      
+        formulariosAdicionales={formulariosAdicionales} // formularios adicionales (separacion clara de los dos )
+        onContarFormularios={(principales, adicionales) => {
+          setConteoPrincipales(principales);
+          setConteoAdicionales(adicionales);
+        }}
       />
 
       <div style={{ marginLeft: '240px', padding: '2rem', flex: 1 }}>
-
-{mostrarAlerta && (
-  <div style={{
-    marginBottom: '1.5rem',
-    backgroundColor: '#FFF3CD',
-    color: '#856404',
-    padding: '1rem 2rem',
-    border: '1px solid #ffeeba',
-    borderRadius: '8px',
-    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    maxWidth: '60%',
-    paddingLeft: '280px'
-  }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-      <CheckCircle size={20} color="#856404" />
-      <span><strong>Importante:</strong> Presione <strong>"Confirmar"</strong> para guardar las respuestas de cada formulario.</span>
-    </div>
-    <button 
-      onClick={() => setMostrarAlerta(false)} 
-      style={{
-        background: 'none',
-        border: 'none',
-        fontSize: '16px',
-        cursor: 'pointer',
-        color: '#856404'
-      }}
-    >
-      ✕
-    </button>
-  </div>
-)}
-
-        <div style = {{display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '1rem'}} >
-          <h4> A continuacion se muestran las observaciones de este plan: <strong>{observacionesPlan} </strong></h4>
-        </div>
+        {planFiltrado && (
+          <GlassCard>
+            <h2>Descripción del plan:</h2>
+            <p><strong>Nombre del plan:</strong> {planFiltrado.nombre_plan}</p>
+            <p><strong>Cuestionario:</strong> {planFiltrado.cuestionario}</p>
+            <p><strong>Tipo de vehiculo:</strong> {planFiltrado.id_tipo_vehiculo}</p>
+            <p><strong>Formularios principales:</strong> {conteoPrincipales}</p>
+            <p><strong>Formularios adicionales:</strong> {conteoAdicionales}</p>
+            <h2>Descripción de la solicitud:</h2>
+            <p><strong>Observaciones:</strong> {observacionesPlan || "No hay observaciones registradas"}</p>
+            <p><strong>Placa:</strong> {placa}</p>
+            <p><strong>Convenio:</strong> {convenio}</p>
+            <p><strong>Sucursal:</strong> {sucursal}</p>
+          </GlassCard>
+        )}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
           <CustomButton 
@@ -232,7 +217,6 @@ function FormsView() {
             <CheckCircle></CheckCircle>Finalizar
           </CustomButton>
         </div>
-
 
 
         {/* Le paso id_plan directamente */}
