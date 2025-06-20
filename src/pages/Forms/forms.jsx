@@ -3,19 +3,19 @@ import Sidebar from "./secondSidebar";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
 import UserForm from '../../components/Form_UserForm';
-import { getCategoryOptions, getFormItems, addAnswers } from '../../api/api_Forms';
+import { getCategoryOptions, getFormItems, addAnswers, getAnswers } from '../../api/api_Forms';
 import CustomButton from '../../components/button';
 import { useNavigate } from 'react-router-dom';
-import { Undo2, CheckCircle, Info } from 'lucide-react';
-import GlassCard from "../../components/glassCard"
-import logo from "../../assets/images/iconForm.png";
-
+import { Undo2, CheckCircle } from 'lucide-react';
+import GlassCard from "../../components/glassCard";
+import Swal from 'sweetalert2';
+import UploadImageForm from "../../components/imageForm";
 
 
 function FormsView() {
-  const [selected, setSelected] = useState(null); //estados para los seleccionados
-  const [formulariosPrincipales, setFormulariosPrincipales] = useState([]); //estado para alamcenamr los formularios principales de su categoia 
-  const [formulariosAdicionales, setFormulariosAdicionales] = useState([]); //estado para alamcenar los adicionales
+  const [selected, setSelected] = useState(null);
+  const [formulariosPrincipales, setFormulariosPrincipales] = useState([]);
+  const [formulariosAdicionales, setFormulariosAdicionales] = useState([]);
   const [formData, setformData] = useState([]);
   const [categoriaOpciones, setCategoriaOpciones] = useState({});
   const [selectedCategoria, setSelectedCategoria] = useState({});
@@ -25,18 +25,18 @@ function FormsView() {
   const [conteoPrincipales, setConteoPrincipales] = useState(0);
   const [conteoAdicionales, setConteoAdicionales] = useState(0);
 
-
   const location = useLocation();
-  const { id_plan, placa, plan, solicitud_id, observaciones, sucursal, convenio } = location.state || {}; //usamos useLocation (hook de react) lo usamos para datos desde la vista de revisiones hasta aca siun mostrarlo en la url
-
-
+  const { id_plan, placa, plan, solicitud_id, observaciones, sucursal, convenio } = location.state || {};
   const observacionesPlan = observaciones;
-  const handleFormulariosLoaded = (principales, adicionales, plan) => { //funcion q recibe los dos tanto principales como adicionales
+
+  // Recibe los formularios principales y adicionales desde MiComponente
+  const handleFormulariosLoaded = (principales, adicionales, plan) => {
     setFormulariosPrincipales(principales);
     setFormulariosAdicionales(adicionales);
     setPlanFiltrado(plan);
   };
 
+  // Cambia la opción seleccionada de un campo
   const handleChangeCategoria = (itemId, opcionId) => {
     setSelectedCategoria(prev => ({
       ...prev,
@@ -44,70 +44,90 @@ function FormsView() {
     }));
   };
 
+  // Cierra el formulario seleccionado
   const handleClose = () => {
     setSelected(null);
-  }
+  };
 
-  //Accede a las propiedades de la data para mostrar por cada item su nombre, y tipo
-  const mappedFields = formData.map(field => {
-    const idCat = field.id_items.id_categoria_opciones;
-    if (idCat == "16") {
-      return {
-        name: `item_${field.id}`,
-        label: field.id_items.nombre_items || '',
-        type: 'text',
-        placeholder: '',
-        required: false,
-        id_items: field.id_items.id
-      };
-    }
-    if (idCat) {
-      // Transforma las opciones al formato { value, label }
-      const opciones = (categoriaOpciones[idCat] || []).map(opt => ({
-        value: opt.id,
-        label: opt.nombre_opcion
-      }));
-      return {
-        name: `item_${field.id}`,
-        label: field.id_items.nombre_items || '',
-        type: 'select',
-        options: opciones,
-        placeholder: '',
-        required: false,
-        id_items: field.id_items.id
-      };
-    }
-  });
+  // Mapea los campos del formulario para UserForm
+  const mappedFields = formData
+    .map(field => {
+      const idCat = field.id_items.id_categoria_opciones;
+      const fieldType = field.id_items.tipo;
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const ids = formulariosPrincipales.map(form => form.id);
-        const idsAdicionales = formulariosAdicionales.map(form => form.id);
-
-        const results = await Promise.all([
-          ...ids.map(id => getFormItems(id)), //Pasamos los id's de los formularios al backend
-          ...idsAdicionales.map(id => getFormItems(id))
-        ]);
-
-      } catch (error) {
-        console.error("Error al cargar los datos: ", error);
+      // Si es categoría 16, maneja todos los tipos posibles aquí
+      if (String(idCat) === "16") {
+        if (fieldType === "FEC") {
+          return {
+            name: `item_${field.id}`,
+            label: field.id_items.nombre_items || '',
+            type: 'date',
+            placeholder: '',
+            required: false,
+            id_items: field.id_items.id
+          };
+        } else if (fieldType === "INT") {
+          return {
+            name: `item_${field.id}`,
+            label: field.id_items.nombre_items || '',
+            type: 'number',
+            placeholder: '',
+            required: false,
+            id_items: field.id_items.id
+          };
+        } else if (fieldType === "STR") {
+          return {
+            name: `item_${field.id}`,
+            label: field.id_items.nombre_items || '',
+            type: 'text',
+            placeholder: '',
+            required: false,
+            id_items: field.id_items.id
+          };
+        }
+        // Si hay otros tipos para idCat 16, agrégalos aquí
+        return null;
       }
-    };
 
-    if (formulariosPrincipales.length > 0) {
-      fetchItems();
-    }
-  }, [formulariosPrincipales, formulariosAdicionales])
+      // Para otros idCat, si es STR, text; si tiene opciones, select
+      if (fieldType === "STR") {
+        return {
+          name: `item_${field.id}`,
+          label: field.id_items.nombre_items || '',
+          type: 'text',
+          placeholder: '',
+          required: false,
+          id_items: field.id_items.id
+        };
+      }
 
-  //Escucha cuando selectedForm cambia
+      if (idCat) {
+        const opciones = (categoriaOpciones[idCat] || []).map(opt => ({
+          value: opt.id,
+          label: opt.nombre_opcion
+        }));
+        return {
+          name: `item_${field.id}`,
+          label: field.id_items.nombre_items || '',
+          type: 'select',
+          options: opciones,
+          placeholder: '',
+          required: false,
+          id_items: field.id_items.id
+        };
+      }
+
+      return null;
+    })
+    .filter(Boolean);
+
+  // Carga los items del formulario seleccionado
   useEffect(() => {
     const fetchFormData = async () => {
       if (!selected) {
-        setformData([])
-      return;   
-    }
-
+        setformData([]);
+        return;
+      }
       try {
         const data = await getFormItems(selected.id);
         setformData(data);
@@ -116,9 +136,9 @@ function FormsView() {
       }
     };
     fetchFormData();
-  }, [selected])
+  }, [selected]);
 
-
+  // Carga las opciones de los selects según los items del formulario
   useEffect(() => {
     const loadOptions = async () => {
       const categorias = [
@@ -131,18 +151,46 @@ function FormsView() {
       const nuevasOpciones = {};
       for (const id of categorias) {
         if (!categoriaOpciones[id]) {
-          nuevasOpciones[id] = await getCategoryOptions(id)
+          nuevasOpciones[id] = await getCategoryOptions(id);
         }
       }
       if (Object.keys(nuevasOpciones).length > 0) {
         setCategoriaOpciones(prev => ({ ...prev, ...nuevasOpciones }));
       }
     };
-    if (formData.length > 0)
-      loadOptions();
-  }, [formData])
+    if (formData.length > 0) loadOptions();
+    // eslint-disable-next-line
+  }, [formData]);
 
 
+  // effect para traer la repsuestas seleccionadas del formulario selected
+  useEffect(() => {
+    if (!selected || !selected.id || !solicitud_id) return; //si ninguna de las condiciones se cumple no hacemos nada 
+    //hacemos el fetch de las respuestas con los datos necesarios del get 
+    const fetchRespuestasPrevias = async () => {
+      try{
+        const data = await getAnswers(solicitud_id, selected.id);
+
+        const respuestasMap = {}; //inicializamos el objeto para las respuestas
+
+        data.forEach(respuesta => { //hacemos un for para recorrer las respuestas si es textos se usa ese valor si no se usa la opcion 
+          respuestasMap[`item_${respuesta.id_item}`] = 
+          respuesta.respuesta_texto !== null
+          ? respuesta.respuesta_texto :
+          respuesta.id_opcion
+        });
+
+        setSelectedCategoria(respuestasMap); //actualizamos el estado de selectedCategoria con repsuestas previas getAnswers
+
+      } catch (error) {
+        console.error("Error al cargar las respuestas previas: ", error);
+      }
+    };
+
+    fetchRespuestasPrevias();
+  }, [selected,solicitud_id]);
+
+  // Maneja el envío del formulario
   const handleSubmitForm = async () => {
     let ArrayData = [];
     for (let item = 0; item < formData.length; item++) {
@@ -166,20 +214,36 @@ function FormsView() {
     try {
       const response = await addAnswers(dataToSend);
       console.log("Respuesta: ", response);
+
+      setSelected(null);
+
+      await Swal.fire({
+        title: 'Respuestas enviadas',
+        text: 'Las respuestas se registraron correctamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      })
+
     } catch (error) {
-      console.error("error al enviar las respuestas: ", error);
+      //console.error("Error al enviar las respuestas: ", error);
+      await Swal.fire({
+        title: 'Error al enviar respuestas',
+        text: 'Hubo un error al enviar las respuestas. Por favor, inténtalo de nuevo.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
     }
   };
 
   return (
     <div style={{ display: 'flex' }}>
       <Sidebar
-        onSelect={setSelected} //el sidebar como compoennte esta listo para recibir estas props para renderizar dicha informacion (logica en el sidebar de esta carpeta (NO CONFUNDIR CON SIDEBAR PRINCIPAL))
-        id_plan={id_plan} // id del plan sacado de revisones (lugar exacto en solicitudes: columnsRequest.jsx)
-        placa={placa} // tambien lo traemos de solicitudes
-        plan={plan} //tambien lo traemos de alli para mostrar la informacion
-        formulariosPrincipales={formulariosPrincipales} // formularios principales 
-        formulariosAdicionales={formulariosAdicionales} // formularios adicionales (separacion clara de los dos )
+        onSelect={setSelected}
+        id_plan={id_plan}
+        placa={placa}
+        plan={plan}
+        formulariosPrincipales={formulariosPrincipales}
+        formulariosAdicionales={formulariosAdicionales}
         onContarFormularios={(principales, adicionales) => {
           setConteoPrincipales(principales);
           setConteoAdicionales(adicionales);
@@ -203,40 +267,45 @@ function FormsView() {
           </GlassCard>
         )}
 
+        <GlassCard>
+          <UploadImageForm
+            endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}></UploadImageForm>
+        </GlassCard>
+
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
-          <CustomButton 
-          width={"110px"}
-          bgColor={"#5FB8D6"}
-          hoverColor={"#48A2BF"}
-          onClick={() => navigate("/revisiones")}><Undo2></Undo2>Volver</CustomButton>
-          <CustomButton 
-          width={"110px"}
-          bgColor={"#5FB8D6"}
-          hoverColor={"#48A2BF"}
-          onClick={() => console.log("finalizar")} /*disabled={!formulariosCompletos}*/> 
-            <CheckCircle></CheckCircle>Finalizar
+          <CustomButton
+            width={"110px"}
+            bgColor={"#5FB8D6"}
+            hoverColor={"#48A2BF"}
+            onClick={() => navigate("/revisiones")}
+          >
+            <Undo2 />Volver
+          </CustomButton>
+          <CustomButton
+            width={"110px"}
+            bgColor={"#5FB8D6"}
+            hoverColor={"#48A2BF"}
+            onClick={() => console.log("finalizar")}
+          >
+            <CheckCircle />Finalizar
           </CustomButton>
         </div>
 
-
-        {/* Le paso id_plan directamente */}
         <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
 
         {selected === 'usuarios' && <div>Formulario de usuarios</div>}
         {selected === 'formularios' && <div>Formulario general</div>}
         {selected === 'solicitudes' && <div>Formulario de solicitudes</div>}
-        {console.log(formData)}
         {selected?.id && mappedFields.length > 0 && (
-          <UserForm
-            fields={mappedFields}
-            title={selected.nombre}
-            onCancel={handleClose}
-            onSubmit={handleSubmitForm}
-            onFieldChange={handleChangeCategoria}
-            selectedCategoria={selectedCategoria}
-          />
+        <UserForm
+          fields={mappedFields}
+          title={selected.nombre}
+          onCancel={handleClose}
+          onSubmit={handleSubmitForm}
+          onFieldChange={handleChangeCategoria}
+          initialValues={selectedCategoria} //pasamos las respuestas previas ya recorridas y asignadas correctamente 
+        />
         )}
-
       </div>
     </div>
   );

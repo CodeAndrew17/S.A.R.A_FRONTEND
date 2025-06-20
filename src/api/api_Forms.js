@@ -31,9 +31,10 @@ const addAnswers = async (answerData) => {
     }
 }
 
-const getAnswers = async (id) => {
+//funciona para traer las respuesta del formulario (no confundir con las opciones de los selects)
+const getAnswers = async (id_solicitud, id_formulario) => {
     try {
-        const response = await axiosWithAuth("/result/api/resultado/get/", "GET", id)
+        const response = await axiosWithAuth(`/result/api/resultado/get/${id_solicitud}/${id_formulario}/`, "GET")
         return response
     } catch (error) {
         console.error("Error al enviar las respuestas: ", error)

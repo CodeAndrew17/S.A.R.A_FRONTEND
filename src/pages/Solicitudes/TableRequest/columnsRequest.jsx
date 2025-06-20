@@ -45,7 +45,6 @@ const columnsRequest=({navigate})=>[
         key: 'actions',
         title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
     render: (_, record) => {
-      console.log("record de revisones", record)
 
         const isDisabled = record.estado !== "PRO" //desabilitar si no es pro 
         let color = '#0000'
