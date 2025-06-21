@@ -10,6 +10,62 @@ import { Undo2, CheckCircle } from 'lucide-react';
 import GlassCard from "../../components/glassCard";
 import Swal from 'sweetalert2';
 import UploadImageForm from "../../components/imageForm";
+import {motion} from "framer-motion";
+import styled from 'styled-components';
+
+
+const HeaderContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+`;
+
+const InfoBlock = styled.div`
+  flex: 1 1 300px; /* Responsive: mínimo 300px y que crezca */
+  padding: 10px 20px;
+`;
+
+const Title = styled.h2`
+  font-size: 1.4rem;
+  color: #5FB8D6;
+  margin-bottom: 10px;
+`;
+
+const InfoLine = styled.p`
+  font-size: 1rem;
+  color:rgb(0, 0, 0);
+  margin: 4px 0;
+`;
+
+const Badge = styled.span`
+  background: #2575fc;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+`;
+
+const TitleWrapper = styled.div`
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px 20px;
+  text-align: center;
+  margin-top: 10px;
+  height: auto;
+`;
+
+const TitleText = styled.h1`
+  color: #000;
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 0;
+`;
 
 
 function FormsView() {
@@ -236,6 +292,13 @@ function FormsView() {
   };
 
   return (
+<motion.div
+  key={location.pathname}  // Así la animación se activa al cambiar ruta
+  initial={{ opacity: 0, x: 100 }}
+  animate={{ opacity: 1, x: 0 }}
+  exit={{ opacity: 0, x: 100 }}
+  transition={{ duration: 0.5, ease: "easeOut" }}
+>
     <div style={{ display: 'flex' }}>
       <Sidebar
         onSelect={setSelected}
@@ -251,20 +314,23 @@ function FormsView() {
       />
 
       <div style={{ marginLeft: '240px', padding: '2rem', flex: 1 }}>
+
         {planFiltrado && (
           <GlassCard>
-            <h2>Descripción del plan:</h2>
-            <p><strong>Nombre del plan:</strong> {planFiltrado.nombre_plan}</p>
-            <p><strong>Cuestionario:</strong> {planFiltrado.cuestionario}</p>
-            <p><strong>Tipo de vehiculo:</strong> {planFiltrado.id_tipo_vehiculo}</p>
-            <p><strong>Formularios principales:</strong> {conteoPrincipales}</p>
-            <p><strong>Formularios adicionales:</strong> {conteoAdicionales}</p>
-            <h2>Descripción de la solicitud:</h2>
-            <p><strong>Observaciones:</strong> {observacionesPlan || "No hay observaciones registradas"}</p>
-            <p><strong>Placa:</strong> {placa}</p>
-            <p><strong>Convenio:</strong> {convenio}</p>
-            <p><strong>Sucursal:</strong> {sucursal}</p>
-          </GlassCard>
+            <InfoBlock>
+              <Title>Plan de Revisión: {planFiltrado.nombre_plan}</Title>
+              <InfoLine>Cuestionario: {planFiltrado.cuestionario}</InfoLine>
+              <InfoLine>Tipo de vehículo: {planFiltrado.id_tipo_vehiculo}</InfoLine>
+              <InfoLine>Form. principales: {conteoPrincipales}</InfoLine>
+              <InfoLine>Form. adicionales: {conteoAdicionales}</InfoLine>
+            </InfoBlock>
+            <InfoBlock>
+              <Title>Solicitud: <Badge>{placa}</Badge></Title>
+              <InfoLine>Observaciones: {observacionesPlan || "No hay observaciones"}</InfoLine>
+              <InfoLine>Convenio: {convenio}</InfoLine>
+              <InfoLine>Sucursal: {sucursal}</InfoLine>
+            </InfoBlock>
+            </GlassCard>
         )}
 
         <GlassCard>
@@ -308,6 +374,7 @@ function FormsView() {
         )}
       </div>
     </div>
+  </motion.div>
   );
 }
 

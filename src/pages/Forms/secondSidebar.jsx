@@ -6,7 +6,8 @@ import autosef from "../../assets/images/autosef.png"
 
 const SidebarContainer = styled.div`
   width: 260px;
-  height: 100%;
+  min-height: 100%;
+  height: 100vh;  /* Lo intenta, pero el min-height asegura respaldo */
   background: linear-gradient(to bottom, #104E8B 0%, #1D6E94 70%, #2A8E9B 100%);
   color: white;
   display: flex;
@@ -28,6 +29,7 @@ const SidebarContainer = styled.div`
     max-width: 150px;
   }
 `;
+
 
 const LogoImage = styled.img`
   width: 80%;

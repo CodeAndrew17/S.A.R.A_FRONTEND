@@ -83,8 +83,8 @@ const ContainerAgreement = styled.div`
   border-radius: 5px;
   flex-direction: column;
   padding: 20px;
-  width: 70%;
-  height: 90vh;
+  width: 80%;
+  height: 100vh;
 
 
 
@@ -105,6 +105,8 @@ const ContainerAgreement = styled.div`
   @media (min-width: 768px) {
     padding: 30px;
     margin: 0;
+
+    overflow-y: auto;
   }
 
   &::-webkit-scrollbar {
@@ -121,6 +123,17 @@ const ContainerAgreement = styled.div`
   }
 `;
 
+const CloseButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+    padding-right: 10px;
+    margin-top: 0.5rem;
+  }
+`;
 
 
 const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = false, data = null }) => {
@@ -222,14 +235,14 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
         {/* Mostrar tabla con los convenios */}
 
         <Table
-          containerStyle={{ margin: "5px 10px 5px 5px", width: "99%", overflowY: "hidden" ,  borderRadius: "0px", maxHeight: "60vh"
+          containerStyle={{ margin: "5px 10px 5px 5px", width: "100%", overflowY: "hidden" ,  borderRadius: "0px", maxHeight: "60vh"
 }}
           selectable={true}
           data={orderData} // Usamos los convenios que vienen del hook
           columns={columnsAgreement({setEditinAgreement,setActiveForm})}
           onSelectionChange={handleSelected}
         />
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+        <CloseButtonWrapper>
           <CustomButton 
             bgColor="#6F6F6F"
             hoverColor="#898989" 
@@ -238,9 +251,7 @@ const GestionConvenios = ({ title = "Gestión de Convenios", onCerrar, onedit = 
             onClick={onCerrar}>
             Cerrar
           </CustomButton>
-        </div>
-
-
+        </CloseButtonWrapper>
 
         {/* Mostrar el formulario si es necesario */}
         {activeForm === 'convenio'&& (

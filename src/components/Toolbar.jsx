@@ -95,6 +95,14 @@ const ContainerToolbar = styled.div`
     justify-content: space-between;
     padding: 20px 5%;
   }
+
+  @media (min-width: 490px) and (max-width: 606px) {
+    .buttons-group {
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+  }
 `;
 
 const BaseButton = styled.button`
