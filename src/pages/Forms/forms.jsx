@@ -3,11 +3,69 @@ import Sidebar from "./secondSidebar";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
 import UserForm from '../../components/Form_UserForm';
-import { getCategoryOptions, getFormItems, addAnswers } from '../../api/api_Forms';
+import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers } from '../../api/api_Forms';
 import CustomButton from '../../components/button';
 import { useNavigate } from 'react-router-dom';
 import { Undo2, CheckCircle } from 'lucide-react';
 import GlassCard from "../../components/glassCard";
+import Swal from 'sweetalert2';
+import UploadImageForm from "../../components/imageForm";
+import { motion } from "framer-motion";
+import styled from 'styled-components';
+
+
+const HeaderContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+`;
+
+const InfoBlock = styled.div`
+  flex: 1 1 300px; /* Responsive: mínimo 300px y que crezca */
+  padding: 10px 20px;
+`;
+
+const Title = styled.h2`
+  font-size: 1.4rem;
+  color: #5FB8D6;
+  margin-bottom: 10px;
+`;
+
+const InfoLine = styled.p`
+  font-size: 1rem;
+  color:rgb(0, 0, 0);
+  margin: 4px 0;
+`;
+
+const Badge = styled.span`
+  background: #2575fc;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+`;
+
+const TitleWrapper = styled.div`
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px 20px;
+  text-align: center;
+  margin-top: 10px;
+  height: auto;
+`;
+
+const TitleText = styled.h1`
+  color: #000;
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 0;
+`;
 
 
 function FormsView() {
@@ -22,6 +80,9 @@ function FormsView() {
   const [planFiltrado, setPlanFiltrado] = useState(null);
   const [conteoPrincipales, setConteoPrincipales] = useState(0);
   const [conteoAdicionales, setConteoAdicionales] = useState(0);
+  const [respuestasPrevias, setRespuestasPrevias] = useState({});
+  const [idsRespuestasPrevias, setIdsRespuestasPrevias] = useState({});
+
 
   const location = useLocation();
   const { id_plan, placa, plan, solicitud_id, observaciones, sucursal, convenio } = location.state || {};
@@ -160,103 +221,240 @@ function FormsView() {
     // eslint-disable-next-line
   }, [formData]);
 
-  // Maneja el envío del formulario
-  const handleSubmitForm = async () => {
-    let ArrayData = [];
-    for (let item = 0; item < formData.length; item++) {
-      const itemId = formData[item].id_items.id;
-      const opcionId = selectedCategoria[itemId] || "";
-      const idCat = formData[item].id_items.id_categoria_opciones;
 
-      if (String(idCat) === "16") {
-        ArrayData.push([itemId, opcionId]); // texto, deja como string
-      } else {
-        ArrayData.push([itemId, opcionId !== "" ? parseInt(opcionId, 10) : ""]); // convierte a número si no está vacío
+  // effect para traer la repsuestas seleccionadas del formulario selected
+  useEffect(() => {
+    setSelectedCategoria({});
+    setRespuestasPrevias({});
+    setIdsRespuestasPrevias({});
+
+    if (!selected || !selected.id || !solicitud_id) return;
+    const fetchRespuestasPrevias = async () => {
+      try {
+        const data = await getAnswers(solicitud_id, selected.id);
+
+        const respuestasMap = {};
+        const idsRespuestasMap = {};
+        data.forEach(respuesta => {
+          const valor = respuesta.respuesta_texto !== null
+            ? respuesta.respuesta_texto
+            : respuesta.id_opcion;
+          if (valor !== undefined && valor !== null && valor !== "") {
+            respuestasMap[`item_${respuesta.id_item}`] = valor;
+            idsRespuestasMap[`item_${respuesta.id_item}`] = respuesta.id;
+          }
+        });
+
+        setSelectedCategoria(respuestasMap);
+        setRespuestasPrevias(respuestasMap);
+        setIdsRespuestasPrevias(idsRespuestasMap);
+
+      } catch (error) {
+        console.error("Error al cargar las respuestas previas: ", error);
       }
-    }
-
-    const dataToSend = {
-      solicitud: solicitud_id,
-      formulario: selected.id,
-      resultados: ArrayData
     };
 
-    try {
-      const response = await addAnswers(dataToSend);
-      console.log("Respuesta: ", response);
-    } catch (error) {
-      console.error("error al enviar las respuestas: ", error);
+    fetchRespuestasPrevias();
+  }, [selected, solicitud_id]);
+
+  // Maneja el envío del formulario
+  const handleSubmitForm = async () => {
+    // Chequea si ya hay respuestas previas REALES para este formulario
+    const checkRespuestas = Object.values(respuestasPrevias).some(
+      val => val !== undefined && val !== null && val !== ""
+    );
+
+    if (checkRespuestas) {
+      const result = await Swal.fire({
+        title: 'Ya existen respuestas',
+        text: 'Este formulario ya tiene respuestas registradas. ¿Deseas sobrescribirlas?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sobrescribir',
+        cancelButtonText: 'Cancelar'
+      });
+      if (!result.isConfirmed) return;
+
+      // Construye el arreglo igual que en el post, pero con la estructura de arreglo
+      const arrayResultados = formData.map(field => {
+        const itemId = field.id_items.id;
+        const idCat = field.id_items.id_categoria_opciones;
+
+        let valor = selectedCategoria[itemId];
+
+        // Si el valor está vacío y hay una respuesta previa, la manda para no dejar vacio el id y el backend no llore -_-
+        if (
+          valor === undefined || valor === null || valor === "" ||
+          (typeof valor === "string" && valor.trim() === "")
+        ) {
+          valor = respuestasPrevias[itemId] || respuestasPrevias[`item_${itemId}`] || "";
+        }
+
+        if (String(idCat) === "16") {
+          return [itemId, valor];
+        } else {
+          return [itemId, valor !== undefined && valor !== null && valor !== "" ? parseInt(valor, 10) : ""];
+        }
+      });
+
+      try {
+        const dataToUpdate = {
+          solicitud: solicitud_id,
+          formulario: selected.id,
+          resultados: arrayResultados
+        };
+        console.log("Enviando", dataToUpdate)
+        const response = await editAnswers(dataToUpdate);
+        setSelected(null);
+
+        await Swal.fire({
+          title: 'Respuestas enviadas',
+          text: 'Las respuestas se actualizaron correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+
+        });
+      } catch (error) {
+        console.log("Error al actualizar las respuestas");
+
+        await Swal.fire({
+          title: 'Error al enviar respuestas',
+          text: 'Hubo un error al enviar las respuestas. Por favor, inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+
+      }
+      return;
+    } else {
+
+      let ArrayData = [];
+      for (let item = 0; item < formData.length; item++) {
+        const itemId = formData[item].id_items.id;
+        const opcionId = selectedCategoria[itemId];
+        const idCat = formData[item].id_items.id_categoria_opciones;
+
+        if (String(idCat) === "16") {
+          ArrayData.push([itemId, opcionId]);
+        } else {
+          ArrayData.push([itemId, opcionId !== undefined && opcionId !== null && opcionId !== "" ? parseInt(opcionId, 10) : ""]);
+        }
+      }
+
+      const dataToSend = {
+        solicitud: solicitud_id,
+        formulario: selected.id,
+        resultados: ArrayData
+      };
+
+      try {
+        const response = await addAnswers(dataToSend);
+        console.log("Respuesta: ", response);
+
+        setSelected(null);
+
+        await Swal.fire({
+          title: 'Respuestas enviadas',
+          text: 'Las respuestas se registraron correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+
+      } catch (error) {
+        await Swal.fire({
+          title: 'Error al enviar respuestas',
+          text: 'Hubo un error al enviar las respuestas. Por favor, inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      }
     }
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      <Sidebar
-        onSelect={setSelected}
-        id_plan={id_plan}
-        placa={placa}
-        plan={plan}
-        formulariosPrincipales={formulariosPrincipales}
-        formulariosAdicionales={formulariosAdicionales}
-        onContarFormularios={(principales, adicionales) => {
-          setConteoPrincipales(principales);
-          setConteoAdicionales(adicionales);
-        }}
-      />
+    <motion.div
+      key={location.pathname}  // Así la animación se activa al cambiar ruta
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 100 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
+      <div style={{ display: 'flex' }}>
+        <Sidebar
+          onSelect={setSelected}
+          id_plan={id_plan}
+          placa={placa}
+          plan={plan}
+          formulariosPrincipales={formulariosPrincipales}
+          formulariosAdicionales={formulariosAdicionales}
+          onContarFormularios={(principales, adicionales) => {
+            setConteoPrincipales(principales);
+            setConteoAdicionales(adicionales);
+          }}
+        />
 
-      <div style={{ marginLeft: '240px', padding: '2rem', flex: 1 }}>
-        {planFiltrado && (
+        <div style={{ marginLeft: '240px', padding: '2rem', flex: 1 }}>
+
+          {planFiltrado && (
+            <GlassCard>
+              <InfoBlock>
+                <Title>Plan de Revisión: {planFiltrado.nombre_plan}</Title>
+                <InfoLine>Cuestionario: {planFiltrado.cuestionario}</InfoLine>
+                <InfoLine>Tipo de vehículo: {planFiltrado.id_tipo_vehiculo}</InfoLine>
+                <InfoLine>Form. principales: {conteoPrincipales}</InfoLine>
+                <InfoLine>Form. adicionales: {conteoAdicionales}</InfoLine>
+              </InfoBlock>
+              <InfoBlock>
+                <Title>Solicitud: <Badge>{placa}</Badge></Title>
+                <InfoLine>Observaciones: {observacionesPlan || "No hay observaciones"}</InfoLine>
+                <InfoLine>Convenio: {convenio}</InfoLine>
+                <InfoLine>Sucursal: {sucursal}</InfoLine>
+              </InfoBlock>
+            </GlassCard>
+          )}
+
           <GlassCard>
-            <h2>Descripción del plan:</h2>
-            <p><strong>Nombre del plan:</strong> {planFiltrado.nombre_plan}</p>
-            <p><strong>Cuestionario:</strong> {planFiltrado.cuestionario}</p>
-            <p><strong>Tipo de vehiculo:</strong> {planFiltrado.id_tipo_vehiculo}</p>
-            <p><strong>Formularios principales:</strong> {conteoPrincipales}</p>
-            <p><strong>Formularios adicionales:</strong> {conteoAdicionales}</p>
-            <h2>Descripción de la solicitud:</h2>
-            <p><strong>Observaciones:</strong> {observacionesPlan || "No hay observaciones registradas"}</p>
-            <p><strong>Placa:</strong> {placa}</p>
-            <p><strong>Convenio:</strong> {convenio}</p>
-            <p><strong>Sucursal:</strong> {sucursal}</p>
+            <UploadImageForm
+              endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}></UploadImageForm>
           </GlassCard>
-        )}
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
-          <CustomButton
-            width={"110px"}
-            bgColor={"#5FB8D6"}
-            hoverColor={"#48A2BF"}
-            onClick={() => navigate("/revisiones")}
-          >
-            <Undo2 />Volver
-          </CustomButton>
-          <CustomButton
-            width={"110px"}
-            bgColor={"#5FB8D6"}
-            hoverColor={"#48A2BF"}
-            onClick={() => console.log("finalizar")}
-          >
-            <CheckCircle />Finalizar
-          </CustomButton>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
+            <CustomButton
+              width={"110px"}
+              bgColor={"#5FB8D6"}
+              hoverColor={"#48A2BF"}
+              onClick={() => navigate("/revisiones")}
+            >
+              <Undo2 />Volver
+            </CustomButton>
+            <CustomButton
+              width={"110px"}
+              bgColor={"#5FB8D6"}
+              hoverColor={"#48A2BF"}
+              onClick={() => console.log("finalizar")}
+            >
+              <CheckCircle />Finalizar
+            </CustomButton>
+          </div>
+
+          <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
+
+          {selected === 'usuarios' && <div>Formulario de usuarios</div>}
+          {selected === 'formularios' && <div>Formulario general</div>}
+          {selected === 'solicitudes' && <div>Formulario de solicitudes</div>}
+          {selected?.id && mappedFields.length > 0 && (
+            <UserForm
+              fields={mappedFields}
+              title={selected.nombre}
+              onCancel={handleClose}
+              onSubmit={handleSubmitForm}
+              onFieldChange={handleChangeCategoria}
+              initialValues={selectedCategoria} //pasamos las respuestas previas ya recorridas y asignadas correctamente 
+            />
+          )}
         </div>
-
-        <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
-
-        {selected === 'usuarios' && <div>Formulario de usuarios</div>}
-        {selected === 'formularios' && <div>Formulario general</div>}
-        {selected === 'solicitudes' && <div>Formulario de solicitudes</div>}
-        {selected?.id && mappedFields.length > 0 && (
-          <UserForm
-            fields={mappedFields}
-            title={selected.nombre}
-            onCancel={handleClose}
-            onSubmit={handleSubmitForm}
-            onFieldChange={handleChangeCategoria}
-            selectedCategoria={selectedCategoria}
-          />
-        )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
