@@ -3,14 +3,14 @@ import Sidebar from "./secondSidebar";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
 import UserForm from '../../components/Form_UserForm';
-import { getCategoryOptions, getFormItems, addAnswers, getAnswers } from '../../api/api_Forms';
+import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers } from '../../api/api_Forms';
 import CustomButton from '../../components/button';
 import { useNavigate } from 'react-router-dom';
 import { Undo2, CheckCircle } from 'lucide-react';
 import GlassCard from "../../components/glassCard";
 import Swal from 'sweetalert2';
 import UploadImageForm from "../../components/imageForm";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 import styled from 'styled-components';
 
 
@@ -80,6 +80,10 @@ function FormsView() {
   const [planFiltrado, setPlanFiltrado] = useState(null);
   const [conteoPrincipales, setConteoPrincipales] = useState(0);
   const [conteoAdicionales, setConteoAdicionales] = useState(0);
+  const [respuestasPrevias, setRespuestasPrevias] = useState({});
+  const [idsRespuestasPrevias, setIdsRespuestasPrevias] = useState({});
+  const [formulariosRespondidos, setFormulariosRespondidos] = useState([]);//para guardar los formularios respondidos para colocarlos en verde
+
 
   const location = useLocation();
   const { id_plan, placa, plan, solicitud_id, observaciones, sucursal, convenio } = location.state || {};
@@ -91,6 +95,35 @@ function FormsView() {
     setFormulariosAdicionales(adicionales);
     setPlanFiltrado(plan);
   };
+
+  useEffect(() => {
+  const fetchFormulariosRespondidos = async () => {
+    if (!solicitud_id || (formulariosPrincipales.length === 0 && formulariosAdicionales.length === 0)) return;
+
+    const idsFormularios = [
+      ...formulariosPrincipales.map(f => f.id),
+      ...formulariosAdicionales.map(f => f.id)
+    ];
+
+    const respondidos = [];
+
+    for (const formId of idsFormularios) { //usamos for...of para manejar async/await correctamente
+      try {
+        const respuestas = await getAnswers(solicitud_id, formId);
+        if (respuestas && respuestas.length > 0) {
+          respondidos.push(formId); //añadimos si se cumple la condicion para alamcenar los formularios respondidos
+        }
+      } catch (err) {
+        console.error(`Error al verificar respuestas del formulario ${formId}:`, err);
+      }
+    }
+
+    setFormulariosRespondidos(respondidos);
+  };
+
+  fetchFormulariosRespondidos();
+}, [formulariosPrincipales, formulariosAdicionales, solicitud_id]);
+
 
   // Cambia la opción seleccionada de un campo
   const handleChangeCategoria = (itemId, opcionId) => {
@@ -221,22 +254,30 @@ function FormsView() {
 
   // effect para traer la repsuestas seleccionadas del formulario selected
   useEffect(() => {
-    if (!selected || !selected.id || !solicitud_id) return; //si ninguna de las condiciones se cumple no hacemos nada 
-    //hacemos el fetch de las respuestas con los datos necesarios del get 
+    setSelectedCategoria({});
+    setRespuestasPrevias({});
+    setIdsRespuestasPrevias({});
+
+    if (!selected || !selected.id || !solicitud_id) return;
     const fetchRespuestasPrevias = async () => {
-      try{
+      try {
         const data = await getAnswers(solicitud_id, selected.id);
 
-        const respuestasMap = {}; //inicializamos el objeto para las respuestas
-
-        data.forEach(respuesta => { //hacemos un for para recorrer las respuestas si es textos se usa ese valor si no se usa la opcion 
-          respuestasMap[`item_${respuesta.id_item}`] = 
-          respuesta.respuesta_texto !== null
-          ? respuesta.respuesta_texto :
-          respuesta.id_opcion
+        const respuestasMap = {};
+        const idsRespuestasMap = {};
+        data.forEach(respuesta => {
+          const valor = respuesta.respuesta_texto !== null
+            ? respuesta.respuesta_texto
+            : respuesta.id_opcion;
+          if (valor !== undefined && valor !== null && valor !== "") {
+            respuestasMap[`item_${respuesta.id_item}`] = valor;
+            idsRespuestasMap[`item_${respuesta.id_item}`] = respuesta.id;
+          }
         });
 
-        setSelectedCategoria(respuestasMap); //actualizamos el estado de selectedCategoria con repsuestas previas getAnswers
+        setSelectedCategoria(respuestasMap);
+        setRespuestasPrevias(respuestasMap);
+        setIdsRespuestasPrevias(idsRespuestasMap);
 
       } catch (error) {
         console.error("Error al cargar las respuestas previas: ", error);
@@ -244,137 +285,215 @@ function FormsView() {
     };
 
     fetchRespuestasPrevias();
-  }, [selected,solicitud_id]);
+  }, [selected, solicitud_id]);
 
   // Maneja el envío del formulario
   const handleSubmitForm = async () => {
-    let ArrayData = [];
-    for (let item = 0; item < formData.length; item++) {
-      const itemId = formData[item].id_items.id;
-      const opcionId = selectedCategoria[itemId] || "";
-      const idCat = formData[item].id_items.id_categoria_opciones;
+    // Chequea si ya hay respuestas previas REALES para este formulario
+    const checkRespuestas = Object.values(respuestasPrevias).some(
+      val => val !== undefined && val !== null && val !== ""
+    );
 
-      if (String(idCat) === "16") {
-        ArrayData.push([itemId, opcionId]); // texto, deja como string
-      } else {
-        ArrayData.push([itemId, opcionId !== "" ? parseInt(opcionId, 10) : ""]); // convierte a número si no está vacío
+    if (checkRespuestas) {
+      const result = await Swal.fire({
+        title: 'Ya existen respuestas',
+        text: 'Este formulario ya tiene respuestas registradas. ¿Deseas sobrescribirlas?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sobrescribir',
+        cancelButtonText: 'Cancelar'
+      });
+      if (!result.isConfirmed) return;
+
+      // Construye el arreglo igual que en el post, pero con la estructura de arreglo
+      const arrayResultados = formData.map(field => {
+        const itemId = field.id_items.id;
+        const idCat = field.id_items.id_categoria_opciones;
+
+        let valor = selectedCategoria[itemId];
+
+        // Si el valor está vacío y hay una respuesta previa, la manda para no dejar vacio el id y el backend no llore -_-
+        if (
+          valor === undefined || valor === null || valor === "" ||
+          (typeof valor === "string" && valor.trim() === "")
+        ) {
+          valor = respuestasPrevias[itemId] || respuestasPrevias[`item_${itemId}`] || "";
+        }
+
+        if (String(idCat) === "16") {
+          return [itemId, valor];
+        } else {
+          return [itemId, valor !== undefined && valor !== null && valor !== "" ? parseInt(valor, 10) : ""];
+        }
+      });
+
+      try {
+        const dataToUpdate = {
+          solicitud: solicitud_id,
+          formulario: selected.id,
+          resultados: arrayResultados
+        };
+        console.log("Enviando", dataToUpdate)
+        const response = await editAnswers(dataToUpdate);
+        setSelected(null);
+
+        setFormulariosRespondidos(prev => //para actualizar los formularios respondidos despues de la accion (no tiene sentido colocarlo aca pero bueno por si las)
+        prev.includes(selected.id) ? prev : [...prev, selected.id]
+      );
+
+        await Swal.fire({
+          title: 'Respuestas enviadas',
+          text: 'Las respuestas se actualizaron correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+
+        });
+      } catch (error) {
+        console.log("Error al actualizar las respuestas");
+
+        await Swal.fire({
+          title: 'Error al enviar respuestas',
+          text: 'Hubo un error al enviar las respuestas. Por favor, inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+
       }
-    }
+      return;
+    } else {
 
-    const dataToSend = {
-      solicitud: solicitud_id,
-      formulario: selected.id,
-      resultados: ArrayData
-    };
+      let ArrayData = [];
+      for (let item = 0; item < formData.length; item++) {
+        const itemId = formData[item].id_items.id;
+        const opcionId = selectedCategoria[itemId];
+        const idCat = formData[item].id_items.id_categoria_opciones;
 
-    try {
-      const response = await addAnswers(dataToSend);
-      console.log("Respuesta: ", response);
+        if (String(idCat) === "16") {
+          ArrayData.push([itemId, opcionId]);
+        } else {
+          ArrayData.push([itemId, opcionId !== undefined && opcionId !== null && opcionId !== "" ? parseInt(opcionId, 10) : ""]);
+        }
+      }
 
-      setSelected(null);
+      const dataToSend = {
+        solicitud: solicitud_id,
+        formulario: selected.id,
+        resultados: ArrayData
+      };
 
-      await Swal.fire({
-        title: 'Respuestas enviadas',
-        text: 'Las respuestas se registraron correctamente.',
-        icon: 'success',
-        confirmButtonText: 'Aceptar'
-      })
+      try {
+        const response = await addAnswers(dataToSend);
+        console.log("Respuesta: ", response);
 
-    } catch (error) {
-      //console.error("Error al enviar las respuestas: ", error);
-      await Swal.fire({
-        title: 'Error al enviar respuestas',
-        text: 'Hubo un error al enviar las respuestas. Por favor, inténtalo de nuevo.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      })
+        setSelected(null);
+        
+        setFormulariosRespondidos(prev => 
+          prev.includes(selected.id) ? prev : [...prev, selected.id]
+        );
+
+        await Swal.fire({
+          title: 'Respuestas enviadas',
+          text: 'Las respuestas se registraron correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+
+      } catch (error) {
+        await Swal.fire({
+          title: 'Error al enviar respuestas',
+          text: 'Hubo un error al enviar las respuestas. Por favor, inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      }
     }
   };
 
   return (
-<motion.div
-  key={location.pathname}  // Así la animación se activa al cambiar ruta
-  initial={{ opacity: 0, x: 100 }}
-  animate={{ opacity: 1, x: 0 }}
-  exit={{ opacity: 0, x: 100 }}
-  transition={{ duration: 0.5, ease: "easeOut" }}
->
-    <div style={{ display: 'flex' }}>
-      <Sidebar
-        onSelect={setSelected}
-        id_plan={id_plan}
-        placa={placa}
-        plan={plan}
-        formulariosPrincipales={formulariosPrincipales}
-        formulariosAdicionales={formulariosAdicionales}
-        onContarFormularios={(principales, adicionales) => {
-          setConteoPrincipales(principales);
-          setConteoAdicionales(adicionales);
-        }}
-      />
-
-      <div style={{ marginLeft: '240px', padding: '2rem', flex: 1 }}>
-
-        {planFiltrado && (
-          <GlassCard>
-            <InfoBlock>
-              <Title>Plan de Revisión: {planFiltrado.nombre_plan}</Title>
-              <InfoLine>Cuestionario: {planFiltrado.cuestionario}</InfoLine>
-              <InfoLine>Tipo de vehículo: {planFiltrado.id_tipo_vehiculo}</InfoLine>
-              <InfoLine>Form. principales: {conteoPrincipales}</InfoLine>
-              <InfoLine>Form. adicionales: {conteoAdicionales}</InfoLine>
-            </InfoBlock>
-            <InfoBlock>
-              <Title>Solicitud: <Badge>{placa}</Badge></Title>
-              <InfoLine>Observaciones: {observacionesPlan || "No hay observaciones"}</InfoLine>
-              <InfoLine>Convenio: {convenio}</InfoLine>
-              <InfoLine>Sucursal: {sucursal}</InfoLine>
-            </InfoBlock>
-            </GlassCard>
-        )}
-
-        <GlassCard>
-          <UploadImageForm
-            endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}></UploadImageForm>
-        </GlassCard>
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
-          <CustomButton
-            width={"110px"}
-            bgColor={"#5FB8D6"}
-            hoverColor={"#48A2BF"}
-            onClick={() => navigate("/revisiones")}
-          >
-            <Undo2 />Volver
-          </CustomButton>
-          <CustomButton
-            width={"110px"}
-            bgColor={"#5FB8D6"}
-            hoverColor={"#48A2BF"}
-            onClick={() => console.log("finalizar")}
-          >
-            <CheckCircle />Finalizar
-          </CustomButton>
-        </div>
-
-        <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
-
-        {selected === 'usuarios' && <div>Formulario de usuarios</div>}
-        {selected === 'formularios' && <div>Formulario general</div>}
-        {selected === 'solicitudes' && <div>Formulario de solicitudes</div>}
-        {selected?.id && mappedFields.length > 0 && (
-        <UserForm
-          fields={mappedFields}
-          title={selected.nombre}
-          onCancel={handleClose}
-          onSubmit={handleSubmitForm}
-          onFieldChange={handleChangeCategoria}
-          initialValues={selectedCategoria} //pasamos las respuestas previas ya recorridas y asignadas correctamente 
+    <motion.div
+      key={location.pathname}  // Así la animación se activa al cambiar ruta
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 100 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
+      <div style={{ display: 'flex' }}>
+        <Sidebar
+          onSelect={setSelected}
+          id_plan={id_plan}
+          placa={placa}
+          plan={plan}
+          formulariosPrincipales={formulariosPrincipales}
+          formulariosAdicionales={formulariosAdicionales}
+          formulariosRespondidos={formulariosRespondidos} 
+          onContarFormularios={(principales, adicionales) => {
+            setConteoPrincipales(principales);
+            setConteoAdicionales(adicionales);
+          }}
         />
-        )}
+
+        <div style={{ marginLeft: '240px', padding: '2rem', flex: 1 }}>
+
+          {planFiltrado && (
+            <GlassCard>
+              <InfoBlock>
+                <Title>Plan de Revisión: {planFiltrado.nombre_plan}</Title>
+                <InfoLine>Cuestionario: {planFiltrado.cuestionario}</InfoLine>
+                <InfoLine>Tipo de vehículo: {planFiltrado.id_tipo_vehiculo}</InfoLine>
+                <InfoLine>Form. principales: {conteoPrincipales}</InfoLine>
+                <InfoLine>Form. adicionales: {conteoAdicionales}</InfoLine>
+              </InfoBlock>
+              <InfoBlock>
+                <Title>Solicitud: <Badge>{placa}</Badge></Title>
+                <InfoLine>Observaciones: {observacionesPlan || "No hay observaciones"}</InfoLine>
+                <InfoLine>Convenio: {convenio}</InfoLine>
+                <InfoLine>Sucursal: {sucursal}</InfoLine>
+              </InfoBlock>
+            </GlassCard>
+          )}
+
+          <GlassCard>
+            <UploadImageForm
+              endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}></UploadImageForm>
+          </GlassCard>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
+            <CustomButton
+              width={"110px"}
+              bgColor={"#5FB8D6"}
+              hoverColor={"#48A2BF"}
+              onClick={() => navigate("/revisiones")}
+            >
+              <Undo2 />Volver
+            </CustomButton>
+            <CustomButton
+              width={"110px"}
+              bgColor={"#5FB8D6"}
+              hoverColor={"#48A2BF"}
+              onClick={() => console.log("finalizar")}
+            >
+              <CheckCircle />Finalizar
+            </CustomButton>
+          </div>
+
+          <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
+
+          {selected === 'usuarios' && <div>Formulario de usuarios</div>}
+          {selected === 'formularios' && <div>Formulario general</div>}
+          {selected === 'solicitudes' && <div>Formulario de solicitudes</div>}
+          {selected?.id && mappedFields.length > 0 && (
+            <UserForm
+              fields={mappedFields}
+              title={selected.nombre}
+              onCancel={handleClose}
+              onSubmit={handleSubmitForm}
+              onFieldChange={handleChangeCategoria}
+              initialValues={selectedCategoria} //pasamos las respuestas previas ya recorridas y asignadas correctamente 
+            />
+          )}
+        </div>
       </div>
-    </div>
-  </motion.div>
+    </motion.div>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, {useRef, useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown } from 'lucide-react';
+import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown, CheckCircle } from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import autosef from "../../assets/images/autosef.png"
 
@@ -131,9 +131,9 @@ const Value = styled.span`
 `;
 
 const MenuItem = styled.button`
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
-  color: #f0f9ff;
+  background: ${({ $respondido }) =>
+    $respondido ? 'rgba(0, 200, 100, 0.15)' : 'rgba(255, 255, 255, 0.05)'};
+  color: ${({ $respondido }) => ($respondido ? '#a8f0c6' : '#f0f9ff')};
   font-size: 1rem;
   display: flex;
   align-items: center;
@@ -144,12 +144,14 @@ const MenuItem = styled.button`
   text-align: left;
   width: 100%;
   border-radius: 8px;
+  border: none;
   transition: all 0.25s ease;
   font-weight: 500;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: ${({ $respondido }) =>
+      $respondido ? 'rgba(0, 200, 100, 0.25)' : 'rgba(255, 255, 255, 0.15)'};
     color: #ffffff;
     transform: translateX(5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -157,11 +159,6 @@ const MenuItem = styled.button`
 
   &:active {
     transform: translateX(3px);
-  }
-
-  @media (max-width: 768px) {
-    padding: 0.8rem 1rem;
-    font-size: 0.95rem;
   }
 `;
 
@@ -260,7 +257,7 @@ const VolverButton = styled.button`
 const PlacaHeading = styled.h4`
   margin-top: -3px;
   text-align: center;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.2em;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-weight: 650;
   font-size: clamp(0.95rem, 1.2vw, 1.2rem);  /* Se adapta dinámicamente */
@@ -279,7 +276,8 @@ const Sidebar = ({
   plan,
   formulariosPrincipales = [],
   formulariosAdicionales = [],
-  onContarFormularios
+  onContarFormularios,
+  formulariosRespondidos = [],
 }) => {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
@@ -324,29 +322,51 @@ const Sidebar = ({
   return (
     <SidebarContainer ref={sidebarRef}>
       <ContentWrapper>
-          <LogoImage src={autosef} alt="Autosef logo" />
+        <LogoImage src={autosef} alt="Autosef logo" />
 
-          <InfoBox>
-            <PlacaHeading>{placa}</PlacaHeading>
-          </InfoBox>
+        <InfoBox>
+          <PlacaHeading>{placa.slice(0, 3) + ' · ' + placa.slice(3)}</PlacaHeading>
+        </InfoBox>
 
         <SectionTitle><span>Formularios Principales</span></SectionTitle>
         {formulariosPrincipales.length === 0 && <EmptyMessage>No hay formularios principales</EmptyMessage>}
-        {formulariosPrincipales.map(form => (
-          <MenuItem key={form.id} onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}>
-            <FileText size={18} />
-            {form.nombre_formulario}
-          </MenuItem>
-        ))}
+
+        {formulariosPrincipales.map(form => {
+          const respondido = formulariosRespondidos.includes(form.id);
+          return (
+            <MenuItem
+              key={form.id}
+              onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}
+              $respondido={respondido}
+            >
+              <FileText size={18} />
+              {form.nombre_formulario}
+              {respondido && (
+                <CheckCircle size={16} color="#50fa7b" style={{ marginLeft: 'auto' }} />
+              )}
+            </MenuItem>
+          );
+        })}
 
         <SectionTitle><span>Formularios Adicionales</span></SectionTitle>
         {formulariosAdicionales.length === 0 && <EmptyMessage>No hay formularios adicionales</EmptyMessage>}
-        {formulariosAdicionales.map(form => (
-          <MenuItem key={form.id} onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}>
-            <ClipboardList size={18} />
-            {form.nombre_formulario}
-          </MenuItem>
-        ))}
+
+        {formulariosAdicionales.map(form => {
+          const respondido = formulariosRespondidos.includes(form.id);
+          return (
+            <MenuItem
+              key={form.id}
+              onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}
+              $respondido={respondido}
+            >
+              <FileText size={18} />
+              {form.nombre_formulario}
+              {respondido && (
+                <CheckCircle size={16} color="#50fa7b" style={{ marginLeft: 'auto' }} />
+              )}
+            </MenuItem>
+          );
+        })}
 
         <VolverButton onClick={() => navigate("/revisiones")}>
           <ArrowLeftCircle size={20} />

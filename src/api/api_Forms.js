@@ -42,4 +42,13 @@ const getAnswers = async (id_solicitud, id_formulario) => {
     }
 }
 
-export {getFormItems, getCategoryOptions, addAnswers, getAnswers}
+const editAnswers = async (updateData) => {
+    try {
+        return await axiosWithAuth(`/result/api/resultado/put/`, "PUT", updateData);
+    } catch (error) {
+        console.error("Error al editar el Form", error);
+        throw error;
+    }
+}
+
+export {getFormItems, getCategoryOptions, addAnswers, getAnswers, editAnswers}
