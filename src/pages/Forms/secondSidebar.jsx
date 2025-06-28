@@ -1,6 +1,6 @@
 import React, {useRef, useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown, CheckCircle } from 'lucide-react';
+import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown, CheckCircle, FilePlus } from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import autosef from "../../assets/images/autosef.png"
 
@@ -359,7 +359,7 @@ const Sidebar = ({
               onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}
               $respondido={respondido}
             >
-              <FileText size={18} />
+              <FilePlus size={18} />
               {form.nombre_formulario}
               {respondido && (
                 <CheckCircle size={16} color="#50fa7b" style={{ marginLeft: 'auto' }} />

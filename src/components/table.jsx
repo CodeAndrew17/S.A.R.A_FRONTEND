@@ -9,8 +9,8 @@ const TableContainer = styled.div`
   margin: 20px auto 20px 85px;
   position: relative; /* Añadido */
 
-  @media (max-width: 500px) {
-    margin: 20px auto 0px 45px;
+  @media (max-width: 764px) {
+    margin: 20px auto 0px 20px;
   }
 `;
 
@@ -62,13 +62,17 @@ const TableHeader = styled.th`
 `;
 
 const TableRow = styled.tr`
+  background-color: ${({ $selected }) => $selected ? '#c1edf4' : 'transparent'};
+
   &:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: ${({ $selected }) => $selected ? '#c1edf4' : '#f9f9f9'};
   }
+
   &:hover {
-    background-color: #f1f1f1;
+    background-color: ${({ $selected }) => $selected ? '#b2ebf2' : '#f1f1f1'};
   }
 `;
+
 
 const TableCell = styled.td`
   padding: 12px 15px;
@@ -166,7 +170,10 @@ const Table = ({
           {data.length > 0 ? (
             data.map((item) => (
               <React.Fragment key={item.id}>
-                <TableRow onClick={() => onRowClick && onRowClick(item)}>
+                <TableRow 
+                    onClick={() => onRowClick && onRowClick(item)}
+                    $selected={selectedRows.includes(item.id)}
+                  >
                   {selectable && (
                     <CheckboxCell onClick={(e) => e.stopPropagation()}> 
                       <CheckboxInput

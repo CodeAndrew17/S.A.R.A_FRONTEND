@@ -14,7 +14,7 @@ const SearchContainer = styled.div`
   transition: all 0.3s ease;
   width: ${(props) => props.$width || "100%"};
   max-width: ${(props) => props.$maxWidth || "210px"};
-  height: ${(props) => props.$height || "1.8vh"};
+  height: ${(props) => props.$height || "1vh"};
 
   &:hover {
     border-color: #aaa;

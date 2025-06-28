@@ -33,10 +33,10 @@ const ContainerToolbar = styled.div`
     }
   }
 
-  /* Rango específico donde queremos columna (520px-1000px) */
+  /* Rango específico donde queremos columna (520px-1123px) */
   @media (min-width: 520px) and (max-width: 1123px) {
     flex-direction: column;
-    align-items: center; /* Cambiado de stretch a center */
+    align-items: center;
     
     .buttons-group {
       display: flex;
@@ -53,6 +53,7 @@ const ContainerToolbar = styled.div`
       max-width: 500px;
       display: flex;
       justify-content: center;
+      margin-top: -12px;
     }
     
     .search-bar-wrapper > *,
@@ -60,10 +61,10 @@ const ContainerToolbar = styled.div`
       width: 100%;
     }
   }
-     /* Rango específico donde queremos columna (520px-1000px) */
+
   @media (min-width: 300px) and (max-width: 518px) {
     flex-direction: column;
-    align-items: center; /* Cambiado de stretch a center */
+    align-items: center;
     
     .buttons-group {
       display: flex;
@@ -90,12 +91,6 @@ const ContainerToolbar = styled.div`
     }
   }
 
-  /* Pantallas muy grandes (opcional) */
-  @media (min-width: 1600px) {
-    justify-content: space-between;
-    padding: 20px 5%;
-  }
-
   @media (min-width: 490px) and (max-width: 606px) {
     .buttons-group {
       flex-direction: column;
@@ -103,14 +98,25 @@ const ContainerToolbar = styled.div`
       width: 100%;
     }
   }
+
+  /* Pantallas muy grandes (monitores gigantes) */
+  @media (min-width: 1600px) {
+    justify-content: center;
+    padding: 20px 0;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+     .search-bar-wrapper > *,
+  }
 `;
+
 
 const BaseButton = styled.button`
   /* Estilos base (mobile-first) */
   background-color: ${(props) => props.$bgColor || "#5FB8D6"};
   border: none;
   color: white;
-  width: 100%;
+  width: 80%;
   min-height: 40px;
   min-width: 130px;
   padding: 8px 12px;

@@ -1,5 +1,5 @@
 import CustomButton from "../../../components/button";
-import { FolderCog } from "lucide-react";
+import { FileChartColumn, FolderCog } from "lucide-react";
 
 const columnsRequest=({navigate})=>[
       
@@ -73,6 +73,9 @@ const columnsRequest=({navigate})=>[
           plan: record.id_plan,
           convenio: record.id_convenio,
           sucursal: record.id_sucursal,
+          tipo_vehiculo: record.id_tipo_vehiculo,
+          fecha: record.fecha,
+          telefono: record.telefono,
           observaciones: record.observaciones,
           id_plan: record.id_real_plan}})} //redirigimos a la ruta q nececitamos llevandonos los valores q nececitamos para los formularios haciendo uso del hook useLocation
         icon={FolderCog}

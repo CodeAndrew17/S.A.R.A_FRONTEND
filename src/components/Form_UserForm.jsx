@@ -47,7 +47,7 @@ const FormContainer = styled.div`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   width: 680px;
-  max-height: 80vh;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -55,6 +55,10 @@ const FormContainer = styled.div`
   animation: ${slideUp} 0.3s ease-out forwards;
   transform: translateY(50px);
   opacity: 0;
+
+  @media (max-width: 600px) {
+    max-height: 900px;
+  }
 `;
 
 const LogoContainer = styled.div`

@@ -28,17 +28,27 @@ const CustomButtonWrapper = styled.div`
 
   @media (min-width: 556px) and (max-width: 720px) { 
     margin-top: -20px; /* Lo bajamos un poco más */
-    justify-content: center;
+    margin-left: 35px; /* Alineamos al centro */
+  }
+
+  @media (min-width: 480px) and (max-width: 555px) { 
+    margin-top: -20px; /* Lo bajamos un poco más */
+    margin-left: 35px; /* Alineamos al centro */
   }
 
   @media (max-width: 520px) { 
-    margin-top: -20px; 
+    margin-top: -30px; 
     justify-content: center;
   }
 
   @media (min-width: 1012px) and (max-width: 1320px) {
     margin-top: -30px;
     justify-content: center;
+  }
+
+  @media (min-width: 300px) and (max-width: 479px) { 
+    margin-top: -20px; /* Lo bajamos un poco más */
+    margin-left: 35px; /* Alineamos al centro */
   }
 `;
 

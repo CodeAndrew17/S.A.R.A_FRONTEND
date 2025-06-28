@@ -193,82 +193,81 @@ const SidebarContainer = styled.div`
   height: 100%;
   background: linear-gradient(
     to bottom,
-    #104E8B 0%,     /* Azul profesional profundo */
-    #1D6E94 70%,    /* Azul más suave para transición */
-    #2A8E9B 100%    /* Verde agua marina apagado para acento */
+    #104E8B 0%,
+    #1D6E94 70%,
+    #2A8E9B 100%
   );
   color: white;
   display: flex;
   flex-direction: column;
-  transition: width 0.3s ease;
   position: fixed;
   left: 0;
   top: 0;
-  padding-top: 20px;
+  z-index: 1000;
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 1000;
+  padding-top: 20px;
+  transition: width 0.3s ease, transform 0.3s ease;
 
-    /* Media queries para diferentes tamaños */
-  @media (max-height: 600px) {
-    padding-top: 10px;
-    
-    ${UserContainer} {
-      margin-top: 30px;
-      height: 60px;
-    }
-    
-    ${MenuItem} {
-      padding: 10px 15px;
-    }
-  }
-
-    @media (max-width: 768px) {
-    width: ${({ $isOpen }) => ($isOpen ? "220px" : "60px")};
-    
-    ${ToggleButton} {
-      font-size: 20px;
-    }
-    
-    ${Icon} {
-      font-size: 20px;
-    }
-    
-    ${Text} {
-      font-size: 14px;
-    }
+  @media (max-width: 800px) {
+    width: ${({ $isOpen }) => ($isOpen ? "250px" : "70px")};
+    transform: translateX(${({ $isHidden }) => ($isHidden ? '-100%' : '0')});
+    height: 100%;
   }
 `;
 
+const MOBILE_BREAKPOINT = 800;
 
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(sessionStorage.getItem("sidebarOpen") === "true");
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_BREAKPOINT);
+  const mobile = window.innerWidth <= MOBILE_BREAKPOINT;
+
+
+  const [isHidden, setIsHidden] = useState(isMobile);
+
   const navigate = useNavigate();
   const username = sessionStorage.getItem("username") || "Invitado";
   const rolCode = sessionStorage.getItem("rol");
-  const rol = getRolName(rolCode) || "inivitado";
+  const rol = getRolName(rolCode) || "Invitado";
   const sidebarRef = useRef(null);
 
-  // Actualizar sessionStorage cuando isOpen cambia
+useEffect(() => {
+  const handleResize = () => {
+    const mobile = window.innerWidth < MOBILE_BREAKPOINT;
+    setIsMobile(mobile);
+    if (!mobile) {
+      setIsHidden(false);  
+
+
+    }
+  };
+
+  handleResize();
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
   useEffect(() => {
     sessionStorage.setItem("sidebarOpen", isOpen);
   }, [isOpen]);
 
-  // Cerrar el sidebar al hacer clic fuera de él
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (document.hidden) return;
-
       if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
         setIsOpen(false);
+        if (isMobile) {
+          setIsHidden(true);
+        }
       }
     };
 
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
+  }, [isMobile]);
 
   const menuItems = [
     { icon: <FaHome />, text: "Inicio", path: "/inicio" },
@@ -276,58 +275,76 @@ const Sidebar = () => {
     { icon: <FaUsers />, text: "Usuarios", path: "/usuarios" },
     { icon: <FaTools />, text: "Revisiones", path: "/revisiones" },
     { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
-    { icon: <FaChartBar />, text: "Estadísticas", path: "/estadisticas" },
-    { icon: <FaCog />, text: "Formularios/prueba", path: "/forms" },
   ];
 
-  const iconPositions = [180, 240, 300, 360, 420, 480, 540];
-
   return (
-    <SidebarContainer $isOpen={isOpen} ref={sidebarRef}>
-      <ToggleButton onClick={() => setIsOpen(!isOpen)}>
-        <FaBars />
-      </ToggleButton>
+    <>
+      {isMobile && (
+        <ToggleButton
+          onClick={() => setIsHidden(prev => !prev)}
+          style={{
+            position: "fixed",
+            top: "10px",
+            left: "8px",
+            zIndex: 2000,
 
-      <UserContainer $isOpen={isOpen}>
-        <UserIcon $isOpen={isOpen} />
-        <Username $isOpen={isOpen}>{username}</Username>
-      </UserContainer>
+            color: "black",
+            padding: "8px",
+            borderRadius: "5px",
+            height: "40px"
+          }}
+        >
+          <FaBars />
+        </ToggleButton>
+      )}
 
-      <Menu>
-        {menuItems.map((item, index) => (
-          <MenuItem
-            key={index}
-            $position={iconPositions[index]}
-            onClick={() => navigate(item.path)}
-            onMouseEnter={() => setHoveredItem(index)}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <Icon $isOpen={isOpen}>{item.icon}</Icon>
-            <Text $isOpen={isOpen}>{item.text}</Text>
-            {!isOpen && hoveredItem === index && (
-              <Tooltip $show={hoveredItem === index} $sidebarOpen={isOpen}>
-                {item.text}
-              </Tooltip>
-            )}
-            
-          </MenuItem>
-        ))}
-        
-      </Menu>
+      <SidebarContainer $isOpen={isOpen} $isHidden={isHidden} ref={sidebarRef}>
+        {!isMobile && (
+          <ToggleButton onClick={() => setIsOpen(prev => !prev)}>
+            <FaBars />
+          </ToggleButton>
+        )}
 
-      <LogoutWrapper $isOpen={isOpen}>
-        <LogoutButton onClick={logout}>
-          <FaSignOutAlt />
-        </LogoutButton>
-      </LogoutWrapper>
+        <UserContainer $isOpen={isOpen}>
+          <UserIcon $isOpen={isOpen} />
+          <Username $isOpen={isOpen}>{username}</Username>
+        </UserContainer>
 
+        <Menu>
+          {menuItems.map((item, index) => (
+            <MenuItem
+              key={index}
+              onClick={() => {
+                navigate(item.path);
+                if (isMobile) {
+                  setIsHidden(true);
+                }
+              }}
+              onMouseEnter={() => setHoveredItem(index)}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <Icon $isOpen={isOpen}>{item.icon}</Icon>
+              <Text $isOpen={isOpen}>{item.text}</Text>
+              {!isOpen && hoveredItem === index && (
+                <Tooltip $show $sidebarOpen={isOpen}>
+                  {item.text}
+                </Tooltip>
+              )}
+            </MenuItem>
+          ))}
+        </Menu>
 
+        <LogoutWrapper $isOpen={isOpen}>
+          <LogoutButton onClick={logout}>
+            <FaSignOutAlt />
+          </LogoutButton>
+        </LogoutWrapper>
 
-      <RoleContainer $isOpen={isOpen}>
-        <span>{rol}</span>
-      </RoleContainer>
-
-    </SidebarContainer>
+        <RoleContainer $isOpen={isOpen}>
+          <span>{rol}</span>
+        </RoleContainer>
+      </SidebarContainer>
+    </>
   );
 };
 

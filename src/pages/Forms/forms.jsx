@@ -6,66 +6,26 @@ import UserForm from '../../components/Form_UserForm';
 import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers } from '../../api/api_Forms';
 import CustomButton from '../../components/button';
 import { useNavigate } from 'react-router-dom';
-import { Undo2, CheckCircle } from 'lucide-react';
-import GlassCard from "../../components/glassCard";
+import { Undo2, CheckCircle, Upload, Image, ClipboardCheck, ClipboardList, Car, Check, ArrowLeft  } from 'lucide-react';
+import GlassCardPro from "../../components/glassCard";
 import Swal from 'sweetalert2';
 import UploadImageForm from "../../components/imageForm";
 import { motion } from "framer-motion";
 import styled from 'styled-components';
-
-
-const HeaderContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
-  backdrop-filter: blur(10px);
-`;
-
-const InfoBlock = styled.div`
-  flex: 1 1 300px; /* Responsive: mínimo 300px y que crezca */
-  padding: 10px 20px;
-`;
-
-const Title = styled.h2`
-  font-size: 1.4rem;
-  color: #5FB8D6;
-  margin-bottom: 10px;
-`;
-
-const InfoLine = styled.p`
-  font-size: 1rem;
-  color:rgb(0, 0, 0);
-  margin: 4px 0;
-`;
-
-const Badge = styled.span`
-  background: #2575fc;
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-weight: 600;
-`;
-
-const TitleWrapper = styled.div`
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 30px 20px 20px;
-  text-align: center;
-  margin-top: 10px;
-  height: auto;
-`;
-
-const TitleText = styled.h1`
-  color: #000;
-  font-size: 32px;
-  line-height: 1.2;
-  margin: 0;
-`;
+import ProgressBar from '../..//components/ProgressBar';
+import {
+  InfoBlock,
+  InfoLine,
+  ObservationNote,
+  ContainerContent,
+  Divider,
+  TextLoadImg,
+  ImageLoader,
+  ContainerCardSoli,
+  HeadContainer,
+  Barra,
+  VolverButton,
+} from './styles'; 
 
 
 function FormsView() {
@@ -86,7 +46,7 @@ function FormsView() {
 
 
   const location = useLocation();
-  const { id_plan, placa, plan, solicitud_id, observaciones, sucursal, convenio } = location.state || {};
+  const { id_plan, placa, plan, solicitud_id, observaciones, sucursal, convenio, tipo_vehiculo, fecha, telefono  } = location.state || {};
   const observacionesPlan = observaciones;
 
   // Recibe los formularios principales y adicionales desde MiComponente
@@ -409,6 +369,17 @@ function FormsView() {
     }
   };
 
+  const diccionaryCuestionario = {
+    1: "Avalúo Comercial",
+    2: "Inspección",
+  };
+
+  const diccionaryVehicleType = {
+    1: "Livianos",
+    2: "Pesados",
+    3: "Motos", 
+  };
+
   return (
     <motion.div
       key={location.pathname}  // Así la animación se activa al cambiar ruta
@@ -425,56 +396,124 @@ function FormsView() {
           plan={plan}
           formulariosPrincipales={formulariosPrincipales}
           formulariosAdicionales={formulariosAdicionales}
-          formulariosRespondidos={formulariosRespondidos} 
+          formulariosRespondidos={formulariosRespondidos} //para saber los respondidos y ponerlos en verde
           onContarFormularios={(principales, adicionales) => {
             setConteoPrincipales(principales);
             setConteoAdicionales(adicionales);
           }}
         />
 
-        <div style={{ marginLeft: '240px', padding: '2rem', flex: 1 }}>
+        <ContainerContent style={{ paddingLeft: '45px', height: '40px', width: '100%' }}>
 
-          {planFiltrado && (
-            <GlassCard>
-              <InfoBlock>
-                <Title>Plan de Revisión: {planFiltrado.nombre_plan}</Title>
-                <InfoLine>Cuestionario: {planFiltrado.cuestionario}</InfoLine>
-                <InfoLine>Tipo de vehículo: {planFiltrado.id_tipo_vehiculo}</InfoLine>
-                <InfoLine>Form. principales: {conteoPrincipales}</InfoLine>
-                <InfoLine>Form. adicionales: {conteoAdicionales}</InfoLine>
-              </InfoBlock>
-              <InfoBlock>
-                <Title>Solicitud: <Badge>{placa}</Badge></Title>
-                <InfoLine>Observaciones: {observacionesPlan || "No hay observaciones"}</InfoLine>
-                <InfoLine>Convenio: {convenio}</InfoLine>
-                <InfoLine>Sucursal: {sucursal}</InfoLine>
-              </InfoBlock>
-            </GlassCard>
-          )}
-
-          <GlassCard>
-            <UploadImageForm
-              endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}></UploadImageForm>
-          </GlassCard>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginBottom: '1rem' }}>
+          <HeadContainer>
+            <VolverButton>
             <CustomButton
               width={"110px"}
-              bgColor={"#5FB8D6"}
-              hoverColor={"#48A2BF"}
+              height={"40px"}
+              bgColor={"#5A5A5A"}        // Un gris sólido y neutro
+              hoverColor={"#4A4A4A"}     // Oscurece sutilmente en hover
               onClick={() => navigate("/revisiones")}
             >
-              <Undo2 />Volver
+              <ArrowLeft />Volver
             </CustomButton>
+            </VolverButton>
+
+          <Barra>
+            <ProgressBar
+              principales={conteoPrincipales}
+              adicionales={conteoAdicionales}
+              respondidos={formulariosRespondidos.length}
+            />
+            </Barra>
+          </HeadContainer>
+
+          <ImageLoader>
+            <TextLoadImg><Upload/> Subir imagen principal del vehiculo</TextLoadImg>
+            <UploadImageForm
+              endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}></UploadImageForm>
+
+              <GlassCardPro
+                title="Plan:"
+                badgeText={planFiltrado?.nombre_plan || "Plan no disponible"}
+                icon={ClipboardList}
+                width="350px"
+                height="150px"
+                headerBg="rgba(151, 200, 255, 0.4)"
+                borderColor="rgba(37, 99, 235, 0.4)"
+              >
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Cuestionario:</strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
+                </InfoLine>
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
+                </InfoLine>
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Formularios principales:</strong> {conteoPrincipales}
+                </InfoLine>
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Formularios adicionales:</strong> {conteoAdicionales}
+                </InfoLine>
+              </GlassCardPro>
+          </ImageLoader>
+
+          <ContainerCardSoli>
+            <GlassCardPro
+                title="Solicitud:"
+                badgeText={placa}
+                icon={Car}
+                width={"450px"}
+                headerBg="rgba(143, 251, 255, 0.6)" // gris claro tipo tailwind gray-100
+                borderColor="rgba(0, 102, 255, 0.3)" // mismo tono desaturado
+              >
+              <InfoBlock>
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Convenio:</strong> {convenio}
+                </InfoLine>
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Sucursal:</strong> {sucursal}
+                </InfoLine>
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[tipo_vehiculo]}
+                </InfoLine>
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Fecha de creación:</strong> {fecha}
+                </InfoLine>
+                <InfoLine>
+                  <Check size={18} color="green" />
+                  <strong>Teléfono:</strong> {telefono}
+                </InfoLine>
+                <Divider />
+                <ObservationNote><strong>Observaciones: </strong> {observacionesPlan || "No hay observaciones"}</ObservationNote>
+              </InfoBlock>
+            </GlassCardPro>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              width: '100%',
+            }}
+          >
             <CustomButton
-              width={"110px"}
-              bgColor={"#5FB8D6"}
-              hoverColor={"#48A2BF"}
+              width="500px"
+              bgColor="#5FB8D6"
+              hoverColor="#48A2BF"
               onClick={() => console.log("finalizar")}
             >
-              <CheckCircle />Finalizar
+              <ClipboardCheck />Finalizar
             </CustomButton>
           </div>
+
+            </ContainerCardSoli>
+
+        </ContainerContent>
 
           <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
 
@@ -492,7 +531,6 @@ function FormsView() {
             />
           )}
         </div>
-      </div>
     </motion.div>
   );
 }

@@ -1,20 +1,34 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { UploadCloud, Image as ImageIcon } from "lucide-react";
 
-// 🌟 Estilos básicos
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1rem;
   width: 375px;
   padding: 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid #90a4ae;
   border-radius: 8px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
 `;
 
 const InputFile = styled.input`
   padding: 0.5rem;
+  border: 1px solid #90a4ae;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: #78909c;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -25,17 +39,50 @@ const SubmitButton = styled.button`
   color: white;
   font-size: 1rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
 
   &:hover {
     background-color: #48a2bf;
+    box-shadow: 0 4px 12px rgba(72, 162, 191, 0.3);
+    transform: translateY(-2px);
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+const PreviewBox = styled.div`
+  width: 100%;
+  height: 200px;
+  border: 1px dashed #90a4ae;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(95, 184, 214, 0.05);
 `;
 
 const ImagePreview = styled.img`
   max-width: 100%;
-  max-height: 200px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  max-height: 100%;
+  object-fit: contain;
+`;
+
+const Placeholder = styled.div`
+  color: #999;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
 `;
 
 const UploadImageForm = ({ endpoint, onSuccess }) => {
@@ -43,41 +90,31 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Cuando el usuario selecciona un archivo
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      setPreviewUrl(URL.createObjectURL(selectedFile));  // muestra un preview
+      setPreviewUrl(URL.createObjectURL(selectedFile));
     }
   };
 
-  // Cuando el usuario da submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!file) {
-      alert("Por favor selecciona una imagen antes de enviar.");
-      return;
-    }
+    if (!file) return alert("Por favor selecciona una imagen antes de enviar.");
 
     const formData = new FormData();
-    formData.append("image", file);  // 👈 nombre del campo en el backend
+    formData.append("image", file);
 
     try {
       setLoading(true);
-      const response = await axios.post(endpoint, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
+      const { data } = await axios.post(endpoint, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-
-      console.log("Upload successful:", response.data);
-      if (onSuccess) onSuccess(response.data);
+      onSuccess?.(data);
       alert("Imagen subida con éxito");
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      alert("Hubo un error al subir la imagen");
+    } catch (err) {
+      console.error(err);
+      alert("Error al subir la imagen");
     } finally {
       setLoading(false);
     }
@@ -90,10 +127,25 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
         <InputFile type="file" accept="image/*" onChange={handleFileChange} />
       </label>
 
-      {previewUrl && <ImagePreview src={previewUrl} alt="Vista previa" />}
+      <PreviewBox>
+        {previewUrl ? (
+          <ImagePreview src={previewUrl} alt="Vista previa" />
+        ) : (
+          <Placeholder>
+            <ImageIcon size={48} />
+            {loading ? "Subiendo..." : "Sin imagen"}
+          </Placeholder>
+        )}
+      </PreviewBox>
 
       <SubmitButton type="submit" disabled={loading}>
-        {loading ? "Subiendo..." : "Subir Imagen"}
+        {loading ? (
+          "Subiendo..."
+        ) : (
+          <>
+            <UploadCloud size={18} /> Subir Imagen
+          </>
+        )}
       </SubmitButton>
     </FormContainer>
   );
