@@ -1,4 +1,3 @@
-import axios from "axios";
 import { axiosWithAuth } from "./api_Manager";
 
 
@@ -49,6 +48,15 @@ const editAnswers = async (updateData) => {
         console.error("Error al editar el Form", error);
         throw error;
     }
+};
+
+//ruta para subir imagenes 
+const uploadImage = async (formData) => {
+    try {
+        return await axiosWithAuth("/result/api/subirimagen/", "POST", formData);
+    } catch (error) {
+        console.error("error al subir la imagen", error);
+    }
 }
 
-export {getFormItems, getCategoryOptions, addAnswers, getAnswers, editAnswers}
+export {getFormItems, getCategoryOptions, addAnswers, getAnswers, editAnswers, uploadImage}

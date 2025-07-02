@@ -13,10 +13,11 @@ const FormContainer = styled.form`
   border-radius: 8px;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 
-  &:hover {
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
-  }
+&:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Antes era 0.08 */
+  transform: translateY(-5px);
+}
+
 `;
 
 const InputFile = styled.input`

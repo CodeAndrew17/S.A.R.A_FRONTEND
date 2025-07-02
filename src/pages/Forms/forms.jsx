@@ -211,6 +211,18 @@ function FormsView() {
     // eslint-disable-next-line
   }, [formData]);
 
+  useEffect(() => {
+  if (observacionesPlan?.trim()) {
+    Swal.fire({
+      title: 'Esta solicitud tiene observaciones',
+      text: 'Desplázate hasta el final para revisarlas con detalle.',
+      icon: 'info',
+      confirmButtonText: 'Entendido',
+    });
+  }
+}, []);
+
+
 
   // effect para traer la repsuestas seleccionadas del formulario selected
   useEffect(() => {
@@ -404,6 +416,7 @@ function FormsView() {
         />
 
         <ContainerContent style={{ paddingLeft: '45px', height: '40px', width: '100%' }}>
+
 
           <HeadContainer>
             <VolverButton>

@@ -88,7 +88,8 @@ const ImageLoader = styled.div`
     align-items: center;
     height: 300px;
     margin-top: -10px;
-    margin-left: 20px;
+    margin-left: 120px;
+
 
     @media (max-width: 779px) {
         margin-left: 20px;
@@ -105,9 +106,9 @@ const ContainerCardSoli = styled.div`
     flex-direction: column;
     align-items: center;
     height: 300px;
-    min-width: 340px;
+    min-width: 350px;
     margin-top: 25px;
-    margin-left: 10px;
+    margin-left: 60px;
 
     @media (max-width: 1276px) and (min-width: 780px) {
         margin-left: 20px;
