@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Dropdown from "../../../components/Dropdown";
 
 
-const columnsAgreement = ({ setEditinAgreement, setActiveForm })=>[
+const columnsAgreement = ({ setEditing, setActiveForm })=>[
     {
       key: 'nombre',
       title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Nombre</span>,
@@ -35,7 +35,7 @@ const columnsAgreement = ({ setEditinAgreement, setActiveForm })=>[
 
     {
         key: 'actions',
-        title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
+        title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Modificar</span>,
     render: (_, record) => (
         <CustomButton
         bgColor="#5FB8D6"
@@ -43,7 +43,7 @@ const columnsAgreement = ({ setEditinAgreement, setActiveForm })=>[
         width="100px"
         height="35px"
         onClick={() => {
-          setEditinAgreement(record); 
+          setEditing(record); 
           setActiveForm('convenio'); 
         }}
         icon={Edit}

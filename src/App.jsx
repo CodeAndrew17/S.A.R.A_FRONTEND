@@ -13,14 +13,17 @@ import { AnimatePresence } from 'framer-motion';
 
 // Estilos globales
 const GlobalStyle = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
   body, html {
     margin: 0;
     padding: 0;
     width: 100%;    
     height: 100%;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: 'Poppins', Helvetica, Arial, sans-serif;
     font-size: 12px;
     scroll-behavior: smooth;
+
     &::-webkit-scrollbar {
       width: 6px;
     }
@@ -33,6 +36,7 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 `;
+
 
 // Función para rutas protegidas
 function ProtectedRoute({ children }) {

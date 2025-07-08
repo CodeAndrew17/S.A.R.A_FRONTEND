@@ -79,7 +79,7 @@ const usePlansandVehicles = () => {
         if (relacionadas.length > 0 && relacionadas.some(r => r.estado !== "CAL" )) {
             Swal.fire({
                 title: "No se puede eliminar",
-                text: `Hay ${relacionadas.length} ${relacionadas.length === 1 ? "solicitud" : "solicitudes"} asociadas a los planes. Finaliza o cancela las revisiones asociadas con este plan antes de eliminarlo.`,
+                text: `Hay ${relacionadas.length} ${relacionadas.length === 1 ? "solicitud" : "solicitudes"} asociadas a este plan. Finaliza o cancela las revisiones asociadas con este plan antes de eliminarlo.`,
                 icon: "warning"
             });
             return;

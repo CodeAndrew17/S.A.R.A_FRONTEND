@@ -59,4 +59,14 @@ const uploadImage = async (formData) => {
     }
 }
 
-export {getFormItems, getCategoryOptions, addAnswers, getAnswers, editAnswers, uploadImage}
+//ruta para teminar una solicitud 
+const finishRequest = async (id_solicitud) => {
+    try {
+        return await axiosWithAuth(`/result/api/finalizar/get/${id_solicitud}/`, "GET");
+    } catch (error) {
+        console.error("Error al finalizar la solicitud", error);
+        throw error;
+    }
+}
+
+export {getFormItems, getCategoryOptions, addAnswers, getAnswers, editAnswers, uploadImage, finishRequest}

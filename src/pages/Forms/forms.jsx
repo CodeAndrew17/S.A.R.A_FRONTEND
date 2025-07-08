@@ -3,10 +3,10 @@ import Sidebar from "./secondSidebar";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
 import UserForm from '../../components/Form_UserForm';
-import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers } from '../../api/api_Forms';
+import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers, finishRequest } from '../../api/api_Forms';
 import CustomButton from '../../components/button';
 import { useNavigate } from 'react-router-dom';
-import { Undo2, CheckCircle, Upload, Image, ClipboardCheck, ClipboardList, Car, Check, ArrowLeft  } from 'lucide-react';
+import { Undo2, ChevronLeft , ArrowLeftCircle ,Reply, RotateCcw, CheckCircle, Upload, Image, ClipboardCheck, ClipboardList, Car, Check, Undo, StickyNote, Info  } from 'lucide-react';
 import GlassCardPro from "../../components/glassCard";
 import Swal from 'sweetalert2';
 import UploadImageForm from "../../components/imageForm";
@@ -26,6 +26,7 @@ import {
   Barra,
   VolverButton,
 } from './styles'; 
+import { BackSquareButton } from '../../components/BackButton'; 
 
 
 function FormsView() {
@@ -392,6 +393,17 @@ function FormsView() {
     3: "Motos", 
   };
 
+  const handleFinishRequest = async () => {
+    try {
+      console.log("presionando finalizar");
+      const response = await finishRequest(solicitud_id); 
+      return navigate("/revisiones");
+
+    } catch (error) {
+
+    }
+  }
+
   return (
     <motion.div
       key={location.pathname}  // Así la animación se activa al cambiar ruta
@@ -420,15 +432,9 @@ function FormsView() {
 
           <HeadContainer>
             <VolverButton>
-            <CustomButton
-              width={"110px"}
-              height={"40px"}
-              bgColor={"#5A5A5A"}        // Un gris sólido y neutro
-              hoverColor={"#4A4A4A"}     // Oscurece sutilmente en hover
-              onClick={() => navigate("/revisiones")}
-            >
-              <ArrowLeft />Volver
-            </CustomButton>
+            <BackSquareButton onClick={() => navigate(-1)}>
+  <	ChevronLeft  size={22} />
+</BackSquareButton>
             </VolverButton>
 
           <Barra>
@@ -441,7 +447,7 @@ function FormsView() {
           </HeadContainer>
 
           <ImageLoader>
-            <TextLoadImg><Upload/> Subir imagen principal del vehiculo</TextLoadImg>
+            <TextLoadImg><Info size={24} color="#555" style={{ position: 'relative', top: '0px' }}/> Por favor, complete todos los formularios en la barra lateral y adjunte una imagen de perfil del vehículo inspeccionado para incluirla en la plantilla. </TextLoadImg>
             <UploadImageForm
               endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}></UploadImageForm>
 
@@ -449,7 +455,7 @@ function FormsView() {
                 title="Plan:"
                 badgeText={planFiltrado?.nombre_plan || "Plan no disponible"}
                 icon={ClipboardList}
-                width="350px"
+                width="450px"
                 height="150px"
                 headerBg="rgba(151, 200, 255, 0.4)"
                 borderColor="rgba(37, 99, 235, 0.4)"
@@ -473,58 +479,70 @@ function FormsView() {
               </GlassCardPro>
           </ImageLoader>
 
-          <ContainerCardSoli>
-            <GlassCardPro
-                title="Solicitud:"
-                badgeText={placa}
-                icon={Car}
-                width={"450px"}
-                headerBg="rgba(143, 251, 255, 0.6)" // gris claro tipo tailwind gray-100
-                borderColor="rgba(0, 102, 255, 0.3)" // mismo tono desaturado
-              >
-              <InfoBlock>
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Convenio:</strong> {convenio}
-                </InfoLine>
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Sucursal:</strong> {sucursal}
-                </InfoLine>
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[tipo_vehiculo]}
-                </InfoLine>
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Fecha de creación:</strong> {fecha}
-                </InfoLine>
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Teléfono:</strong> {telefono}
-                </InfoLine>
-                <Divider />
-                <ObservationNote><strong>Observaciones: </strong> {observacionesPlan || "No hay observaciones"}</ObservationNote>
-              </InfoBlock>
-            </GlassCardPro>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              width: '100%',
-            }}
-          >
-            <CustomButton
-              width="500px"
-              bgColor="#5FB8D6"
-              hoverColor="#48A2BF"
-              onClick={() => console.log("finalizar")}
-            >
-              <ClipboardCheck />Finalizar
-            </CustomButton>
-          </div>
+<ContainerCardSoli>
+  <GlassCardPro
+    title="Solicitud:"
+    badgeText={placa}
+    icon={Car}
+    width={"750px"}
+    headerBg="rgba(143, 251, 255, 0.6)"
+    borderColor="rgba(0, 102, 255, 0.3)"
+  >
+    <InfoBlock>
+      <InfoLine>
+        <Check size={18} color="green" />
+        <strong>Convenio:</strong> {convenio}
+      </InfoLine>
+      <InfoLine>
+        <Check size={18} color="green" />
+        <strong>Sucursal:</strong> {sucursal}
+      </InfoLine>
+      <InfoLine>
+        <Check size={18} color="green" />
+        <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[tipo_vehiculo]}
+      </InfoLine>
+      <InfoLine>
+        <Check size={18} color="green" />
+        <strong>Fecha de creación:</strong> {fecha}
+      </InfoLine>
+      <InfoLine>
+        <Check size={18} color="green" />
+        <strong>Teléfono:</strong> {telefono}
+      </InfoLine>
+      <Divider />
+      <ObservationNote>
+        <StickyNote
+          size={24}
+          color="#555"
+          style={{ position: 'relative', top: '5px', marginRight: '8px' }}
+        />
+        <strong>Observaciones: </strong> {observacionesPlan || "No hay observaciones"}
+      </ObservationNote>
+    </InfoBlock>
+  </GlassCardPro>
 
-            </ContainerCardSoli>
+
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      width: '100%',
+      marginTop: '16px',
+    }}
+  >
+    <div style={{ width: 'min(100%, 500px)' }}>
+      <CustomButton
+        width="500px"
+        bgColor="#5FB8D6"
+        hoverColor="#48A2BF"
+        onClick={handleFinishRequest}
+      >
+        <ClipboardCheck /> Finalizar
+      </CustomButton>
+    </div>
+  </div>
+</ContainerCardSoli>
+
 
         </ContainerContent>
 

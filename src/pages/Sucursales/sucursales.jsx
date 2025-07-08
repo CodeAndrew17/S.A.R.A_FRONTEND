@@ -1,306 +1,205 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "../../components/sidebar"
-import styled from "styled-components";
-import UserForm from "../../components/userForm"; 
-import { Trash, Filter, Plus, Edit, Settings, Building, Map} from "lucide-react";
-import Table from "../../components/table";
-import {getBranches, getAgreement} from "../../api/api_Convenios"; 
-import columnsAgreement from "./TableAgreement/columnsAgreement"; // columnas de los convenios
-import columnsBranch from "./TableBranches/columnsBranches"; // columnas de las sucursales
-import Toolbar from "../../components/toolbar";
-import filterData from "../../utils/unitySearch"; // funcion para filtrar los datos de la tabla
-import getOrderRegister from "../../utils/getLastRegister";
 
+import React, { useState, useEffect } from 'react';
+import Sidebar from '../../components/sidebar';
+import styled from 'styled-components';
+import { Trash, Plus, Building, Building2, Handshake  } from 'lucide-react';
+import Toolbar from '../../components/toolbar';
+import Table from '../../components/table';
+import UserForm from '../../components/userForm';
+import TabsContainer from '../../components/TabContainer';
 
-import {handleSucursalSubmit, handleDeleteBranches, handleUpdateBranches} from "./TableBranches/sucursalManagement"; //funciones tipo crud de sucursales
+import columnsBranch from './TableBranches/columnsBranches';
+import ConveniosPanel from './convenios'; 
 
-//!importaciones de gestor de Convenios 
-import GestionConvenios from "./convenios";
+import {
+  getBranches, getAgreement,
+} from '../../api/api_Convenios';
+import {
+  handleSucursalSubmit,
+  handleDeleteBranches,
+  handleUpdateBranches,
+} from './TableBranches/sucursalManagement';
+
+import filterData from '../../utils/unitySearch';
+import getOrderRegister from '../../utils/getLastRegister';
+
 
 const TitleWrapper = styled.div`
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 30px 20px 20px; /* Más espacio arriba */
-  text-align: center;
-  margin-top: 10px;
-  height: auto; /* ¡No fijes altura si no es necesario! */
+  background:#f0f0f0;
+  border-radius:8px;
+  box-shadow:0 2px 4px rgba(0,0,0,.1);
+  padding:30px 20px 20px;
+  text-align:center;
+  margin:10px 0;
 `;
-
-
 const TitleText = styled.h1`
-  color: #000;
-  font-size: 32px;
-  line-height: 1.2; /* Mucho mejor que usar pixeles fijos */
-  margin: 0;
+  margin:0;
+  font-size:32px;
+  line-height:1.2;
 `;
 
 
-const Sucursales = () => {
+export default function Sucursales() {
+
+  const [activeTab, setActiveTab] = useState('sucursales');
+
+
   const [activeForm, setActiveForm] = useState(null);
-  const [editingBranch, setEditingBranch] = useState(null); // Estado para editar sucursales
-  const [convenios, setConvenios] = useState([]); // Sucursales
-  const [conveniosOptions, setConveniosOptions] = useState([]); // Opciones para el dropdown
-  const [loading, setLoading] = useState(true);
-  const [loadingConvenios, setLoadingConvenios] = useState(false); // Estado de carga específico para convenios
-
-  const [activeCon, setActiveCon] = useState(null);
-  const [selectedConvenios, setSelectedConvenios] = useState([]);
+  const [editingBranch, setEditingBranch] = useState(null);
   const [sucursalesConvenios, setSucursalesConvenios] = useState([]);
-  const [filteredSucursales, setFilteredSucursales] = useState([]); //estado para el filtro de las sucursales filtradas 
-  const [searchInput, setSearchInput] = useState("");
-  const [statusFilter, setStatusFilter] = useState(""); //filtro añadido para estado
-  const [searchText, setSearchText] = useState(""); // estado para el texto de busqueda
+  const [filteredSucursales, setFilteredSucursales] = useState([]);
+  const [conveniosOptions, setConveniosOptions] = useState([]);
+  const [selectedBranches, setSelectedBranches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
-  //effect para cargar las sucursales relacionadas con sus convenios al renderizar el componente 
+
   useEffect(() => {
-    const fetchAllData = async () => {
+    (async () => {
       try {
         setLoading(true);
-        setLoadingConvenios(true);
-  
-        // carga de sucursales y convenios 
         const [sucursales, convenios] = await Promise.all([
           getBranches(),
-          getAgreement()
+          getAgreement(),
         ]);
-  
-        // proceso para relacionar las sucursales con sus convenios para mostrarlos en la tabla
-        const sucursalesConNombreConvenio = sucursales.map(sucursal => {
-          const convenio = convenios.find(c => c.id === sucursal.id_convenio);
-          return {
-            ...sucursal,
-            convenio: convenio?.nombre || "Sin convenio" // si no tiene convenio muestra q no tiene
-          };
-        });
-  
-        // actualizamos todos los estados 
-        setSucursalesConvenios(sucursalesConNombreConvenio);
-        setFilteredSucursales(sucursalesConNombreConvenio); //guardamos las sucursales filtradas
-        setConvenios(sucursalesConNombreConvenio);
-        setConveniosOptions(convenios); // usamos los convenios anteriormente cargados para mostrarlos en el dropdown
-  
-      } catch (error) {
-        console.error("Error cargando datos:", error);
-      } finally {
-        setLoading(false);
-        setLoadingConvenios(false);
-      }
-    };
-  
-    fetchAllData();
+
+        // une sucursales con convenios
+        const data = sucursales.map(s => ({
+          ...s,
+          convenio: convenios.find(c => c.id === s.id_convenio)?.nombre ?? 'Sin convenio',
+        }));
+
+        setSucursalesConvenios(data);
+        setFilteredSucursales(data);
+        setConveniosOptions(convenios);
+      } catch (err) { console.error(err); }
+      finally { setLoading(false); }
+    })();
   }, []);
 
-  const handleSelectionChange = (selectedIds) => {
-    setSelectedConvenios(selectedIds);
+  
+  const refreshBranches = async () => {
+    const suc = await getBranches();
+    const data = suc.map(s => ({
+      ...s,
+      convenio: conveniosOptions.find(c => c.id === s.id_convenio)?.nombre ?? 'Sin convenio',
+    }));
+    setSucursalesConvenios(data);
+    setFilteredSucursales(data);
   };
 
-  const handleCrearSucursal = () => {
-    setEditingBranch(null); // Limpiar el estado de edición al crear una nueva sucursal
-    setActiveForm("sucursal"); // Mostrar el formulario cuando se hace clic en "Crear Nuevo"
-  };
-
-  const handleFormSubmit = async (newData) => {
-    try {
-      console.log("Datos del formulario:", newData);
-      setLoading(true);
-      
-      if (editingBranch) {
-        await handleUpdateBranches(editingBranch.id, newData);
-      } else {
-        await handleSucursalSubmit(newData,setConvenios, setActiveForm, setSucursalesConvenios);
-      }
-
-      // Refetch data after operation
-      const [sucursales, convenios] = await Promise.all([
-        getBranches(),
-        getAgreement()
-      ]);
-
-      const sucursalesConNombreConvenio = sucursales.map(sucursal => {
-        const convenio = convenios.find(c => c.id === sucursal.id_convenio);
-        return {
-          ...sucursal,
-          convenio: convenio?.nombre || "Sin convenio"
-        };
-      });
-
-      setSucursalesConvenios(sucursalesConNombreConvenio);
-      setFilteredSucursales(sucursalesConNombreConvenio);
-      setConveniosOptions(convenios);
-      setActiveForm(null);
-      setEditingBranch(null);
-    } catch (error) {
-      console.error("Error al procesar la sucursal:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCancelForm = () => {
-    setActiveForm(null);
-    setEditingBranch(null);
-  };
-
+  
+  const handleCrearSucursal = () => { setEditingBranch(null); setActiveForm('sucursal'); };
   const handleDelete = async () => {
-    try {
-      //setLoading(true);
-      const result = await handleDeleteBranches(selectedConvenios, setConveniosOptions, setSucursalesConvenios);
-      
-      if (result.success) {
-        const sucursales = await getBranches();
-        const sucursalesConNombreConvenio = sucursales.map(sucursal => {
-          const convenio = conveniosOptions.find(c => c.id === sucursal.id_convenio);
-          return {
-            ...sucursal,
-            convenio: convenio?.nombre || "Sin convenio"
-          };
-        });
-        
-        setSucursalesConvenios(sucursalesConNombreConvenio);
-        setFilteredSucursales(sucursalesConNombreConvenio);
-        setSelectedConvenios([]);
-      }
-    } catch (error) {
-      console.error("Error eliminando sucursales:", error);
-    } finally {
-      setLoading(false);
-    }
+    await handleDeleteBranches(selectedBranches, setConveniosOptions, setSucursalesConvenios);
+    setSelectedBranches([]); refreshBranches();
+  };
+  const handleFormSubmit = async data => {
+    editingBranch
+      ? await handleUpdateBranches(editingBranch.id, data)
+      : await handleSucursalSubmit(
+  data,
+  setConveniosOptions,
+  setActiveForm,
+  setSucursalesConvenios
+);
+    setActiveForm(null); setEditingBranch(null); refreshBranches();
   };
 
-  const handlegestorCon = () => {
-    setActiveCon(true);
-  };
-
-  const handleGestionCancelar = () => {
-    setActiveCon(false);
-  };
-
-  const handleSearch = (search) => {
-    setSearchInput(search);
   
-    if (!search.trim()) {
-      setFilteredSucursales(sucursalesConvenios);
-      return;
-    }
-  
-    const sanitizedSearch = search.trim().toLowerCase();
-  
-    const filtered = sucursalesConvenios.filter((sucursal) => {
-      const ciudadMatch = sucursal.ciudad?.toLowerCase().includes(sanitizedSearch);
-      const nombreMatch = sucursal.nombre?.toLowerCase().includes(sanitizedSearch);
-      const direccionMatch = sucursal.direccion?.toLowerCase().includes(sanitizedSearch);
-      const convenioMatch = sucursal.convenio?.toLowerCase().includes(sanitizedSearch);
-
-      const estadoTexto = sucursal.estado === "IN" ? "IN" :
-                        sucursal.estado === "AC" ? "AC" : "";
-      const estadoMatch = estadoTexto.includes(sanitizedSearch);
-  
-      return ciudadMatch || nombreMatch || direccionMatch || convenioMatch || estadoMatch;
-    });
-  
-    setFilteredSucursales(filtered);
-  };
-
-  const dataToShow = searchInput.trim() ? filteredSucursales : sucursalesConvenios;
-
-
   const filteredData = filterData({
-    data: sucursalesConvenios, 
+    data: sucursalesConvenios,
     searchText,
-    searchFields: ["nombre", "ciudad", "direccion", "convenio"], // nombres de las columnas a buscar pasadas como array (solo nombres)
-    statusField: "estado", // nombre de la columna que contiene el estado
-    statusFilter // valor del filtro 
-  })
+    searchFields: ['nombre', 'ciudad', 'direccion', 'convenio'],
+    statusField: 'estado',
+    statusFilter,
+  });
+  const orderData = getOrderRegister({ data: filteredData });
 
-  const orderData = getOrderRegister({data: filteredData})
-
+  
   return (
-    <div style={{border:'3px solid #0000'}}>
+    <div>
       <Sidebar />
-      <TitleWrapper>
-        <TitleText>Panel de Sucursales</TitleText>
-      </TitleWrapper>
 
-      <Toolbar
-        onCreate={handleCrearSucursal}
-        onEdit={handlegestorCon}
-        onDelete={handleDelete}
-        buttonsGap="40px"
-        editLabel="Gestionar Convenios"
-        onActiveButton={true}
-      >
-        <Toolbar.Search 
-          placeholder="Buscar..." 
-          onSearch={(search) => setSearchText(search)} 
-        />
-        <Toolbar.Dropdown
-          options={{
-            "AC": "Activo", 
-            "IN": "Inactivo",
-            "": "Todos"
-          }}            
-          onSelect={(option) => setStatusFilter(option)} 
-        />
-      </Toolbar>
+      <TitleWrapper><TitleText>Panel de Clientes</TitleText></TitleWrapper>
 
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          Cargando convenios...
-        </div>
-      ) : (
-          <Table
-            containerStyle={{fontSize: "13px"}}
-            data={orderData}
-            columns={columnsBranch({ setEditingBranch, setActiveForm })}
-            selectable={true}
-            onSelectionChange={handleSelectionChange}
-          />
-      )}
+      
+      <TabsContainer
+        activeId={activeTab}
+        onChange={setActiveTab}
+        tabs={[
+          {
+            id: 'sucursales',
+            label: (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Building2 size={18} /> Sucursales
+              </span>
+            ),
+            element: (
+              <>
+                <Toolbar
+                  onCreate={handleCrearSucursal}
+                  onDelete={handleDelete}
+                  onActiveButton={false} 
+                  buttonsGap="40px"
 
-      {activeForm === "sucursal" && (
-          <UserForm
-            title={editingBranch ? "Editar Sucursal" : "Crear Nueva Sucursal"}
-            fields={[
-              { name: "nombre", placeholder: "Nombre", type: "text", required: true },
-              { name: "ciudad", placeholder: "Ciudad", type: "text", required: true },
-              { name: "direccion", placeholder: "Dirección", type: "text", required: true },
-              { name: "telefono", placeholder: "Teléfono", type: "tel", required: true},
-              { 
-                name: "estado",
-                type: "select",
-                options: [
-                  {value: "AC", label:"Activo"},
-                  {value: "IN", label:"Inactivo"}
-                ],
-                defaultValue: "AC",
-                placeholder: "Estado",
-                required: true
-              },
-              { 
-                name: "id_convenio",
-                label: "Convenio",
-                type: "select",
-                options: conveniosOptions.map((c) => ({value: c.id, label: c.nombre})),
-                placeholder: loadingConvenios ? "Cargando..." : "Seleccionar",
-                disabled: loadingConvenios
-                ,required: true
-              }
-            ]}
-            initialValues={editingBranch}
-            onSubmit={handleFormSubmit}
-            onCancel={handleCancelForm}
-          />
-      )}
+                >
+                  <Toolbar.Search
+                    placeholder="Buscar..."
+                    onSearch={setSearchText}
+                  />
+                  <Toolbar.Dropdown
+                    options={{ AC: 'Activo', IN: 'Inactivo', '': 'Todos' }}
+                    onSelect={setStatusFilter}
+                  />
+                </Toolbar>
 
-      {activeCon && (
-        <GestionConvenios
-          onCerrar={handleGestionCancelar}
-        />
-      )}
+                {loading ? (
+                  <p style={{ textAlign: 'center' }}>Cargando...</p>
+                ) : (
+                  <Table
+                    data={orderData}
+                    columns={columnsBranch({ setEditingBranch, setActiveForm })}
+                    selectable
+                    onSelectionChange={setSelectedBranches}
+                    containerStyle={{ fontSize: '13px' }}
+                  />
+                )}
 
+                {activeForm === 'sucursal' && (
+                  <UserForm
+                    title={editingBranch ? 'Editar Sucursal' : 'Crear Nueva Sucursal'}
+                    fields={[
+                      { name: 'nombre', placeholder: 'Nombre', type: 'text', required: true },
+                      { name: 'ciudad', placeholder: 'Ciudad', type: 'text', required: true },
+                      { name: 'direccion', placeholder: 'Dirección', type: 'text', required: true },
+                      { name: 'telefono', placeholder: 'Teléfono', type: 'tel', required: true },
+                      {
+                        name: 'estado',  placeholder: 'Estado',type: 'select', required: true,
+                        options: [{ value: 'AC', label: 'Activo' }, { value: 'IN', label: 'Inactivo' }],
+                        defaultValue: 'AC',
+                      },
+                      {
+                        name: 'id_convenio', label: 'Convenio', type: 'select', required: true,
+                        options: conveniosOptions.map(c => ({ value: c.id, label: c.nombre })),
+                      },
+                    ]}
+                    initialValues={editingBranch}
+                    onSubmit={handleFormSubmit}
+                    onCancel={() => { setActiveForm(null); setEditingBranch(null); }}
+                  />
+                )}
+              </>
+            ),
+          },
+          { id: 'convenios', label: (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Handshake size={18} /> Convenios
+            </span>
+          ), element: <ConveniosPanel /> },
+        ]}
+      />
     </div>
   );
-};
-
-export default Sucursales;
+}

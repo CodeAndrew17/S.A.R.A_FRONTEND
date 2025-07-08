@@ -40,16 +40,22 @@ const UserIcon = styled(FaUser)`
 
 const Username = styled.span`
   font-size: 16px;
-  color:rgb(219, 219, 219); /* Azul pastel con un toque de blanco para suavizar */
+  color: rgb(219, 219, 219);
   visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   transition: opacity 0.3s ease-in-out;
   margin-right: 5px;
   font-family: Helvetica, Arial, sans-serif;
   line-height: 1.5;
+
+  /* Estilos adicionales */
+  font-weight: 550; 
+  letter-spacing: 0.4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 `;
-
-
 
 const ToggleButton = styled.button`
   background: none;
@@ -167,6 +173,21 @@ const getRolName = (rolCode) => {
   return roles[rolCode] || "Invitado";
 };
 
+const RoleTag = styled.span`
+  display: inline-block;
+  background-color: #e5e7eb; /* Gris neutro */
+  color: #111827; /* Gris oscuro */
+  font-size: 0.95rem; /* Más grande */
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  box-shadow: 0 2px 4px rgba(32, 62, 119, 0.06);
+  text-align: center;
+`;
+
 //para evitar errores de inicializacion y acceder a variables antes de incializarlas 
 const RoleContainer = styled.div`
   padding: 10px 20px;
@@ -271,10 +292,10 @@ useEffect(() => {
 
   const menuItems = [
     { icon: <FaHome />, text: "Inicio", path: "/inicio" },
-    { icon: <FaFileAlt />, text: "Sucursales", path: "/sucursales" },
+    { icon: <FaFileAlt />, text: "Clientes", path: "/sucursales" },
     { icon: <FaUsers />, text: "Usuarios", path: "/usuarios" },
     { icon: <FaTools />, text: "Revisiones", path: "/revisiones" },
-    { icon: <FaClipboardList />, text: "Administrar", path: "/administrar" },
+    { icon: <FaClipboardList />, text: "Planes", path: "/administrar" },
   ];
 
   return (
@@ -341,7 +362,7 @@ useEffect(() => {
         </LogoutWrapper>
 
         <RoleContainer $isOpen={isOpen}>
-          <span>{rol}</span>
+          <RoleTag>{rol}</RoleTag>
         </RoleContainer>
       </SidebarContainer>
     </>

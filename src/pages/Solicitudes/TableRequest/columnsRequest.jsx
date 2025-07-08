@@ -18,7 +18,7 @@ const columnsRequest=({navigate})=>[
         color = '#dc3545'; // rojo
         break;
       case 'PRO': // Pendiente (por ejemplo)
-        color = '#ffc107'; // amarillo
+        color = '#e0a800'; // amarillo
         break;
       default:
         color = '#6c757d'; // gris para estados desconocidos

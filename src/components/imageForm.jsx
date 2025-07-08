@@ -7,15 +7,16 @@ const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 375px;
+  width: 470px;
   padding: 1rem;
   border: 1px solid #90a4ae;
   border-radius: 8px;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 
-&:hover {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Antes era 0.08 */
-  transform: translateY(-5px);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.20);
+  }
 }
 
 `;

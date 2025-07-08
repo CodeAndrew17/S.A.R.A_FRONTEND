@@ -74,12 +74,18 @@ const Divider = styled.hr`
 
 const TextLoadImg = styled.div`
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 2rem;
+    font-size: 1.2rem;
     color: rgba(0, 0, 0, 0.75);
     text-align: center;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    svg {
+        flex-shrink: 0;
+        color: #555; /* Color del icono */
+    }
 `;
 
 const ImageLoader = styled.div`
@@ -88,7 +94,8 @@ const ImageLoader = styled.div`
     align-items: center;
     height: 300px;
     margin-top: -10px;
-    margin-left: 120px;
+    margin-left: 80px;
+    width: 450px;
 
 
     @media (max-width: 779px) {
@@ -98,17 +105,21 @@ const ImageLoader = styled.div`
     @media (max-width: 500px) {
         margin-left: -90px;
     }
-
 `;
 
+//1790
+//1433
 const ContainerCardSoli = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 300px;
+    height: 450px;
     min-width: 350px;
-    margin-top: 25px;
+    margin-top: 32px;
     margin-left: 60px;
+    max-width: 530px;
+
+
 
     @media (max-width: 1276px) and (min-width: 780px) {
         margin-left: 20px;
@@ -169,8 +180,8 @@ const Barra = styled.div`
 
 const VolverButton = styled.div`
     position: absolute;
-    top: 25px; 
-    left: 340px;
+    top: 40px; 
+    left: 370px;
     z-index: 1; 
 
     @media (max-width: 500px) and (min-width: 100px) {
