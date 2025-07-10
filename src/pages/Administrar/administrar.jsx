@@ -19,14 +19,14 @@ const TitleWrapper = styled.div`
   padding: 30px 20px 20px; /* Más espacio arriba */
   text-align: center;
   margin-top: 10px;
-  height: auto; /* ¡No fijes altura si no es necesario! */
+  height: auto; 
 `;
 
 
 const TitleText = styled.h1`
   color: #000;
   font-size: 32px;
-  line-height: 1.2; /* Mucho mejor que usar pixeles fijos */
+  line-height: 1.2; 
   margin: 0;
 `;
 
@@ -75,7 +75,6 @@ function Administrar() {
     setActiveForm("edit");
   }
   };
-
 
   const handleCreateSubmit = async (formData) => {
     try {
@@ -187,12 +186,13 @@ function Administrar() {
         onSelectionChange={handleSelectionChange}
         selectable={true}
         columns={columns}
+        containerStyle={{ fontSize: '13px' }}
       />
 
       {/* Formulario de CREACIÓN */}
       {activeForm === "create" && (
         <UserForm
-          title="Crear Nuevo Plan"
+          title="Crear Plan"
           fields={[
             { 
               name: "nombre_plan",

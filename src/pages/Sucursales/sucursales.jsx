@@ -122,8 +122,6 @@ export default function Sucursales() {
     <div>
       <Sidebar />
 
-      <TitleWrapper><TitleText>Panel de Clientes</TitleText></TitleWrapper>
-
       
       <TabsContainer
         activeId={activeTab}
@@ -133,7 +131,7 @@ export default function Sucursales() {
             id: 'sucursales',
             label: (
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Building2 size={18} /> Sucursales
+                <Building2 size={28} /> Sucursales
               </span>
             ),
             element: (
@@ -169,7 +167,7 @@ export default function Sucursales() {
 
                 {activeForm === 'sucursal' && (
                   <UserForm
-                    title={editingBranch ? 'Editar Sucursal' : 'Crear Nueva Sucursal'}
+                    title={editingBranch ? 'Editar Sucursal' : 'Crear Sucursal'}
                     fields={[
                       { name: 'nombre', placeholder: 'Nombre', type: 'text', required: true },
                       { name: 'ciudad', placeholder: 'Ciudad', type: 'text', required: true },
@@ -195,7 +193,7 @@ export default function Sucursales() {
           },
           { id: 'convenios', label: (
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Handshake size={18} /> Convenios
+              <Handshake size={28} /> Convenios
             </span>
           ), element: <ConveniosPanel /> },
         ]}

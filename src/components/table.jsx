@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ChevronDown, ChevronUp } from 'lucide-react';
 
 // Estilos base
-
 const TableContainer = styled.div`
   width: 93.5%;
   margin: 20px auto 20px 85px;
-  position: relative; /* Añadido */
+  position: relative;
 
   @media (max-width: 764px) {
     margin: 20px auto 0px 20px;
@@ -19,11 +17,10 @@ const ScrollWrapper = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
-  overflow-y: auto; /* Cambiado de 'visible' a 'auto' para scroll vertical */
+  overflow-y: auto;
   width: 100%;
-  max-height: 70vh; /* Altura máxima para activar el scroll */
+  max-height: 70vh;
   
-  /* Estilos personalizados para el scrollbar */
   &::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -51,14 +48,12 @@ const StyledTable = styled.table`
   position: relative;
 `;
 
-
 const TableHeader = styled.th`
   background-color: #5FB8D6;
   color: white;
   padding: 12px 15px;
   text-align: left;
   font-weight: 500;
-  
 `;
 
 const TableRow = styled.tr`
@@ -73,23 +68,12 @@ const TableRow = styled.tr`
   }
 `;
 
-
 const TableCell = styled.td`
   padding: 12px 15px;
   border-bottom: 1px solid #ddd;
   white-space: nowrap;
-  position: relative; /* Añadido para dropdowns */
-  overflow: visible; /* Añadido */
-`;
-
-const ExpandButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #5FB8D6;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  position: relative;
+  overflow: visible;
 `;
 
 const EstadoBadge = styled.span`
@@ -114,27 +98,18 @@ const CheckboxInput = styled.input`
   height: 16px;
 `;
 
-
 const Table = ({ 
   data, 
   columns, 
   onRowClick,
   expandable, 
-  selectable, // ! Nuevo prop para mostrar/ocultar checkbox
-  onSelectionChange, //! ← Callback cuando cambia la selección
+  selectable,
+  onSelectionChange,
   renderExpandedContent,
-  containerStyle
+  containerStyle,
+  expandedRows = []
 }) => {
-  const [expandedRows, setExpandedRows] = React.useState([]);
-  const [selectedRows, setSelectedRows] = React.useState([]); //!Se guardaran los id de las checkbox Selecionados 
-
-  const toggleExpand = (id) => {
-    setExpandedRows(prev => 
-      prev.includes(id) 
-        ? prev.filter(rowId => rowId !== id) 
-        : [...prev, id]
-    );
-  };
+  const [selectedRows, setSelectedRows] = React.useState([]);
 
   const toggleSelect = (id, e) => {
     e.stopPropagation();
@@ -156,79 +131,63 @@ const Table = ({
   return (
     <TableContainer style={containerStyle}>
       <ScrollWrapper>
-      <StyledTable>
-        <thead>
-          <tr>
-            {selectable && <TableHeader style={{ width: '10px' }}></TableHeader>} 
-            {expandable && <TableHeader style={{ width: '10px' }}></TableHeader>}
-            {columns.map((column) => (
-              <TableHeader key={column.key}>{column.title}</TableHeader>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.length > 0 ? (
-            data.map((item) => (
-              <React.Fragment key={item.id}>
-                <TableRow 
+        <StyledTable>
+          <thead>
+            <tr>
+              {selectable && <TableHeader style={{ width: '10px' }}></TableHeader>}
+              {columns.map((column) => (
+                <TableHeader key={column.key}>{column.title}</TableHeader>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.length > 0 ? (
+              data.map((item) => (
+                <React.Fragment key={item.id}>
+                  <TableRow 
                     onClick={() => onRowClick && onRowClick(item)}
                     $selected={selectedRows.includes(item.id)}
                   >
-                  {selectable && (
-                    <CheckboxCell onClick={(e) => e.stopPropagation()}> 
-                      <CheckboxInput
-                        type="checkbox"
-                        checked={selectedRows.includes(item.id)}
-                        onChange={(e) => toggleSelect(item.id, e)}
-                      />
-                    </CheckboxCell>
-                  )}
-                  
-                  {expandable && (
-                    <TableCell>
-                      <ExpandButton onClick={(e) => {
-                        e.stopPropagation();
-                        toggleExpand(item.id);
-                      }}>
-                        {expandedRows.includes(item.id) ? (
-                          <ChevronUp size={18} />
-                        ) : (
-                          <ChevronDown size={18} />
-                        )}
-                      </ExpandButton>
-                    </TableCell>
-                  )}
-                  
-                  {columns.map((column) => (
-                    <TableCell key={column.key}>
-                      {column.render 
-                        ? column.render(item[column.key], item) 
-                        : column.key === 'estado'
-                          ? <EstadoBadge $estado={item[column.key]}>{item[column.key]}</EstadoBadge>
-                          : item[column.key]
-                      }
-                    </TableCell>
-                  ))}
-                </TableRow>
-
-                {expandable && expandedRows.includes(item.id) && (
-                  <TableRow>
-                    <TableCell colSpan={columns.length + (selectable ? 1 : 0) + (expandable ? 1 : 0)}>
-                      {renderExpandedContent(item)}
-                    </TableCell>
+                    {selectable && (
+                      <CheckboxCell onClick={(e) => e.stopPropagation()}> 
+                        <CheckboxInput
+                          type="checkbox"
+                          checked={selectedRows.includes(item.id)}
+                          onChange={(e) => toggleSelect(item.id, e)}
+                        />
+                      </CheckboxCell>
+                    )}
+                    
+                    {columns.map((column) => (
+                      <TableCell key={column.key}>
+                        {column.render 
+                          ? column.render(item[column.key], item) 
+                          : column.key === 'estado'
+                            ? <EstadoBadge $estado={item[column.key]}>{item[column.key]}</EstadoBadge>
+                            : item[column.key]
+                        }
+                      </TableCell>
+                    ))}
                   </TableRow>
-                )}
-              </React.Fragment>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length + (selectable ? 1 : 0) + (expandable ? 1 : 0)} style={{ textAlign: 'center' }}>
-                No hay datos disponibles
-              </TableCell>
-            </TableRow>
-          )}
-        </tbody>
-      </StyledTable>
+
+                  {expandable && expandedRows.includes(item.id) && (
+                    <TableRow>
+                      <TableCell colSpan={columns.length + (selectable ? 1 : 0)}>
+                        {renderExpandedContent(item)}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length + (selectable ? 1 : 0)} style={{ textAlign: 'center' }}>
+                  No hay datos disponibles
+                </TableCell>
+              </TableRow>
+            )}
+          </tbody>
+        </StyledTable>
       </ScrollWrapper>
     </TableContainer>
   );

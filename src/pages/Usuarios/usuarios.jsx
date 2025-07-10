@@ -1,408 +1,431 @@
-import React, { useState } from "react";
-import Sidebar from "../../components/sidebar";
-import Header from "./internalComponents/header";
-import Toolbar from "./internalComponents/UserToolbar";
-import UserTable from "./internalComponents/userTable";
-import UserForm from "../../components/userForm";
-import useEmployeeManagement from "./hooks/useEmployeeManagement";
-import { addEmployees, addUsers, editUsers, deleteUsers, deleteEmployees, editEmployees ,getUsers} from "../../api/api_Usuarios"; 
-import CreateForm from "./Forms/createForm";
-import AsignForm from "./Forms/asignForm"; // Ajusta la ruta según la ubicación del archivo
-import UpdateForm from "./Forms/updateForm";
-import Swal from "sweetalert2";
-import EmployeeUpdateForm from "./Forms/EmployeeUpdateForm";
-
+import {useEffect, useState} from 'react';
+import Swal from 'sweetalert2';
+import UserForm from '../../components/userForm';
+import Header from './internalComponents/header';
+import Sidebar from '../../components/sidebar';
+import Toolbar from '../../components/toolbar';
+import Table from '../../components/table'
+import useEmployeeManagement from './useEmployeeManagement';
+import {columnsEmployees} from './columnsEmployees'; 
+import CustomButton from '../../components/button';
+import { Pencil, UserMinus } from "lucide-react";
 
 const Usuarios = () => {
-  const {
-    employees, // Todos los empleados
-    filteredEmployees, // Empleados filtrados
-    selectedEmployees, // IDs de empleados seleccionados
-    expandedRow, // ID de la fila expandida
-    handleBuscar, // Función para buscar empleados
-    handleEliminar,
-    handleCheckboxChange, // Función para eliminar empleados seleccionados
-    setExpandedRow, // Actualiza la fila expandida
-    setSelectedEmployees, // Actualiza los empleados seleccionados
-    setEmployees, // Agregado para actualizar empleados
-    setFilteredEmployees, // Agregado para actualizar empleados filtrados
-    handleEditarEmpleado,
-    sucursalesMap,
-    handleFilter
-  } = useEmployeeManagement(); // Hook personalizado para la lógica de empleados
-
-  const [showCreateForm, setShowForm] = useState(false); // Estado para mostrar/ocultar el formulario
-  const [showAssignForm, setShowAssignForm] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); //Usuario seleccionado
-  const [editingUser, setEditingUser] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [editingEmployee, setEditingEmployee] = useState(null);
-  const [showUpdateForm, setShowUpdateForm] = useState(false); // Añade esto con los otros estados
+  const [editingUser, setEditingUser] = useState(null); 
+  const [activateForm, setActivateForm] = useState(null);
+  const [searchText, setSearchText] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [expandedRow, setExpandedRow] = useState(null); // Cambiado de array a valor único
+  const [employeeForUser, setEmployeeForUser] = useState(null);
 
 
-  const handleEditar = () => {
-    if (selectedEmployees.length !== 1) {
-      Swal.fire({
-        title: "Error",
-        text: "Es necesario seleccionar exactamente un empleado para proceder con la edición.",
-        icon: "error"
-      });
-      return;
-    }
+  const {employees, branches, createEmployee, updateEmployee, deleteEmployee, createUser, updateUser, deleteUser} = useEmployeeManagement();
 
-    const empleadoAEditar = employees.find(emp => emp.id === selectedEmployees[0]);
-    setEditingEmployee(empleadoAEditar);
+  const handleToggleExpand = (id) => {
+    console.log('ID recibido para expandir/contraer:', id);
+    setExpandedRow(prev => {
+      const newValue = prev === id ? null : id;
+      console.log('Nuevo valor de expandedRow:', newValue);
+      return newValue;
+    });
   };
 
-  // Función para guardar cambios
-  const handleGuardarEdicion = async (formData) => {
-    try {
-      // 1. Enviar datos al backend
-      const updatedEmployee = await editEmployees(editingEmployee.id, formData);
-
-      // 2. Actualizar el estado local
-      setEmployees(prev => prev.map(emp =>
-        emp.id === editingEmployee.id ? updatedEmployee : emp
-      ));
-
-      setFilteredEmployees(prev => prev.map(emp =>
-        emp.id === editingEmployee.id ? updatedEmployee : emp
-      ));
-
-      // 3. Cerrar y mostrar confirmación
-      setEditingEmployee(null);
-      Swal.fire("¡Actualizado!", "Datos del empleado guardados", "success");
-
-    } catch (error) {
-      console.error("Error al actualizar:", error);
-      Swal.fire("Error", "No se pudieron guardar los cambios. Recuerda que los permisos de tu rol determinan tus accesos y acciones.", "error");
-    }
+    const handleAssignClick = (employee) => {
+    setEmployeeForUser(employee);
+    setActivateForm("Crear Usuario");
   };
 
-  const handleViewDetails = (usuarioId) => {
-    const usuario = filteredEmployees.find(u => u.id == usuarioId);
-    if (usuario) {
-      setExpandedRow(expandedRow === usuarioId ? null : usuarioId);
-      setEditingUser(usuario.cuenta_usuario ? {
-        ...usuario.cuenta_usuario,
-        id_empleado: usuario.id,
-        nombres: usuario.nombres,
-        apellidos: usuario.apellidos
-      } : null);
-    }
+  // columns que usa handleToggleExpand
+  const columns = columnsEmployees(handleToggleExpand, expandedRow, handleAssignClick);
+
+  const roles = {
+    "AD": "Administrador",
+    "PR": "Perito",
+    "RC": "Recepcionista",
+    "CA": "Administrador Convenio", 
+    "CC": "Consultor Convenio",  
   };
 
-  const handleEditingUser = () => {
-    if (editingUser) {
-      setShowUpdateForm(true);
+    const estado = {
+    "AC": "Activo",
+    "IN": "Inactivo",
+  };
+
+  const renderUserDetails = (row) => {
+  return (
+    <div style={{ 
+      padding: '16px', 
+      backgroundColor: '#f8f9fa',
+      borderTop: '1px solid #dee2e6'
+    }}>
+      
+      
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        <div><strong>Usuario:</strong> {row.nombre_usuario || 'No asignado'}</div>
+        <div><strong>Rol:</strong> {roles[row.rol_usuario] || 'No disponible'}</div>
+        <div><strong>Estado Usuario:</strong> {estado[row.estado_usuario || 'No disponible']}</div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+        <h4 style={{ margin: 0 }}>Detalles del Usuario</h4>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <CustomButton
+            bgColor="#4F98D3"
+            hoverColor="#3E86C2"
+            width="170px"
+            height="35px"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditUserClick(row);
+            }}
+          >
+            <Pencil size={16} /> Editar Usuario
+          </CustomButton>
+          
+          <CustomButton
+            bgColor="#dc3545"
+            hoverColor="#c82333"
+            width="170px"
+            height="35px"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteUser(row);
+              // Aquí puedes agregar la lógica para eliminar
+            }}
+          >
+            <UserMinus size={16} /> Eliminar Usuario
+          </CustomButton>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  useEffect(() => {
+  if (activateForm === "Editar empleado") {
+    console.log("Datos del empleado a editar:", editingEmployee);
+
+  }
+}, [activateForm, editingEmployee, branches]);
+
+  const handleSelectionChange = (selectedRows) => {
+    setSelectedRows(selectedRows);
+  };
+
+  const handleCreateEmployee = () => {
+    setEditingEmployee(null);
+    setActivateForm("Crear");
+  };
+
+  const handleEditEmployee = () => {
+    if (selectedRows.length === 0) {
+      alert("Por favor selecciona un registro para editar");
+    }
+    else if (selectedRows.length >= 2) {
+      alert("Por favor selecciona exactamente un registro para editar");
     } else {
-      Swal.fire({
-        title: "Error",
-        text: "El usuario no tiene una cuenta asignada para editar",
-        icon: "error"
-      });
+      // Busca el empleado completo basado en el ID seleccionado ya que selectedRows es solo el id no todo el employee completo que es lo q se nececita
+      const employeeToEdit = employees.find(emp => emp.id === selectedRows[0]); //obtenemos solo el primero para que en caso de falla solo modifica/edita el primero encontrado ya q no se puede hacer ediciones multiples 
+      setEditingEmployee(employeeToEdit); //le pasamos employee to edit ya con la informacion completa de ese registro 
+      setActivateForm("Editar empleado"); 
     }
   };
 
-  const handleCrearUsuario = (usuario) => {
-    console.log("Crear una cuenta para usuario:", usuario)
-    setSelectedUser(usuario);
-    setShowForm(true)
-  }
+  const handleEditUserClick = (userData) => {
+    setEditingUser(userData);
+    setActivateForm("Editar Usuario");
+  };
 
-  const handleCrearCuenta = (usuario) => {
-    console.log("Crear una cuenta para usuario:", usuario)
-    setSelectedUser(usuario);
-    setShowAssignForm(true)
-  }
+  const cancelForm = () => {
+    setActivateForm(null);
+    setEditingEmployee(null); 
+  };
 
-  const handleFormSubmit = async (formData) => {
+  const submitForm = async (newEmployeeData) => {
     try {
-      console.log("Datos enviados al servidor:", formData); // Depuración
-      const newEmployee = await addEmployees(formData); // Llamada al backend
-      console.log("Respuesta del backend:", newEmployee);
-
-      // Actualizar lista de empleados en el estado
-      setEmployees((prev) => [newEmployee, ...prev]);
-      setFilteredEmployees((prev) => [newEmployee, ...prev]);
-
-      // Notificar al usuario
-      setShowForm(false);
-      await Swal.fire({
-        title: "¡Éxito!",
-        text: "El usuario ha sido creado correctamente.",
-        icon: "success",
-        confirmButtonText: "Aceptar"
-      });
-
-      // Ocultar formulario
+      await createEmployee(newEmployeeData)
+      setActivateForm(null)
+      Swal.fire("¡Éxito!", "Empleado creado correctamente", "success");
     } catch (error) {
-      console.error("Error al crear el usuario:", error);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo crear el usuario. Recuerda que los permisos de tu rol determinan tus accesos y acciones.",
-        icon: "error",
-        confirmButtonText: "Aceptar"
-      });
+      alert("fallo", error)
     }
   };
 
-  const handleFormSubmitCuenta = async (formData) => {
+
+  const submitFormUser = async (newUserData) => {
     try {
-      console.log("Asignando cuenta para el usuario:", selectedUser, "con datos:", formData);
-
-      // Crear el payload que se enviará al backend
-      const payload = {
-        id_empleado: selectedUser.id, // Asociar la cuenta con el empleado seleccionado
-        usuario: formData.usuario,
-        password: formData.password,
-        rol: formData.rol,
-        estado: formData.estado,
-      };
-      console.log("Payload: ", payload)
-      // Llamada a la API para asignar la cuenta
-      const response = await addUsers(payload); // Cambia `addUsers` por tu función API correspondiente
-      console.log("Cuenta asignada con éxito:", response);
-
-      // Actualizar la lista de empleados para reflejar el cambio
-      setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === selectedUser.id ? { ...emp, cuenta_usuario: response } : emp
-        )
-      );
-
-      setFilteredEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === selectedUser.id ? { ...emp, cuenta_usuario: response } : emp
-        )
-      );
-
-      // Mostrar notificación de éxito
-      Swal.fire({
-        title: "¡Éxito!",
-        text: "La cuenta ha sido asignada correctamente.",
-        icon: "success",
-        confirmButtonText: "Aceptar",
+      await createUser({
+        ...newUserData,
+        id_empleado: employeeForUser.id 
       });
-
-      // Limpiar el estado y cerrar el formulario
-      setShowAssignForm(false);
-      setSelectedUser(null);
+      setActivateForm(null);
+      setEmployeeForUser(null);
+      Swal.fire("¡Éxito!", "Usuario asignado correctamente", "success");
     } catch (error) {
-      console.error("Error al asignar la cuenta:", error);
-      Swal.fire({
-        title: "Error",
-        text: "La cuenta no pudo ser asignada. Recuerda que los permisos de tu rol determinan tus accesos y acciones. ",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
+      Swal.fire("Error", "No se pudo crear el usuario", "error");
+      console.error(error);
     }
   };
 
-  const handleFormActualizarCuenta = async (id, formData) => {
+  const handleUpdateEmployee = async (updateDataEmployee) => {
     try {
-      const payload = {
-        id,
-        ...formData,
-        id_empleado: editingUser.id_empleado
-      };
-  
-      const updatedUser = await editUsers(id, payload);
-      
-      // Actualizar editingUser con los nuevos datos
-      setEditingUser(updatedUser);
-  
-      // Función para actualizar empleados
-      const updateEmployee = (emp) => {
-        if (emp.id === payload.id_empleado) {
-          return {
-            ...emp,
-            cuenta_usuario: updatedUser
-          };
-        }
-        return emp;
-      };
-  
-      // Actualizar ambos estados
-      setEmployees(prev => prev.map(updateEmployee));
-      setFilteredEmployees(prev => prev.map(updateEmployee));
-  
-      // Cerrar formulario y mostrar éxito
-      setShowUpdateForm(false);
-      Swal.fire("¡Éxito!", "Cambios guardados", "success");
-      
+      await updateEmployee(editingEmployee.id, updateDataEmployee);
+      Swal.fire("¡Éxito!", "Empleado actualizado", "success");
+      setActivateForm(null)
     } catch (error) {
-      Swal.fire("Error", "No se pudieron guardar los cambios. Recuerda que los permisos de tu rol determinan tus accesos y acciones.", "error");
+
     }
   };
 
-  const handleSaveEditUsuario = (usuario) => {
-    setEditingUser(usuario);
-  }
-
-  const handleCreateNew = () => {
-    setShowForm(true); // Mostrar formulario de creación
-  };
-
-
-  const handleCancelForm = () => {
-    console.log("Botón de cancelar presionado");
-    setShowForm(false); // Cerrar formulario sin guardar
-  };
-
-  const handleVerUsuario = (usuario) => {
-    setEditingUser(usuario);
-  }
-
-  const handleEliminarUser = async () => {
-    const [userList] =  await Promise.all([
-      getUsers()
-    ]);
-
-    let continuar = true;
-  
-    if (selectedEmployees.length === 0) {
-      Swal.fire({
-        title: "Error",
-        text: "Es necesario seleccionar al menos un empleado para proceder con la eliminación. Por favor, realice una selección válida y vuelva a intentarlo.",
-        icon: "error"
-      });
-      return;
+  const handleUpdateUser = async (updatedUserData) => {
+    try {
+      await updateUser(editingUser.id_usuario_real, updatedUserData);
+      Swal.fire("¡Éxito!", "Usuario actualizado correctamente", "success");
+      setActivateForm(null);
+      setEditingUser(null);
+    } catch (error) {
+      Swal.fire("Error", "No se pudo actualizar el usuario", "error");
+      console.error(error);
     }
+  };
 
-    const empleadosConCuenta = selectedEmployees.filter(id =>
-      userList.some(user => user.id_empleado === id)
-    );    
-    //Validacion de cuenta de usuario
-    const textoDinamico = empleadosConCuenta.length > 0
-      ? `Hay ${empleadosConCuenta.length} empleado(s) con cuenta de usuario. ¿Deseas continuar?`
-      : "¿Deseas eliminar los empleados seleccionados?";
-    //arroja le alerta con el texto dinamico,sin importar el caso si la respuesta Es afirmativa se eliminan los empleados
-    const resultado = await Swal.fire({
-        title: "Revisión",
-        text: textoDinamico,
-        icon: "warning",
+  const handleDeleteEmloyee = async (selectedRows) =>  {
+    if (selectedRows.length === 0) {
+    alert("Porfavor selecciona por lo menos un empleado para eliminar")
+    } else {
+      await deleteEmployee(selectedRows)
+    }
+  };
+
+  const handleDeleteUser = async (userData) => {
+    try {
+      const result = await Swal.fire({
+        title: `¿Eliminar usuario ${userData.nombre_usuario}?`,
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "Cancelar"
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
       });
-      console.log("ingrese a la validacion")
-      continuar = resultado.isConfirmed;
-      
-    
-  
-    if (!continuar) return;
 
-    try {
-      for (const id of selectedEmployees) {
-        await deleteEmployees(id);
-      };
-
-      // Actualizamos el estado local para eliminar los empleados
-      setEmployees((prevEmployees) =>
-        prevEmployees.filter((emp) => !selectedEmployees.includes(emp.id)) // Filtramos los empleados eliminados
-      );
-
-      setFilteredEmployees((prevFiltered) =>
-        prevFiltered.filter((emp) => !selectedEmployees.includes(emp.id)) // Filtramos los empleados eliminados en el filtro también
-      );
-
-      Swal.fire({
-        title: "Usuario(s) eliminado(s).",
-        text: "Se eliminaron los usuarios correctamente.",
-        icon: "success",
-        confirmButtonText: "Aceptar"
-      })
-      window.location.reload();
-
+      if (result.isConfirmed) {
+        await deleteUser(userData.id_usuario_real);
+        Swal.fire(
+          '¡Eliminado!',
+          'El usuario ha sido eliminado correctamente.',
+          'success'
+        );
+        // Cierra la fila expandida si está abierta
+        setExpandedRow(null);
+      }
     } catch (error) {
-      console.error("Hubo un error al eliminar los usuarios.", error);
-      Swal.fire({
-        title: "Error",
-        text: "Ocurrió un error al eliminar los usuarios. Recuerda que los permisos de tu rol determinan tus accesos y acciones.",
-        icon: "error",
-        confirmButtonText: "Aceptar"
-      });
+      Swal.fire(
+        'Error',
+        'No se pudo eliminar el usuario',
+        'error'
+      );
+      console.error("Error al eliminar usuario:", error);
     }
   };
 
 
   return (
     <div>
-    <Sidebar />
-
-    <div>
-      <Header /> {/* Encabezado */}
+      <Sidebar />
+      <Header />
       <Toolbar
-        onSearch={handleBuscar} // Búsqueda
-        onDelete={handleEliminarUser} // Eliminar
-        onEdit={handleEditar} // Placeholder para editar
-        onCreate={handleCreateNew} // Crear nuevo empleado
-        
-        onfilter={handleFilter}
-        
+              onCreate={handleCreateEmployee}
+              onEdit={handleEditEmployee}
+              onDelete={handleDeleteEmloyee}
+              buttonsGap="40px"
+              editLabel="Editar"
+              onActiveButton={true}
+            >
+              <Toolbar.Search 
+                placeholder="Buscar..." 
+                onSearch={(text) => setSearchText(text)}  
+              />
+              <Toolbar.Dropdown 
+                options={{
+                  "activo": "Activo", 
+                  "inactivo": "Inactivo",
+                  "": "Todos"
+                }}
+                onSelect={(option) => setStatusFilter(option)}
+              />
+            </Toolbar>
+      <Table
+        data={employees}
+        onSelectionChange={handleSelectionChange}
+        selectable={true}
+        columns={columns}
+        containerStyle={{ fontSize: '13px' }}
+        expandable={true}
+        renderExpandedContent={renderUserDetails}
+        expandedRows={expandedRow ? [expandedRow] : []}
       />
-      {/* Formulario de creación, visible cuando showForm es true */}
-      {showCreateForm && (
-        <CreateForm
-          showForm={showCreateForm}
-          handleFormSubmit={handleFormSubmit}
-          onSubmit={handleFormSubmit}
-          setShowForm={setShowForm}
-        />
-      )}
-      {showAssignForm && (
-        <AsignForm
-          showForm={showAssignForm}
-          selectedUser={selectedUser}
-          handleFormSubmitCuenta={handleFormSubmitCuenta}
-          setShowForm={setShowAssignForm}
-          setSelectedUser={setSelectedUser}
+
+      {(activateForm === "Crear" || activateForm === "Editar empleado") &&(
+        <UserForm 
+          title={activateForm === "Crear" ? "Crear Nuevo Empleado" : 'Editar Empleado'}
+          onSubmit={activateForm === "Crear" ? submitForm : handleUpdateEmployee}
+          fields = {[
+            {
+              name: "nombres",
+              label: "Nombres",
+              placeholder: "Nombre", 
+              type: "text", 
+              required: true
+            },
+            {
+              name: "apellidos",
+              label: "Apellidos",
+              placeholder: "Apellidos", 
+              type: "text", 
+              required: true
+            },
+            {
+              name: "cedula",
+              label: "Cédula",
+              placeholder: "Identificación", 
+              type: "text", 
+              required: true
+            },
+            {
+              name: "correo",
+              label: "Correo electronico",
+              placeholder: "user.ejemplo@gmail.com", 
+              type: "text", 
+              required: true
+            },
+            {
+              name: "estado",
+              label: "Estado",
+              type: "select", 
+              options: [
+                {value: "AC", label: "Activo"},
+                {value: "IN", label: "Inactivo"}
+              ],
+              required: true,
+              defaultValue: 'AC',
+            },
+            {
+              name: "id_sucursal",
+              label: "Sucursal",
+              type: "select", 
+              options: branches?.map(bra => ({
+                value: bra.id,
+                label: bra.nombre
+              })) || [],
+              required: true
+            },
+          ]}
+          onCancel={cancelForm}
+          initialValues={editingEmployee}
         />
       )}
 
-{editingUser && (
-  <UpdateForm
-    showForm={showUpdateForm}
-    selectedUser={editingUser}
-    handleFormActualizarCuenta={handleFormActualizarCuenta}
-    setShowForm={setShowUpdateForm}
-    onCancel={() => {
-      setShowUpdateForm(false);
-      setEditingUser(null);
-    }}
-  />
-)}
-
-      {editingEmployee && (
-        <EmployeeUpdateForm
-          employee={editingEmployee}
-          sucursalesMap={sucursalesMap}
-          onSubmit={handleGuardarEdicion}
-          onCancel={() => setEditingEmployee(null)}
+      {(activateForm === "Crear Usuario") && (
+        <UserForm 
+          title={`Asignar Usuario a ${employeeForUser?.nombres} ${employeeForUser?.apellidos}`}
+          onSubmit={submitFormUser}
+          fields={[
+            {
+              name: "usuario",
+              label: "Nombre de Usuario",
+              type: "text",
+              required: true
+            },
+            {
+              name: "password",
+              label: "Contraseña",
+              type: "password", 
+              required: true
+            },
+            {
+              name: "rol",
+              label: "Rol",
+              type: "select",
+              options: [
+                {value: "AD", label: "Administrador"},
+                {value: "PR", label: "Perito"},
+                {value: "RC", label: "Recepcionista"},
+                {value: "CA", label: "Admin Convenio"},
+                {value: "CC", label: "Consultor Convenio"}
+              ],
+              required: true
+            },
+            {
+              name: "estado",
+              label: "Estado",
+              type: "select",
+              options: [
+                {value: "AC", label: "Activo"},
+                {value: "IN", label: "Inactivo"}
+              ],
+              required: true,
+              defaultValue: 'AC',
+            }
+          ]}
+          onCancel={() => {
+            setActivateForm(null);
+            setEmployeeForUser(null);
+          }}
         />
       )}
 
-      {/* Tabla de empleados */}
-      <UserTable
-        filteredEmployees={filteredEmployees}
-        selectedEmployees={selectedEmployees}
-        expandedRow={expandedRow}
-        handleCheckboxChange={handleCheckboxChange}
-        toggleRow={setExpandedRow}
-        handleCrearUsuario={handleCrearUsuario}
-        handleCrearCuenta={handleCrearCuenta}
-        handleVerUsuario={handleVerUsuario}
-        handleViewDetails={handleViewDetails} // Pasa el manejador
-        handleEditingUser={handleEditingUser} // Pasa el manejador
-        editingUser={editingUser}
-        setEditingUser={setEditingUser}
-        setEmployees={setEmployees}
-        employees={employees}
-        setFilteredEmployees={setFilteredEmployees} // Pasar la lista de empleados al componente UserTable
+      {(activateForm === "Editar Usuario" && editingUser) && (
+      <UserForm 
+        title={`Editar Usuario de ${editingUser.nombres} ${editingUser.apellidos}`}
+        onSubmit={handleUpdateUser}
+        fields={[
+          {
+            name: "usuario",
+            label: "Nombre de Usuario",
+            type: "text",
+            required: true
+          },
+          {
+            name: "rol",
+            label: "Rol",
+            type: "select",
+            options: [
+              {value: "AD", label: "Administrador"},
+              {value: "PR", label: "Perito"},
+              {value: "RC", label: "Recepcionista"},
+              {value: "CA", label: "Administrador Convenio"},
+              {value: "CC", label: "Consultor Convenio"}
+            ],
+            required: true
+          },
+          {
+            name: "estado",
+            label: "Estado",
+            type: "select",
+            options: [
+              {value: "AC", label: "Activo"},
+              {value: "IN", label: "Inactivo"}
+            ],
+            required: true
+          }
+        ]}
+        onCancel={() => {
+          setActivateForm(null);
+          setEditingUser(null);
+        }}
+        initialValues={{
+          usuario: editingUser.nombre_usuario,
+          rol: editingUser.rol_usuario,
+          estado: editingUser.estado_usuario
+        }}
       />
-    </div>
+    )}
     </div>
   );
-};
+}
 
 export default Usuarios;

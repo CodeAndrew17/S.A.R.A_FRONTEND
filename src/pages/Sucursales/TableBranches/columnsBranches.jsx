@@ -52,8 +52,8 @@ const columnsBranch = ({ setEditingBranch, setActiveForm }) => [
         width="100px"
         height="35px"
         onClick={() => {
-          setEditingBranch(record); // ← PASADO COMO PROP
-          setActiveForm("sucursal"); // ← PASADO COMO PROP
+          setEditingBranch(record); 
+          setActiveForm("sucursal"); 
         }}
         icon={Edit}
       >

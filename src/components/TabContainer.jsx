@@ -7,12 +7,17 @@ const TabsBar = styled.div`
   gap: 3rem;
   border-bottom: 1px solid #e5e5e5;
   margin-bottom: 1.5rem;
+  background-color: #f0f0f0;
+  height: 90px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
 `;
 
 const TabBtn = styled.button`
   background: none;
+    margin-top: 15px;
   border: none;
-  font-size: 1.6rem;
+  font-size: 2.3rem;
   font-weight: 600;
   font-family: 'Poppins', sans-serif; 
   padding: .6rem 0;
@@ -34,6 +39,9 @@ const TabBtn = styled.button`
   &:hover::after {
     width: 100%;
   }
+
+  @media (max-width: 600px) {
+    font-size: 1.5rem;}
 `;
 
 

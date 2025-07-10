@@ -63,6 +63,7 @@ export default function ConveniosPanel() {
           data={orderData}
           columns={columnsAgreement({ setEditing, setActiveForm })}
           onSelectionChange={setSelected}
+          containerStyle={{ fontSize: '13px' }}
         />
       </div>
 

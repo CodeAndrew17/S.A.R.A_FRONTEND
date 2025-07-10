@@ -101,16 +101,16 @@ const usePlansandVehicles = () => {
 
         // Eliminar los planes
         const results = await Promise.all(
-  idList.map(async (id) => {
-    try {
-      await deletePlans(id);
-      return { success: true, id };
-    } catch (error) {
-      console.error(`Error eliminando plan ${id}:`, error);
-      return { success: false, id, error };
-    }
-  })
-);
+    idList.map(async (id) => {
+        try {
+        await deletePlans(id);
+        return { success: true, id };
+        } catch (error) {
+        console.error(`Error eliminando plan ${id}:`, error);
+        return { success: false, id, error };
+        }
+    })
+    );
 
 const exitosos = results.filter(r => r.success);
 const fallidos = results.filter(r => !r.success);
