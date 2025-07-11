@@ -119,19 +119,18 @@ const ContainerCardSoli = styled.div`
     margin-left: 60px;
     max-width: 530px;
 
-
     @media (max-width: 1472px) and (min-width: 1291px) {
         margin-left: 20px;
         margin-top: 290px;
     }
 
     @media (max-width: 1276px) and (min-width: 780px) {
-        margin-left: 20px;
+        margin-left: 80px;
         margin-top: 290px;
     }
 
     @media (max-width: 1472px) and (min-width: 1433px) {
-        margin-left: 60px;
+        margin-left: 80px;
         margin-top: 290px;
     }
 
@@ -146,7 +145,7 @@ const ContainerCardSoli = styled.div`
     }
 
     @media (max-width: 500px) and (min-width: 100px){
-        margin-left: -85px;
+        margin-left: -55px;
         margin-top: 320px;
         width: 300px;
 

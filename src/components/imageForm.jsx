@@ -17,8 +17,10 @@ const FormContainer = styled.form`
     transform: translateY(-4px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.20);
   }
-}
 
+  @media (max-width: 500px) {
+    max-width: 300px;
+  }
 `;
 
 const InputFile = styled.input`
@@ -30,6 +32,10 @@ const InputFile = styled.input`
 
   &:hover {
     border-color: #78909c;
+  }
+
+  @media (max-width: 500px) {
+    max-width: 270px;
   }
 `;
 

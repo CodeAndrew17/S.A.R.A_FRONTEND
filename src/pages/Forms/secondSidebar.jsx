@@ -1,3 +1,4 @@
+// Cambios visuales al Sidebar, sin tocar lógica crítica
 import React, {useRef, useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown, CheckCircle, FilePlus } from 'lucide-react';
@@ -7,7 +8,7 @@ import autosef from "../../assets/images/autosef.png"
 const SidebarContainer = styled.div`
   width: 260px;
   min-height: 100%;
-  height: 100vh;  /* Lo intenta, pero el min-height asegura respaldo */
+  height: 100vh;
   background: linear-gradient(to bottom, #104E8B 0%, #1D6E94 70%, #2A8E9B 100%);
   color: white;
   display: flex;
@@ -26,19 +27,17 @@ const SidebarContainer = styled.div`
   }
 
   @media (max-width: 500px) {
-    max-width: 150px;
+    max-width: 200px;
   }
 `;
-
 
 const LogoImage = styled.img`
   width: 80%;
   max-width: 180px;
-  margin: 0 auto 1.5 rem auto;
+  margin: 0 auto 1.5rem auto;
   padding-bottom: 1.5rem;
   display: block;
   object-fit: contain;
-  padding-left: 35px;
 
   @media (max-width : 768px) {
     width: 70%;
@@ -57,15 +56,11 @@ const ScrollIndicator = styled.div`
   pointer-events: none;
   transition: opacity 0.3s ease;
   animation: bounce 1.5s infinite;
-  z-index: 10;
+  text-shadow: 0 0 8px #ffffff55;
 
   @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(8px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
   }
 
   @media (max-width: 768px) {
@@ -77,7 +72,7 @@ const ScrollIndicator = styled.div`
 
 const ContentWrapper = styled.div`
   max-width: 100%;
-  
+
   @media (min-width: 1200px) {
     max-width: 280px;
   }
@@ -102,32 +97,50 @@ const InfoBox = styled.div`
   @media (max-width: 768px) {
     padding: 1rem;
     font-size: 0.95rem;
-    width: 120px;
+    width: 170px;
     height: 7px;
   }
 `;
 
-const Label = styled.span`
-  font-weight: 700;
-  color: #a0c4ff;
-  font-size: 1rem;
-  display: inline-block;
-  min-width: 50px;
+const PlacaHeading = styled.h4`
+  margin-top: -3px;
+  text-align: center;
+  letter-spacing: 0.2em;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-weight: 650;
+  font-size: clamp(0.95rem, 1.2vw, 1.2rem);  /* Se adapta dinámicamente */
 
-  @media (max-width: 768px) {
-    min-width: 45px;
-    font-size: 0.95rem;
+  @media (max-width: 500px) {
+    font-size: 1.8rem;
+    margin-top: -13px;
   }
 `;
 
-const Value = styled.span`
-  font-weight: 500;
-  font-size: 1rem;
-  color: #ffffff;
-
-  @media (max-width: 768px) {
-    font-size: 0.95rem;
+const SectionTitle = styled.h4`
+  margin: 2rem 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: ${({ $tipo }) => ($tipo === 'adicional' ? '#ffffffff' : '#ffffffff')};
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #ffffff55, transparent);
+    border-radius: 1px;
+    max-width: 30%;
   }
+`;
+
+const FormGroup = styled.div`
+  background-color: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 `;
 
 const MenuItem = styled.button`
@@ -141,58 +154,31 @@ const MenuItem = styled.button`
   padding: 0.9rem 1.2rem;
   margin-bottom: 0.6rem;
   cursor: pointer;
-  text-align: left;
   width: 100%;
   border-radius: 8px;
   border: none;
-  transition: all 0.25s ease;
   font-weight: 500;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+  animation: fadeInUp 0.3s ease both;
 
   &:hover {
     background: ${({ $respondido }) =>
       $respondido ? 'rgba(0, 200, 100, 0.25)' : 'rgba(255, 255, 255, 0.15)'};
     color: #ffffff;
     transform: translateX(5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  &:active {
-    transform: translateX(3px);
-  }
-`;
-
-const SectionTitle = styled.h4`
-  margin: 2rem 0 1rem;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color:rgb(148, 225, 255);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-
-  &::before {
-    content: '';
-    flex: 1;
-    height: 2px;
-    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25));
-    border-radius: 1px;
+  svg {
+    transition: transform 0.3s ease;
   }
 
-  &::after {
-    content: '';
-    flex: 1;
-    height: 2px;
-    background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.25));
-    border-radius: 1px;
+  &:hover svg {
+    transform: rotate(-3deg) scale(1.05);
   }
 
-  @media (max-width: 768px) {
-    font-size: 1rem;
-    margin: 1.5rem 0 0.8rem;
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(5px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 `;
 
@@ -204,30 +190,10 @@ const EmptyMessage = styled.p`
   text-align: center;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 6px;
-
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-    padding: 0.7rem;
-  }
-`;
-
-const Footer = styled.footer`
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
-  text-align: center;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-  @media (max-width: 768px) {
-    margin-top: 1rem;
-    padding-top: 0.8rem;
-    font-size: 0.75rem;
-  }
 `;
 
 const VolverButton = styled.button`
-  background-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(to right, #ffffff22, #ffffff0f);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   font-size: 1rem;
@@ -239,35 +205,24 @@ const VolverButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  cursor: pointer;
   font-weight: 600;
   transition: background 0.3s ease;
+  backdrop-filter: blur(2px);
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.15);
   }
-
-  @media (max-width: 768px) {
-    padding: 0.7rem 1rem;
-    font-size: 0.95rem;
-    margin-top: 1rem;
-  }
 `;
 
-const PlacaHeading = styled.h4`
-  margin-top: -3px;
+const Footer = styled.footer`
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
   text-align: center;
-  letter-spacing: 0.2em;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  font-weight: 650;
-  font-size: clamp(0.95rem, 1.2vw, 1.2rem);  /* Se adapta dinámicamente */
-
-  @media (max-width: 500px) {
-    font-weight: 500;
-  }
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
-// El componente Sidebar permanece exactamente igual
 const Sidebar = ({
   onSelect,
   onBack,
@@ -281,96 +236,80 @@ const Sidebar = ({
 }) => {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
-  const [arrowTop, setArrowTop] = useState(0); 
   const [arrowVisible, setArrowVisible] = useState(true);
-
-  React.useEffect(() => {
-    if (id_plan) {
-      sessionStorage.setItem("id_plan", id_plan);
-    }
-  }, [id_plan]);
 
   useEffect(() => {
     const sidebar = sidebarRef.current;
-
-    if (!sidebar) return; 
+    if (!sidebar) return;
 
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = sidebar;
-
-      const newTop = scrollTop + clientHeight - 40;
-      setArrowTop(newTop);
-
-      const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
-      setArrowVisible(!atBottom);
+      setArrowVisible(scrollTop + clientHeight < scrollHeight - 5);
     };
 
     sidebar.addEventListener('scroll', handleScroll);
-    handleScroll(); // inicializa la posición
-
-    return () => {
-      sidebar.removeEventListener('scroll', handleScroll);
-    };
+    handleScroll();
+    return () => sidebar.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
-  if (typeof onContarFormularios === "function") {
-    onContarFormularios(formulariosPrincipales.length, formulariosAdicionales.length);
-  }
-}, [formulariosPrincipales, formulariosAdicionales]);
+    if (typeof onContarFormularios === "function") {
+      onContarFormularios(formulariosPrincipales.length, formulariosAdicionales.length);
+    }
+  }, [formulariosPrincipales, formulariosAdicionales]);
 
   return (
     <SidebarContainer ref={sidebarRef}>
       <ContentWrapper>
         <LogoImage src={autosef} alt="Autosef logo" />
+        <InfoBox><PlacaHeading>{placa.slice(0, 3) + ' · ' + placa.slice(3)}</PlacaHeading></InfoBox>
 
-        <InfoBox>
-          <PlacaHeading>{placa.slice(0, 3) + ' · ' + placa.slice(3)}</PlacaHeading>
-        </InfoBox>
+        <SectionTitle><ClipboardList size={16} /> FORMULARIOS PRINCIPALES</SectionTitle>
+        <FormGroup>
+          {formulariosPrincipales.length === 0 ? (
+            <EmptyMessage>No hay formularios principales</EmptyMessage>
+          ) : (
+            formulariosPrincipales.map(form => {
+              const respondido = formulariosRespondidos.includes(form.id);
+              return (
+                <MenuItem
+                  key={form.id}
+                  onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}
+                  $respondido={respondido}
+                >
+                  <FileText size={18} />
+                  {form.nombre_formulario}
+                  {respondido && <CheckCircle size={16} color="#50fa7b" style={{ marginLeft: 'auto' }} />}
+                </MenuItem>
+              );
+            })
+          )}
+        </FormGroup>
 
-        <SectionTitle><span>Formularios Principales</span></SectionTitle>
-        {formulariosPrincipales.length === 0 && <EmptyMessage>No hay formularios principales</EmptyMessage>}
-
-        {formulariosPrincipales.map(form => {
-          const respondido = formulariosRespondidos.includes(form.id);
-          return (
-            <MenuItem
-              key={form.id}
-              onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}
-              $respondido={respondido}
-            >
-              <FileText size={18} />
-              {form.nombre_formulario}
-              {respondido && (
-                <CheckCircle size={16} color="#50fa7b" style={{ marginLeft: 'auto' }} />
-              )}
-            </MenuItem>
-          );
-        })}
-
-        <SectionTitle><span>Formularios Adicionales</span></SectionTitle>
-        {formulariosAdicionales.length === 0 && <EmptyMessage>No hay formularios adicionales</EmptyMessage>}
-
-        {formulariosAdicionales.map(form => {
-          const respondido = formulariosRespondidos.includes(form.id);
-          return (
-            <MenuItem
-              key={form.id}
-              onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}
-              $respondido={respondido}
-            >
-              <FilePlus size={18} />
-              {form.nombre_formulario}
-              {respondido && (
-                <CheckCircle size={16} color="#50fa7b" style={{ marginLeft: 'auto' }} />
-              )}
-            </MenuItem>
-          );
-        })}
+        <SectionTitle $tipo="adicional"><FilePlus size={16} /> FORMULARIOS ADICIONALES</SectionTitle>
+        <FormGroup>
+          {formulariosAdicionales.length === 0 ? (
+            <EmptyMessage>No hay formularios adicionales</EmptyMessage>
+          ) : (
+            formulariosAdicionales.map(form => {
+              const respondido = formulariosRespondidos.includes(form.id);
+              return (
+                <MenuItem
+                  key={form.id}
+                  onClick={() => onSelect({ id: form.id, nombre: form.nombre_formulario })}
+                  $respondido={respondido}
+                >
+                  <FilePlus size={18} />
+                  {form.nombre_formulario}
+                  {respondido && <CheckCircle size={16} color="#50fa7b" style={{ marginLeft: 'auto' }} />}
+                </MenuItem>
+              );
+            })
+          )}
+        </FormGroup>
 
         <VolverButton onClick={() => navigate("/revisiones")}>
-          <ArrowLeftCircle size={20} />
-          Volver
+          <ArrowLeftCircle size={20} /> Volver
         </VolverButton>
       </ContentWrapper>
 

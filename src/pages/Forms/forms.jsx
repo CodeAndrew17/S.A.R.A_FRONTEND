@@ -527,7 +527,6 @@ function FormsView() {
       display: 'flex',
       justifyContent: 'center',
       width: '100%',
-      marginTop: '16px',
     }}
   >
     <div style={{ width: 'min(100%, 500px)' }}>
@@ -542,7 +541,6 @@ function FormsView() {
     </div>
   </div>
 </ContainerCardSoli>
-
 
         </ContainerContent>
 

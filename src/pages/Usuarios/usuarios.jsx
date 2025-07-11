@@ -13,14 +13,14 @@ import filterData from '../../utils/unitySearch';
 import getOrderRegister from '../../utils/getLastRegister';
 
 const Usuarios = () => {
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [editingEmployee, setEditingEmployee] = useState(null);
-  const [editingUser, setEditingUser] = useState(null); 
-  const [activateForm, setActivateForm] = useState(null);
-  const [searchText, setSearchText] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [expandedRow, setExpandedRow] = useState(null); // Cambiado de array a valor único
-  const [employeeForUser, setEmployeeForUser] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]); //estado para las filas seleccionadas
+  const [editingEmployee, setEditingEmployee] = useState(null); //estado para los datos del empleado a editar
+  const [editingUser, setEditingUser] = useState(null); //estado para el usuario a editar
+  const [activateForm, setActivateForm] = useState(null);// estado para la activacion del formulario segun se nececite
+  const [searchText, setSearchText] = useState(''); //estado para el filtro search para saber q escribe el usuario
+  const [statusFilter, setStatusFilter] = useState(''); //estado para el filtro dropdwon de los estados
+  const [expandedRow, setExpandedRow] = useState(null); // estado para las filas expandidas (para mostra la informacion de cada usuario del empleado)
+  const [employeeForUser, setEmployeeForUser] = useState(null); //estado para la asigancion directa del usuario con la relaicon del empleado 
 
 
   const {employees, branches, createEmployee, updateEmployee, deleteEmployee, createUser, updateUser, deleteUser} = useEmployeeManagement();
@@ -160,7 +160,7 @@ const Usuarios = () => {
     try {
       await createUser({
         ...newUserData,
-        id_empleado: employeeForUser.id 
+        id_empleado: employeeForUser.id //asignacion con la relacion directa al empleado en el q se esta en ese momento con su llave foranea 
       });
       setActivateForm(null);
       setEmployeeForUser(null);
@@ -362,7 +362,7 @@ const Usuarios = () => {
                 {value: "AD", label: "Administrador"},
                 {value: "PR", label: "Perito"},
                 {value: "RC", label: "Recepcionista"},
-                {value: "CA", label: "Admin Convenio"},
+                {value: "CA", label: "Administrador Convenio"},
                 {value: "CC", label: "Consultor Convenio"}
               ],
               required: true
