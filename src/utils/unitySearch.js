@@ -1,6 +1,8 @@
 //funcion unitaria para usar en los foltros del toolbar - ejemplo de uso mas abajo 
-    const normalizeText = (text) =>
-    text?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const normalizeText = (text) => {
+    if (text == null) return '';
+    return String(text).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    };
 
     const filterData = ({
     data,

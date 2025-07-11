@@ -115,6 +115,7 @@ export default function Sucursales() {
     statusField: 'estado',
     statusFilter,
   });
+  
   const orderData = getOrderRegister({ data: filteredData });
 
   

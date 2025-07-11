@@ -9,6 +9,8 @@ import useEmployeeManagement from './useEmployeeManagement';
 import {columnsEmployees} from './columnsEmployees'; 
 import CustomButton from '../../components/button';
 import { Pencil, UserMinus } from "lucide-react";
+import filterData from '../../utils/unitySearch';
+import getOrderRegister from '../../utils/getLastRegister';
 
 const Usuarios = () => {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -232,6 +234,15 @@ const Usuarios = () => {
     }
   };
 
+    const filteredData = filterData({
+    data: employees,
+    searchText,
+    searchFields: ['nombres', 'apellidos', 'cedula', 'correo','sucursal'],
+    statusField: 'estado',
+    statusFilter,
+  });
+
+  const orderData = getOrderRegister({ data: filteredData });
 
   return (
     <div>
@@ -247,19 +258,16 @@ const Usuarios = () => {
             >
               <Toolbar.Search 
                 placeholder="Buscar..." 
-                onSearch={(text) => setSearchText(text)}  
+                onSearch={setSearchText}
               />
               <Toolbar.Dropdown 
-                options={{
-                  "activo": "Activo", 
-                  "inactivo": "Inactivo",
-                  "": "Todos"
-                }}
-                onSelect={(option) => setStatusFilter(option)}
+                  options={{ AC: 'Activo', IN: 'Inactivo', '': 'Todos' }}
+                  onSelect={setStatusFilter}
+                onSearch={setSearchText}
               />
             </Toolbar>
       <Table
-        data={employees}
+        data={orderData}
         onSelectionChange={handleSelectionChange}
         selectable={true}
         columns={columns}
