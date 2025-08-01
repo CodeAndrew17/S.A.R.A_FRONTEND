@@ -16,17 +16,22 @@ import ProgressBar from '../..//components/ProgressBar';
 import {
   InfoBlock,
   InfoLine,
+  SideAndContent,
   ObservationNote,
   ContainerContent,
   Divider,
   TextLoadImg,
   ImageLoader,
   ContainerCardSoli,
-  HeadContainer,
+  Head,
+  Content,
+  Body,
+  Column,
   Barra,
   VolverButton,
 } from './styles'; 
 import { BackSquareButton } from '../../components/BackButton'; 
+import { max } from 'date-fns';
 
 
 function FormsView() {
@@ -213,7 +218,7 @@ function FormsView() {
   }, [formData]);
 
   useEffect(() => {
-  if (observacionesPlan?.trim()) {
+  if (window.innerWidth < 500 && observacionesPlan?.trim()) {
     Swal.fire({
       title: 'Esta solicitud tiene observaciones',
       text: 'Desplázate hasta el final para revisarlas con detalle.',
@@ -407,159 +412,149 @@ function FormsView() {
   return (
     <motion.div
       key={location.pathname}  // Así la animación se activa al cambiar ruta
-      initial={{ opacity: 0, x: 100 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 100 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      initial={{ opacity: 0, x: 100 }} //efectos
+      animate={{ opacity: 1, x: 0 }} //efectos
+      exit={{ opacity: 0, x: 100 }} //animacion al salir
+      transition={{ duration: 0.5, ease: "easeOut" }} //tipo de animacion
     >
-      <div style={{ display: 'flex' }}>
-        <Sidebar
-          onSelect={setSelected}
-          id_plan={id_plan}
-          placa={placa}
-          plan={plan}
-          formulariosPrincipales={formulariosPrincipales}
-          formulariosAdicionales={formulariosAdicionales}
-          formulariosRespondidos={formulariosRespondidos} //para saber los respondidos y ponerlos en verde
-          onContarFormularios={(principales, adicionales) => {
-            setConteoPrincipales(principales);
-            setConteoAdicionales(adicionales);
-          }}
-        />
+    
+    <SideAndContent>
 
-        <ContainerContent style={{ paddingLeft: '45px', height: '40px', width: '100%' }}>
+      <Sidebar
+        onSelect={setSelected}
+        id_plan={id_plan}
+        placa={placa}
+        plan={plan}
+        formulariosPrincipales={formulariosPrincipales}
+        formulariosAdicionales={formulariosAdicionales}
+        formulariosRespondidos={formulariosRespondidos}
+        onContarFormularios={(principales, adicionales) => {
+          setConteoPrincipales(principales);
+          setConteoAdicionales(adicionales);
+        }}
+      />
 
+      <Content>
+        <Head>
+          <BackSquareButton onClick={() => navigate(-1)}>
+          <	ChevronLeft  size={22} />
+          </BackSquareButton>
 
-          <HeadContainer>
-            <VolverButton>
-            <BackSquareButton onClick={() => navigate(-1)}>
-  <	ChevronLeft  size={22} />
-</BackSquareButton>
-            </VolverButton>
+          <ProgressBar
+            principales={conteoPrincipales}
+            adicionales={conteoAdicionales}
+            respondidos={formulariosRespondidos.length}
+          />
+        </Head>
 
-          <Barra>
-            <ProgressBar
-              principales={conteoPrincipales}
-              adicionales={conteoAdicionales}
-              respondidos={formulariosRespondidos.length}
-            />
-            </Barra>
-          </HeadContainer>
-
-          <ImageLoader>
-            <TextLoadImg><Info size={24} color="#555" style={{ position: 'relative', top: '0px' }}/> Por favor, complete todos los formularios en la barra lateral y adjunte una imagen de perfil del vehículo inspeccionado para incluirla en la plantilla. </TextLoadImg>
+        <Body>
+          <Column>
             <UploadImageForm
-              endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}></UploadImageForm>
+              endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}>
+            </UploadImageForm>
 
-              <GlassCardPro
-                title="Plan:"
-                badgeText={planFiltrado?.nombre_plan || "Plan no disponible"}
-                icon={ClipboardList}
-                width="450px"
-                height="150px"
-                headerBg="rgba(151, 200, 255, 0.4)"
-                borderColor="rgba(37, 99, 235, 0.4)"
-              >
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Cuestionario:</strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
-                </InfoLine>
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
-                </InfoLine>
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Formularios principales:</strong> {conteoPrincipales}
-                </InfoLine>
-                <InfoLine>
-                  <Check size={18} color="green" />
-                  <strong>Formularios adicionales:</strong> {conteoAdicionales}
-                </InfoLine>
-              </GlassCardPro>
-          </ImageLoader>
+            <GlassCardPro
+              title="Plan:"
+              badgeText={planFiltrado?.nombre_plan || "Plan no disponible"}
+              icon={ClipboardList}
+              headerBg="rgba(151, 200, 255, 0.4)"
+              borderColor="rgba(37, 99, 235, 0.4)"
+            >
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Cuestionario:</strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
+              </InfoLine>
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
+              </InfoLine>
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Formularios principales:</strong> {conteoPrincipales}
+              </InfoLine>
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Formularios adicionales:</strong> {conteoAdicionales}
+              </InfoLine>
+            </GlassCardPro>
+          </Column>
 
-<ContainerCardSoli>
-  <GlassCardPro
-    title="Solicitud:"
-    badgeText={placa}
-    icon={Car}
-    width={"750px"}
-    headerBg="rgba(143, 251, 255, 0.6)"
-    borderColor="rgba(0, 102, 255, 0.3)"
-  >
-    <InfoBlock>
-      <InfoLine>
-        <Check size={18} color="green" />
-        <strong>Convenio:</strong> {convenio}
-      </InfoLine>
-      <InfoLine>
-        <Check size={18} color="green" />
-        <strong>Sucursal:</strong> {sucursal}
-      </InfoLine>
-      <InfoLine>
-        <Check size={18} color="green" />
-        <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[tipo_vehiculo]}
-      </InfoLine>
-      <InfoLine>
-        <Check size={18} color="green" />
-        <strong>Fecha de creación:</strong> {fecha}
-      </InfoLine>
-      <InfoLine>
-        <Check size={18} color="green" />
-        <strong>Teléfono:</strong> {telefono}
-      </InfoLine>
-      <Divider />
-      <ObservationNote>
-        <StickyNote
-          size={24}
-          color="#555"
-          style={{ position: 'relative', top: '5px', marginRight: '8px' }}
-        />
-        <strong>Observaciones: </strong> {observacionesPlan || "No hay observaciones"}
-      </ObservationNote>
-    </InfoBlock>
-  </GlassCardPro>
+          <Column>
+            <GlassCardPro
+              title="Solicitud:"
+              badgeText={placa}
+              icon={Car}
+              headerBg="rgba(143, 251, 255, 0.6)"
+              borderColor="rgba(0, 102, 255, 0.3)"
+            >
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Convenio:</strong> {convenio}
+              </InfoLine>
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Sucursal:</strong> {sucursal}
+              </InfoLine>
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[tipo_vehiculo]}
+              </InfoLine>
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Fecha de creación:</strong> {fecha}
+              </InfoLine>
+              <InfoLine>
+                <Check size={18} color="green" />
+                <strong>Teléfono:</strong> {telefono}
+              </InfoLine>
+              <Divider />
+              <ObservationNote>
+                <StickyNote
+                  size={24}
+                  color="#555"
+                  style={{ position: 'relative', top: '5px', marginRight: '8px' }}
+                />
+                <strong>Observaciones: </strong> {observacionesPlan || "No hay observaciones"}
+              </ObservationNote>
+            </GlassCardPro>
+
+            <CustomButton
+              width="auto"
+              bgColor=""
+              hoverColor="#48A2BF"
+              onClick={handleFinishRequest}
+              disabled={
+                !(conteoPrincipales > 0 && conteoAdicionales > 0  && 
+                  formulariosRespondidos.length === (conteoPrincipales + conteoAdicionales)
+                )
+              }
+            >
+              <ClipboardCheck /> Finalizar
+            </CustomButton>
+          </Column>
+        </Body>
 
 
-  <div
-    style={{
-      display: 'flex',
-      justifyContent: 'center',
-      width: '100%',
-    }}
-  >
-    <div style={{ width: 'min(100%, 500px)' }}>
-      <CustomButton
-        width="500px"
-        bgColor="#5FB8D6"
-        hoverColor="#48A2BF"
-        onClick={handleFinishRequest}
-      >
-        <ClipboardCheck /> Finalizar
-      </CustomButton>
-    </div>
-  </div>
-</ContainerCardSoli>
 
-        </ContainerContent>
+        <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
+            {selected === 'usuarios' && <div>Formulario de usuarios</div>}
+            {selected === 'formularios' && <div>Formulario general</div>}
+            {selected === 'solicitudes' && <div>Formulario de solicitudes</div>}
+            {selected?.id && mappedFields.length > 0 && (
+              <UserForm
+                fields={mappedFields}
+                title={selected.nombre}
+                onCancel={handleClose}
+                onSubmit={handleSubmitForm}
+                onFieldChange={handleChangeCategoria}
+                initialValues={selectedCategoria} //pasamos las respuestas previas ya recorridas y asignadas correctamente 
+              />
+            )}
 
-          <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
+      </Content>
 
-          {selected === 'usuarios' && <div>Formulario de usuarios</div>}
-          {selected === 'formularios' && <div>Formulario general</div>}
-          {selected === 'solicitudes' && <div>Formulario de solicitudes</div>}
-          {selected?.id && mappedFields.length > 0 && (
-            <UserForm
-              fields={mappedFields}
-              title={selected.nombre}
-              onCancel={handleClose}
-              onSubmit={handleSubmitForm}
-              onFieldChange={handleChangeCategoria}
-              initialValues={selectedCategoria} //pasamos las respuestas previas ya recorridas y asignadas correctamente 
-            />
-          )}
-        </div>
+    </SideAndContent>
+
     </motion.div>
   );
 }

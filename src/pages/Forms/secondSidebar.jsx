@@ -1,7 +1,7 @@
 // Cambios visuales al Sidebar, sin tocar lógica crítica
 import React, {useRef, useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown, CheckCircle, FilePlus } from 'lucide-react';
+import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown, CheckCircle, FilePlus, PanelTopOpen, PanelTopClose } from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import autosef from "../../assets/images/autosef.png"
 
@@ -21,15 +21,19 @@ const SidebarContainer = styled.div`
   overflow-y: auto;
   scrollbar-width: none;
   z-index: 1000;
+  transition: transform 0.3s ease-in-out; /* 👈 animación elegante */
 
   &::-webkit-scrollbar {
     display: none;
   }
 
-  @media (max-width: 500px) {
-    max-width: 200px;
+  /* en moviles se esconde a la ... */
+  @media (max-width: 768px) {
+    transform: ${({ $open }) => ($open ? "translateX(0)" : "translateY(-100%)")};
+    width: 250px;
   }
 `;
+
 
 const LogoImage = styled.img`
   width: 80%;
@@ -43,7 +47,6 @@ const LogoImage = styled.img`
     width: 70%;
     max-width: 140px;
     margin-bottom: 0.8rem;
-    padding-left: 15px;
   }
 `;
 
@@ -65,6 +68,12 @@ const ScrollIndicator = styled.div`
 
   @media (max-width: 768px) {
     left: 50%;
+    transform: translateX(-50%);
+    bottom: 10px;
+  }
+
+    @media (max-width: 500px) {
+    left: 35%;
     transform: translateX(-50%);
     bottom: 10px;
   }
@@ -94,25 +103,27 @@ const InfoBox = styled.div`
   height: 15px;
   width: 225px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 500px) {
     padding: 1rem;
     font-size: 0.95rem;
     width: 170px;
     height: 7px;
+    margin-left: 20px;
   }
 `;
 
 const PlacaHeading = styled.h4`
-  margin-top: -3px;
+  margin-top: -10px;
   text-align: center;
   letter-spacing: 0.2em;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-weight: 650;
-  font-size: clamp(0.95rem, 1.2vw, 1.2rem);  /* Se adapta dinámicamente */
+  font-size: 1.95rem;
 
   @media (max-width: 500px) {
     font-size: 1.8rem;
     margin-top: -13px;
+    margin-left: 0px;
   }
 `;
 
@@ -223,6 +234,34 @@ const Footer = styled.footer`
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
+const ToggleButton = styled.button`
+  position: fixed;
+  top: 30px;
+  right: 15px;
+  z-index: 1100;
+  background: rgba(16, 78, 139, 0.9);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  /* Ocultar por defecto en pantallas grandes */
+  display: none;
+
+  /* Mostrar solo en móviles */
+  @media (max-width: 768px) {
+    display: block;
+    right: 20px;
+    top: 20px;
+    width: 50px;
+    height: 50px;
+  }
+`;
+
+
+
+
 const Sidebar = ({
   onSelect,
   onBack,
@@ -237,6 +276,7 @@ const Sidebar = ({
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
   const [arrowVisible, setArrowVisible] = useState(true);
+  const [open, setOpen] = useState(true); // estado del sidebar en móvil
 
   useEffect(() => {
     const sidebar = sidebarRef.current;
@@ -259,7 +299,11 @@ const Sidebar = ({
   }, [formulariosPrincipales, formulariosAdicionales]);
 
   return (
-    <SidebarContainer ref={sidebarRef}>
+    <>
+    <ToggleButton onClick={() => setOpen(!open)}>
+      {open ? <PanelTopClose size={24} /> : <PanelTopOpen size={24} />}
+    </ToggleButton>
+    <SidebarContainer ref={sidebarRef} $open={open}>
       <ContentWrapper>
         <LogoImage src={autosef} alt="Autosef logo" />
         <InfoBox><PlacaHeading>{placa.slice(0, 3) + ' · ' + placa.slice(3)}</PlacaHeading></InfoBox>
@@ -309,7 +353,7 @@ const Sidebar = ({
         </FormGroup>
 
         <VolverButton onClick={() => navigate("/revisiones")}>
-          <ArrowLeftCircle size={20} /> Volver
+          <ArrowLeftCircle size={20} /> Cerrar
         </VolverButton>
       </ContentWrapper>
 
@@ -321,6 +365,7 @@ const Sidebar = ({
         <ChevronDown size={34} />
       </ScrollIndicator>
     </SidebarContainer>
+    </>
   );
 };
 

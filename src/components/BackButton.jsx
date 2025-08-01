@@ -11,6 +11,7 @@ export const BackSquareButton = styled.button`
   justify-content: center;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: ;
 
   &:hover {
     background-color: rgb(2, 221, 155);

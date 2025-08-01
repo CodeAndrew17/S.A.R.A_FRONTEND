@@ -1,5 +1,76 @@
 import styled from 'styled-components';
 
+const SideAndContent = styled.div`
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+`;
+
+const Content = styled.div`
+    flex: 1;
+    padding: 1.5rem;
+    margin-left: 260px; /* compensa el ancho del sidebar */
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+
+
+  @media (max-width: 768px) {
+    margin-left: 0; /* en móvil sidebar debería superponerse */
+    width: 100%;
+  }
+`;
+
+
+const Head = styled.div`
+    padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 40px;
+    flex-direction: row;
+    width: 50%;
+    margin-bottom: 1rem;
+
+    @media (max-width: 500px) and (min-width: 300px){
+    gap: 20px;
+    justify-content: flex-start;
+    padding-left: 0;
+    padding-right: 0px;
+    flex-direction: row;
+    width: 100%;
+    }
+
+`;
+
+const Body = styled.div`
+    padding-left: 40px;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    align-items: flex-start;
+
+    @media (max-width: 995px) {
+        flex-direction: column;
+        padding-left: 50px;
+    }
+
+    @media (max-width: 500px) {
+        flex-direction: column;
+        padding-left: 0px;
+    }
+`;
+
+const Column = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex: 1;
+`;
+
 const InfoBlock = styled.div`
     flex: 1 1 300px; 
     padding: 10px 20px;
@@ -100,14 +171,16 @@ const ImageLoader = styled.div`
 
     @media (max-width: 779px) {
         margin-left: 20px;
+
     }
 
     @media (max-width: 500px) {
-        margin-left: -90px;
+        margin-left: -40px;
+        margin-bottom: 1rem;
     }
 `;
 
-//1472
+//1276
 //1433
 const ContainerCardSoli = styled.div`
     display: flex;
@@ -124,7 +197,7 @@ const ContainerCardSoli = styled.div`
         margin-top: 290px;
     }
 
-    @media (max-width: 1276px) and (min-width: 780px) {
+    @media (max-width: 1432px) and (min-width: 780px) {
         margin-left: 80px;
         margin-top: 290px;
     }
@@ -144,11 +217,28 @@ const ContainerCardSoli = styled.div`
         margin-top: 320px;
     }
 
-    @media (max-width: 500px) and (min-width: 100px){
-        margin-left: -55px;
-        margin-top: 320px;
+    @media (max-width: 500px) and (min-width: 400px){
+        margin-left: 5px;
+        margin-top: 310px;
         width: 300px;
+    }
 
+    @media (max-width: 414px) and (min-width: 320px){
+        margin-left: -15px;
+        margin-top: 290px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    @media (max-width: 325px) and (min-width: 100px){
+        margin-left: -30px;
+        margin-top: 310px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     @media (max-width: 1291px) and (min-width: 1277px){
@@ -156,22 +246,6 @@ const ContainerCardSoli = styled.div`
         margin-top: 290px;
     }
 `;
-
-const HeadContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center; // Centro horizontalmente todo
-    flex-direction: column;
-    width: 100%;
-    padding: 0 20px;
-    margin-bottom: 1rem;
-
-    @media (min-width: 600px) {
-        flex-direction: row;
-        justify-content: space-between; 
-    }
-`;
-
 
 const Barra = styled.div`
     display: flex;
@@ -206,15 +280,19 @@ const VolverButton = styled.div`
 `;
 
 export {
-  InfoBlock,
-  InfoLine,
-  ObservationNote,
-  ContainerContent,
-  Divider,
-  TextLoadImg,
-  ImageLoader,
-  ContainerCardSoli,
-  HeadContainer,
-  Barra,
-  VolverButton,
+    InfoBlock,
+    InfoLine,
+    ObservationNote,
+    ContainerContent,
+    Divider,
+    TextLoadImg,
+    ImageLoader,
+    ContainerCardSoli,
+    Head,
+    Barra,
+    VolverButton,
+    Content,
+    SideAndContent,
+    Body,
+    Column
 };

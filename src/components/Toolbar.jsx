@@ -62,7 +62,7 @@ const ContainerToolbar = styled.div`
     }
   }
 
-  @media (min-width: 300px) and (max-width: 518px) {
+  @media (min-width: 300px) and (max-width: 519px) {
     flex-direction: column;
     align-items: center;
     
@@ -72,7 +72,7 @@ const ContainerToolbar = styled.div`
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 15px;
-      width: 100%;
+      width: 90%;
     }
     
     .search-bar-wrapper,

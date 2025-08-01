@@ -7,11 +7,13 @@ const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 470px;
+  width: auto;
+  max-width: 475px;
   padding: 1rem;
   border: 1px solid #90a4ae;
   border-radius: 8px;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
+  max-height: 275px;
 
   &:hover {
     transform: translateY(-4px);
@@ -19,7 +21,7 @@ const FormContainer = styled.form`
   }
 
   @media (max-width: 500px) {
-    max-width: 300px;
+
   }
 `;
 
@@ -131,7 +133,7 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
   return (
     <FormContainer onSubmit={handleSubmit}>
       <label>
-        Selecciona una imagen:
+        Sube la imagen del vehiculo:
         <InputFile type="file" accept="image/*" onChange={handleFileChange} />
       </label>
 

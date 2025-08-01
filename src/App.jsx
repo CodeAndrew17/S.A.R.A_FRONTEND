@@ -10,17 +10,16 @@ import Sucursales from './pages/Sucursales/sucursales';
 import Revisiones from './pages/Solicitudes/revisiones';
 import FormView from './pages/Forms/forms';
 import { AnimatePresence } from 'framer-motion'; 
+import '@fontsource-variable/inter';
 
 // Estilos globales
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
   body, html {
     margin: 0;
     padding: 0;
     width: 100%;    
     height: 100%;
-    font-family: 'Poppins', Helvetica, Arial, sans-serif;
+    font-family: 'Inter Variable', Helvetica, Arial, sans-serif;
     font-size: 12px;
     scroll-behavior: smooth;
 

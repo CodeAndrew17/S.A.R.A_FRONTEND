@@ -2,34 +2,44 @@ import Swal from 'sweetalert2';
 
 export function handleAxiosError(error) {
   const status = error?.response?.status;
-  const data = error?.response?.data;
+  let data = error?.response?.data;
+
+  // Si viene como string, se conveierte a objeto
+  if (typeof data === 'string') {
+    try {
+      data = JSON.parse(data);
+    } catch (e) {
+      // no se pudo parsear
+    }
+  }
 
   let mensaje =
     data?.detail ||
     data?.message ||
     data?.error ||
-    (typeof data === 'string' ? data : null);
+    null;
 
-  // Si no hay mensaje buscamos en objetos que contengan arrays como valores
+  // Verifica si hay una propiedad llamada 'errors' con más detalles
   if (!mensaje && data && typeof data === 'object') {
-    const keys = Object.keys(data);
+    const errores = data.errors || data; // puede que vengan directamente en data o en data.errors
     const erroresExtraidos = [];
 
-    for (const key of keys) {
-      const valor = data[key];
+    for (const key in errores) {
+      const valor = errores[key];
       if (Array.isArray(valor)) {
-        erroresExtraidos.push(...valor);
+        erroresExtraidos.push(`${key}: ${valor.join(', ')}`);
+      } else if (typeof valor === 'string') {
+        erroresExtraidos.push(`${key}: ${valor}`);
       }
     }
 
     if (erroresExtraidos.length > 0) {
-      mensaje = erroresExtraidos.join('\n'); 
+      mensaje = erroresExtraidos.join('\n');
     }
   }
 
   if (!mensaje) mensaje = "Ocurrió un error inesperado.";
 
-  // Mostrar con Swal
   Swal.fire({
     icon: status === 400 ? 'warning' : 'error',
     title:

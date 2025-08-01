@@ -6,6 +6,7 @@ import { getEmployees,
     getUsers, addUsers, deleteUsers, editUsers} from '../../api/api_Usuarios';
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { handleAxiosError } from '../../utils/alertUnauthorized';
 
 
 const useEmployeeManagement = () => {
@@ -38,8 +39,7 @@ const useEmployeeManagement = () => {
             setEmployees(employeesComplete);
             setBranches(branchesData);
         } catch (error) {
-            console.error("Error", error);
-            throw error; 
+            handleAxiosError(error);
         }
     };
         useEffect(() => {
@@ -51,8 +51,8 @@ const useEmployeeManagement = () => {
                 const newEmployee = await addEmployees(newEmployeeData); 
                 fetchAll(); //recargamos los datos para actualizar la tabla 
             } catch (error) {
-                console.error("Error al crear el empleado:", error);
-                throw error; 
+                handleAxiosError(error);
+                throw error;
             }
         }
 
@@ -61,55 +61,48 @@ const useEmployeeManagement = () => {
                 const modifyEmployees = await editEmployees(id, updateData); //enviamos tanto id del registro a actualizar como la data q se valla a actualizar
                 fetchAll(); // volvemos a recurrir a la funcion para simplificar trabajod e recarga en la table
             } catch (error) {
-                console.error("Error al actualizar el empleado: ", error);
-                throw error;
+                handleAxiosError(error);
             }
         }
 
         const deleteEmployee = async (ids) => {
             try {
-                const idList = Array.isArray(ids) ? ids : [ids];
-                const usuarios = await getUsers();
-                
-                // Verificar usuarios relacionados
-                const usuariosRelacionados = usuarios.filter(user => idList.includes(user.id_empleado));
-                
-                if (usuariosRelacionados.length > 0) {
-                    const confirm = await Swal.fire({
-                        title: "¿Estás seguro?",
-                        text: 'Este empleado tiene un usuario asignado. ¿Desea eliminar tanto el registro del empleado como el usuario vinculado?.',
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#3085d6",
-                        confirmButtonText: "Sí, eliminar",
-                        cancelButtonText: "Cancelar"
-                    });
+            const idList = Array.isArray(ids) ? ids : [ids];
+            const usuarios = await getUsers();
+            
+            const usuariosRelacionados = usuarios.filter(user => idList.includes(user.id_empleado));
+            
+            if (usuariosRelacionados.length > 0) {
+                const confirm = await Swal.fire({
+                title: "¿Estás seguro?",
+                text: 'Este empleado tiene un usuario asignado. ¿Desea eliminar tanto el registro del empleado como el usuario vinculado?',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+                });
 
-                    if (!confirm.isConfirmed) return;
+                if (!confirm.isConfirmed) return;
+            }
+
+            await Promise.all(
+                idList.map(async (id) => {
+                try {
+                    await deleteEmployees(id);
+                    if (usuarios.some(user => user.id_empleado === id)) {
+                    await deleteUsers(id);
+                    }
+                } catch (error) {
+                    handleAxiosError(error);
                 }
+                })
+            );
 
-                // Eliminar usuario y empleado
-                const results = await Promise.all(
-                    idList.map(async (id) => {
-                        try {
-                            await deleteEmployees(id);
-                            // Solo eliminar usuario si existe
-                            if (usuarios.some(user => user.id_empleado === id)) {
-                                await deleteUsers(id);
-                            }
-                            return { success: true, id };
-                        } catch (error) {
-                            console.error(`Error al eliminar los registros para ${id}:`, error);
-                            return { success: false, id, error };
-                        }
-                    })
-                );
-                
-                fetchAll();
+            fetchAll();
             } catch (error) {
-                console.error("Error al eliminar empleado:", error);
-                throw error; 
+            handleAxiosError(error);
             }
         };
 
@@ -118,7 +111,8 @@ const useEmployeeManagement = () => {
                 const newUser = await addUsers(newUserData);
                 fetchAll();
             } catch (error) {
-                console.error("Error al crear nuevo usuario", error)
+                handleAxiosError(error);
+                throw error;
             }
         };
 
@@ -127,7 +121,7 @@ const useEmployeeManagement = () => {
                 const modifyUser = await editUsers(idUser,updateDataUser );
                 fetchAll(); 
             } catch (error) {
-                console.log("no se pudo actualizar el empleado", error);
+                handleAxiosError(error);
             }
         };
 
@@ -149,8 +143,7 @@ const useEmployeeManagement = () => {
                 fetchAll();
                 return results;
             } catch (error) {
-                console.error("Error general al eliminar usuarios:", error);
-                throw error;
+                handleAxiosError(error);
             }
         };
 

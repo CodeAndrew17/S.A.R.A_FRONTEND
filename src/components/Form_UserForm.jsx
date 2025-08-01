@@ -57,7 +57,8 @@ const FormContainer = styled.div`
   opacity: 0;
 
   @media (max-width: 600px) {
-    max-height: 900px;
+    max-height: 600px;
+    max-width: 80%;
   }
 `;
 

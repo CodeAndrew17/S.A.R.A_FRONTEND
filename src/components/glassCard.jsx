@@ -12,10 +12,10 @@ const GlassWrapper = styled.div`
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
   padding: 2rem;
   color: #1f1f1f;
-  max-width: ${({ cardWidth }) => cardWidth || '350px'};
-  width: 100%;
+  max-width: ${({ cardWidth }) => cardWidth || '475px'};
+  width: auto;
   height: ${({ cardHeight }) => cardHeight || 'auto'};
-  margin: 2rem;
+
   transition: transform .3s ease, box-shadow .3s ease;
 
   &:hover {

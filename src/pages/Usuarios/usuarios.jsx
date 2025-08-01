@@ -151,7 +151,6 @@ const Usuarios = () => {
       setActivateForm(null)
       Swal.fire("¡Éxito!", "Empleado creado correctamente", "success");
     } catch (error) {
-      alert("fallo", error)
     }
   };
 
@@ -160,16 +159,20 @@ const Usuarios = () => {
     try {
       await createUser({
         ...newUserData,
-        id_empleado: employeeForUser.id //asignacion con la relacion directa al empleado en el q se esta en ese momento con su llave foranea 
+        id_empleado: employeeForUser.id
       });
+
       setActivateForm(null);
       setEmployeeForUser(null);
+
+      // Solo mostramos el Swal si no falló la petición
       Swal.fire("¡Éxito!", "Usuario asignado correctamente", "success");
     } catch (error) {
-      Swal.fire("Error", "No se pudo crear el usuario", "error");
-      console.error(error);
+      // No mostramos Swal aquí porque ya lo hace handleAxiosError automáticamente
+      console.log("Error capturado en submitFormUser");
     }
   };
+
 
   const handleUpdateEmployee = async (updateDataEmployee) => {
     try {

@@ -18,6 +18,7 @@ const StyledButton = styled.button`
   justify-content: center;
   gap: 6px;
   box-sizing: border-box;
+  max-width: 530px; /* Ancho máximo para evitar desbordamiento */
 
   /* Estilos para estado deshabilitado */
   &:disabled {

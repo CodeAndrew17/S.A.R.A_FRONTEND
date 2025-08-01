@@ -9,7 +9,7 @@ const ProgressContainer = styled.div`
   border-radius: 20px;
   overflow: hidden;
   height: 28px;                /* un pelín más alto */
-  margin-top: 12px;
+  margin-top: 10px;
   cursor: pointer;             /* indica que tiene interacción */
 `;
 
@@ -61,9 +61,15 @@ const ProgressFiller = styled.div`
 const ProgressText = styled.p`
   margin: 0;
   font-family: "Inter", system-ui, sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
   color: #333;
+  text-align: center;
+
+  @media (max-width: 500px) {
+    font-size: 0.9rem; /* tamaño más compacto en móviles */
+    text-align: center;
+  }
 `;
 
 
