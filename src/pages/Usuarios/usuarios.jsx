@@ -8,9 +8,10 @@ import Table from '../../components/table'
 import useEmployeeManagement from './useEmployeeManagement';
 import {columnsEmployees} from './columnsEmployees'; 
 import CustomButton from '../../components/button';
-import { Pencil, UserMinus } from "lucide-react";
+import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft } from "lucide-react";
 import filterData from '../../utils/unitySearch';
 import getOrderRegister from '../../utils/getLastRegister';
+import { ImTextColor } from 'react-icons/im';
 
 const Usuarios = () => {
   const [selectedRows, setSelectedRows] = useState([]); //estado para las filas seleccionadas
@@ -59,19 +60,28 @@ const Usuarios = () => {
   return (
     <div style={{ 
       padding: '16px', 
-      backgroundColor: '#f8f9fa',
+      backgroundColor: '#D3D6DA',
       borderTop: '1px solid #dee2e6'
     }}>
       
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-        <div><strong>Usuario:</strong> {row.nombre_usuario || 'No asignado'}</div>
-        <div><strong>Rol:</strong> {roles[row.rol_usuario] || 'No disponible'}</div>
-        <div><strong>Estado Usuario:</strong> {estado[row.estado_usuario || 'No disponible']}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px'}}>
+        <div style={{color:'blue'}}><strong>Informacion de Usuario</strong></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <SquareUserRound size={20} />
+          <strong>Rol - </strong> {roles[row.rol_usuario] || 'No disponible'}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <User size={20} />
+          <strong>Usuario -</strong> {row.nombre_usuario || 'No asignado'}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <ToggleLeft size={20} />
+          <strong>Estado Usuario - </strong> {estado[row.estado_usuario] || 'No disponible'}
+        </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-        <h4 style={{ margin: 0 }}>Detalles del Usuario</h4>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '12px' }}>
         <div style={{ display: 'flex', gap: '8px' }}>
           <CustomButton
             bgColor="#4F98D3"
@@ -83,7 +93,7 @@ const Usuarios = () => {
               handleEditUserClick(row);
             }}
           >
-            <Pencil size={16} /> Editar Usuario
+            <UserRoundPen size={16} /> Editar Usuario
           </CustomButton>
           
           <CustomButton

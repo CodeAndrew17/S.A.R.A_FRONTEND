@@ -13,7 +13,7 @@ const FormContainer = styled.form`
   border: 1px solid #90a4ae;
   border-radius: 8px;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
-  max-height: 275px;
+  max-height: 277px;
 
   &:hover {
     transform: translateY(-4px);
@@ -113,7 +113,7 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
     if (!file) return alert("Por favor selecciona una imagen antes de enviar.");
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("imagen", file);
 
     try {
       setLoading(true);

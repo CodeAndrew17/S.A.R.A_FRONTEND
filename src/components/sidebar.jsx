@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import {useLocation} from "react-router-dom"; 
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {logout} from '../api/api_Manager';
 import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipboardList, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { User, House, NotepadText, Users, NotebookPen, Folder, Logs } from "lucide-react";
 
 
 const UserContainer = styled.div`
@@ -30,7 +32,7 @@ const UserContainer = styled.div`
 `;
 
 
-const UserIcon = styled(FaUser)`
+const UserIcon = styled(User)`
   font-size: 24px;
   min-width: 24px;
   margin-right: ${({ $isOpen }) => ($isOpen ? "25px" : "25px")};
@@ -64,7 +66,7 @@ const ToggleButton = styled.button`
   font-size: 24px;
   cursor: pointer;
   position: absolute;
-  top: 20px;
+  top: 30px;
   left: 18px;
   transition: transform 0.3s ease;
 
@@ -92,6 +94,11 @@ const MenuItem = styled.li`
   &:hover {
     background: #0c3b66;
   }
+
+  ${({ $active}) => $active && `
+      background: #0b2f4d;
+      box-shadow: inset 4px 0 0 #2ec4b6; /* línea amarilla al lado izquierdo */
+  `}
 `;
 
 const Icon = styled.div`
@@ -246,6 +253,9 @@ const Sidebar = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_BREAKPOINT);
   const mobile = window.innerWidth <= MOBILE_BREAKPOINT;
 
+  const location = useLocation(); //verificamos la ruta donde se encuentra el usuario 
+
+
 
   const [isHidden, setIsHidden] = useState(isMobile);
 
@@ -291,11 +301,11 @@ useEffect(() => {
   }, [isMobile]);
 
   const menuItems = [
-    { icon: <FaHome />, text: "Inicio", path: "/inicio" },
-    { icon: <FaFileAlt />, text: "Clientes", path: "/sucursales" },
-    { icon: <FaUsers />, text: "Usuarios", path: "/usuarios" },
-    { icon: <FaTools />, text: "Revisiones", path: "/revisiones" },
-    { icon: <FaClipboardList />, text: "Planes", path: "/administrar" },
+    { icon: <House />, text: "Inicio", path: "/inicio" },
+    { icon: <NotepadText />, text: "Sucursales", path: "/sucursales" },
+    { icon: <Users />, text: "Usuarios", path: "/usuarios" },
+    { icon: <NotebookPen />, text: "Solicitudes", path: "/revisiones" },
+    { icon: <Folder />, text: "Planes", path: "/administrar" },
   ];
 
   return (
@@ -315,14 +325,14 @@ useEffect(() => {
             height: "40px"
           }}
         >
-          <FaBars />
+          <Logs />
         </ToggleButton>
       )}
 
       <SidebarContainer $isOpen={isOpen} $isHidden={isHidden} ref={sidebarRef}>
         {!isMobile && (
           <ToggleButton onClick={() => setIsOpen(prev => !prev)}>
-            <FaBars />
+            <Logs />
           </ToggleButton>
         )}
 
@@ -335,6 +345,8 @@ useEffect(() => {
           {menuItems.map((item, index) => (
             <MenuItem
               key={index}
+              $isOpen={isOpen}
+              $active={location.pathname.startsWith(item.path)}
               onClick={() => {
                 navigate(item.path);
                 if (isMobile) {

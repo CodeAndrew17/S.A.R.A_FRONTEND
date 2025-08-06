@@ -33,9 +33,7 @@ export function Inicio() {
             <Sidebar />
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
                 <StyledIconForm src={iconForm} alt="Logo" />
-                <UserInfo style={{ backgroundColor: "transparent", boxShadow: "none" }}>
-                    !Bienvenido a SARA, {username}!
-                </UserInfo>
+
             </div>
         </div>
     );

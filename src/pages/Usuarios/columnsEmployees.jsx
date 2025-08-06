@@ -1,6 +1,6 @@
 import CustomButton from '../../components/button';
 import useEmployeeManagement from './useEmployeeManagement';
-import { Eye, UserPlus, Pencil, UserMinus } from "lucide-react";
+import { Eye, UserPlus, Pencil, UserMinus, EyeClosed } from "lucide-react";
 
 export const columnsEmployees = (handleToggleExpand, expandedRow, handleAssignClick) => {
     const { employees } = useEmployeeManagement();
@@ -18,17 +18,17 @@ export const columnsEmployees = (handleToggleExpand, expandedRow, handleAssignCl
             render: (value, row) => (
                 row.id_usuario ? (
                     <CustomButton 
-                        bgColor={"#4F98D3"}
-                        hoverColor="#3E86C2" 
-                        width="100px"
-                        height="35px"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleExpand(row.id);
-                        }}
+                    bgColor={"#4F98D3"}
+                    hoverColor="#3E86C2" 
+                    width="100px"
+                    height="35px"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleExpand(row.id);
+                    }}
                     >
-                        <Eye size={16} /> 
-                        {expandedRow === row.id ? "Ocultar" : "Ver"}
+                    {expandedRow === row.id ? <EyeClosed size={16} /> : <Eye size={16} />} 
+                    {expandedRow === row.id ? "Ocultar" : "Ver"}
                     </CustomButton>
                 ) : (
                     <CustomButton

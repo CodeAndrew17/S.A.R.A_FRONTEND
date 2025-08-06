@@ -3,7 +3,7 @@ import Sidebar from "./secondSidebar";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
 import UserForm from '../../components/Form_UserForm';
-import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers, finishRequest } from '../../api/api_Forms';
+import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers, finishRequest ,uploadImage } from '../../api/api_Forms';
 import CustomButton from '../../components/button';
 import { useNavigate } from 'react-router-dom';
 import { Undo2, ChevronLeft , ArrowLeftCircle ,Reply, RotateCcw, CheckCircle, Upload, Image, ClipboardCheck, ClipboardList, Car, Check, Undo, StickyNote, Info  } from 'lucide-react';
@@ -11,28 +11,9 @@ import GlassCardPro from "../../components/glassCard";
 import Swal from 'sweetalert2';
 import UploadImageForm from "../../components/imageForm";
 import { motion } from "framer-motion";
-import styled from 'styled-components';
 import ProgressBar from '../..//components/ProgressBar';
-import {
-  InfoBlock,
-  InfoLine,
-  SideAndContent,
-  ObservationNote,
-  ContainerContent,
-  Divider,
-  TextLoadImg,
-  ImageLoader,
-  ContainerCardSoli,
-  Head,
-  Content,
-  Body,
-  Column,
-  Barra,
-  VolverButton,
-} from './styles'; 
+import {InfoLine,SideAndContent,ObservationNote,Divider,Head,Content,Body,Column,} from './styles'; 
 import { BackSquareButton } from '../../components/BackButton'; 
-import { max } from 'date-fns';
-
 
 function FormsView() {
   const [selected, setSelected] = useState(null);
@@ -405,7 +386,7 @@ function FormsView() {
       return navigate("/revisiones");
 
     } catch (error) {
-
+      //manejar error
     }
   }
 
@@ -419,7 +400,6 @@ function FormsView() {
     >
     
     <SideAndContent>
-
       <Sidebar
         onSelect={setSelected}
         id_plan={id_plan}
@@ -450,7 +430,7 @@ function FormsView() {
         <Body>
           <Column>
             <UploadImageForm
-              endpoint={`/request/api/solicitud/upload/${solicitud_id}/`}>
+              endpoint={`http://localhost:8000/result/api/subirimagen/post/`}>
             </UploadImageForm>
 
             <GlassCardPro
@@ -534,8 +514,6 @@ function FormsView() {
           </Column>
         </Body>
 
-
-
         <MiComponente idPlan={id_plan} onFormulariosLoaded={handleFormulariosLoaded} />
             {selected === 'usuarios' && <div>Formulario de usuarios</div>}
             {selected === 'formularios' && <div>Formulario general</div>}
@@ -550,11 +528,8 @@ function FormsView() {
                 initialValues={selectedCategoria} //pasamos las respuestas previas ya recorridas y asignadas correctamente 
               />
             )}
-
       </Content>
-
     </SideAndContent>
-
     </motion.div>
   );
 }

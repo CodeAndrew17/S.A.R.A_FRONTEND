@@ -36,8 +36,11 @@ const getAnswers = async (id_solicitud, id_formulario) => {
         const response = await axiosWithAuth(`/result/api/resultado/get/${id_solicitud}/${id_formulario}/`, "GET")
         return response
     } catch (error) {
+        if (error.response && error.response.status === 404) {
+            return []; // si no hay respuestas no lazamos el error si no dejamos null para q no se llene de errores la consola 
+        } //retornamos el array vacio para que no se rompa el componente ya que espera un array 
         console.error("Error al enviar las respuestas: ", error)
-        throw error;
+        throw error; //otros errores diferentes si se capturan
     }
 }
 
@@ -50,10 +53,10 @@ const editAnswers = async (updateData) => {
     }
 };
 
-//ruta para subir imagenes 
+//ruta para subir imagenes (no se uso porque se declara directamente donde se usa el componente imageForm) 
 const uploadImage = async (formData) => {
     try {
-        return await axiosWithAuth("/result/api/subirimagen/", "POST", formData);
+        return await axiosWithAuth("/result/api/subirimagen/post/", "POST", formData);
     } catch (error) {
         console.error("error al subir la imagen", error);
     }

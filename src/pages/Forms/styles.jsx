@@ -16,11 +16,10 @@ const Content = styled.div`
     max-width: 100vw;
     box-sizing: border-box;
 
-
-  @media (max-width: 768px) {
-    margin-left: 0; /* en móvil sidebar debería superponerse */
-    width: 100%;
-  }
+    @media (max-width: 768px) {
+        margin-left: 0; /* en móvil sidebar debería superponerse */
+        width: 100%;
+    }
 `;
 
 
@@ -31,7 +30,7 @@ const Head = styled.div`
     justify-content: space-between;
     padding-left: 40px;
     flex-direction: row;
-    width: 50%;
+    width: 60%;
     margin-bottom: 1rem;
 
     @media (max-width: 500px) and (min-width: 300px){

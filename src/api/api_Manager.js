@@ -105,13 +105,14 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
     }
 
     try {
+        const isFormData = body instanceof FormData; //verificamos si el cuerpo es un formdata 
         //Configuramos la solicitud con los parametros necesarios
         const config = {
             method: method,
             url: `${API_URL}${url}`, //Concatenamos la url para armarla
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,  // Pasamos el token en las cabeceras
+                'Authorization' : `Bearer ${token}`,
+                ...(isFormData ? {} : { 'Content-Type' : 'application/json'})
             },
             data: body ? body : null,  // Enviamos el cuerpo si tiene
         };
