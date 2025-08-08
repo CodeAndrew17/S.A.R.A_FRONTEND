@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from "./secondSidebar";
+import Sidebar from "../../components/layout/sidebarForms";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
-import UserForm from '../../components/Form_UserForm';
+import UserForm from '../../components/modals/Form_UserForm';
 import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers, finishRequest ,uploadImage } from '../../api/api_Forms';
-import CustomButton from '../../components/button';
+import CustomButton from '../../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Undo2, ChevronLeft , ArrowLeftCircle ,Reply, RotateCcw, CheckCircle, Upload, Image, ClipboardCheck, ClipboardList, Car, Check, Undo, StickyNote, Info  } from 'lucide-react';
-import GlassCardPro from "../../components/glassCard";
+import GlassCardPro from "../../components/ui/glassCard";
 import Swal from 'sweetalert2';
-import UploadImageForm from "../../components/imageForm";
+import UploadImageForm from "../../components/uploadImage/imageForm";
 import { motion } from "framer-motion";
-import ProgressBar from '../..//components/ProgressBar';
+import ProgressBar from '../../components/ui/ProgressBar';
 import {InfoLine,SideAndContent,ObservationNote,Divider,Head,Content,Body,Column,} from './styles'; 
-import { BackSquareButton } from '../../components/BackButton'; 
+import { BackSquareButton } from '../../components/ui/BackButton'; 
 
 function FormsView() {
   const [selected, setSelected] = useState(null);

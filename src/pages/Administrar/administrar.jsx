@@ -1,10 +1,10 @@
 import { useState } from "react";
-import Sidebar from "../../components/sidebar"; 
+import Sidebar from "../../components/layout/sidebar"; 
 import styled from "styled-components";
-import Table from "../../components/table";
+import Table from "../../components/tables/table";
 import { useColumnsManage } from "./columnsAdmin";
-import Toolbar from "../../components/toolbar";
-import UserForm from "../../components/userForm";
+import Toolbar from "../../components/layout/toolbar";
+import UserForm from "../../components/modals/userForm";
 import usePlansandVehicles from "./adminManager";
 import { toast } from "react-toastify";
 import Swal from 'sweetalert2';

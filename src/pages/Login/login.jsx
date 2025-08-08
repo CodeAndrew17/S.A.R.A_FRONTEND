@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { login } from '../api/api_Manager';
+import { login } from '../../api/api_Manager';
 import { useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import logo from '../assets/images/logo.png';
+import logo from '../../assets/images/logo.png';
 import { useForm } from 'react-hook-form';
 import { User, Lock } from 'lucide-react'; // Importamos los iconos
 

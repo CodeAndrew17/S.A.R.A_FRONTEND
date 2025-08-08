@@ -4,6 +4,7 @@ const SideAndContent = styled.div`
     display: flex;
     flex-direction: row;
     height: 100vh;
+    background: linear-gradient(to bottom right, #e5e7eb, #d1d5db);
 `;
 
 const Content = styled.div`

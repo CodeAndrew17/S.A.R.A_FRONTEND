@@ -1,4 +1,4 @@
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/ui/button";
 import { Edit } from "lucide-react";
 
 /**

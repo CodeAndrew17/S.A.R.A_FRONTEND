@@ -1,9 +1,9 @@
 // ConveniosPanel.jsx
-import Table from '../../components/table';
-import Toolbar from '../../components/toolbar';
+import Table from '../../components/tables/table';
+import Toolbar from '../../components/layout/toolbar';
 import styled from 'styled-components';
 import columnsAgreement from './TableAgreement/columnsAgreement';
-import UserForm from '../../components/userForm';
+import UserForm from '../../components/modals/userForm';
 import { useState, useEffect } from 'react';
 import useAgreementManagement from './TableAgreement/convenioManagement';
 

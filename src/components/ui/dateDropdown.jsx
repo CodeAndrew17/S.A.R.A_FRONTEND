@@ -106,6 +106,7 @@ const DatepickerStyle = createGlobalStyle`
 const DropdownContainer = styled.div`
   position: relative;
   display: inline-block;
+
 `;
 
 const DropdownButton = styled.button`
@@ -166,8 +167,11 @@ const DropdownButton = styled.button`
 const DropdownMenu = styled.div`
   position: absolute;
   z-index: 1000;
-  margin-top: 8px;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
 `;
+
 
 
 const ModeButtons = styled.div`

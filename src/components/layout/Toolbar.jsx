@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import SearchBar from "./SearchBar";
+import SearchBar from "../ui/SearchBar";
 import { Plus, Edit, Trash2 } from "lucide-react";
 
 /* ============ STYLED COMPONENTS ============ */

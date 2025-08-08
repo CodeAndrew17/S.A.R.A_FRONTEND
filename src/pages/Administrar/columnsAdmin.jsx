@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CheckboxDropdown } from "../../components/dropdownTwo";
+import { CheckboxDropdown } from "../../components/ui/dropdownTwo";
 import { getForms } from "../../api/api_Admin";
 import usePlansandVehicles from "./adminManager";
 import Swal from "sweetalert2";

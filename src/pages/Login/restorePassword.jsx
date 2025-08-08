@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { solicitarPassword } from '../api/api_Manager';  
+import { solicitarPassword } from '../../api/api_Manager';  
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import styled from 'styled-components';

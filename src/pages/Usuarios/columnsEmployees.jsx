@@ -1,4 +1,4 @@
-import CustomButton from '../../components/button';
+import CustomButton from '../../components/ui/button';
 import useEmployeeManagement from './useEmployeeManagement';
 import { Eye, UserPlus, Pencil, UserMinus, EyeClosed } from "lucide-react";
 

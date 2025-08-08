@@ -1,13 +1,13 @@
 import {useEffect, useState} from 'react';
 import Swal from 'sweetalert2';
-import UserForm from '../../components/userForm';
+import UserForm from '../../components/modals/userForm';
 import Header from './internalComponents/header';
-import Sidebar from '../../components/sidebar';
-import Toolbar from '../../components/toolbar';
-import Table from '../../components/table'
+import Sidebar from '../../components/layout/sidebar';
+import Toolbar from '../../components/layout/toolbar';
+import Table from '../../components/tables/table'
 import useEmployeeManagement from './useEmployeeManagement';
 import {columnsEmployees} from './columnsEmployees'; 
-import CustomButton from '../../components/button';
+import CustomButton from '../../components/ui/button';
 import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft } from "lucide-react";
 import filterData from '../../utils/unitySearch';
 import getOrderRegister from '../../utils/getLastRegister';
@@ -60,8 +60,8 @@ const Usuarios = () => {
   return (
     <div style={{ 
       padding: '16px', 
-      backgroundColor: '#D3D6DA',
-      borderTop: '1px solid #dee2e6'
+backgroundColor: '#E6E8EB',
+borderTop: '1px solid #B4B8BC'
     }}>
       
       
@@ -81,7 +81,8 @@ const Usuarios = () => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', 
+        marginBottom: '12px', paddingTop: '20px' }}>
         <div style={{ display: 'flex', gap: '8px' }}>
           <CustomButton
             bgColor="#4F98D3"
@@ -401,7 +402,7 @@ const Usuarios = () => {
 
       {(activateForm === "Editar Usuario" && editingUser) && (
       <UserForm 
-        title={`Editar Usuario de ${editingUser.nombres} ${editingUser.apellidos}`}
+        title={`Editar Usuario de ${editingUser.nombres}`}
         onSubmit={handleUpdateUser}
         fields={[
           {

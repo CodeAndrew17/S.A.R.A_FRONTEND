@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import RestorePassword from './pages/restorePassword';
-import { Inicio } from './pages/principal';
-import Login from './pages/login';
+import RestorePassword from './pages/Login/restorePassword';
+import { Inicio } from './pages/home';
+import Login from './pages/Login/login';
 import { createGlobalStyle } from 'styled-components';
 import Usuarios from './pages/Usuarios/usuarios';
 import Administrar from './pages/Administrar/administrar';
-import Estadisticas from './pages/estadisticas';
+//import Estadisticas from './pages/Login/resetPassword';
 import Sucursales from './pages/Sucursales/sucursales';
 import Revisiones from './pages/Solicitudes/revisiones';
 import FormView from './pages/Forms/forms';
@@ -54,7 +54,7 @@ function AppRoutes() {
         <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
         <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
         <Route path="/sucursales" element={<ProtectedRoute><Sucursales /></ProtectedRoute>} />
-        <Route path="/estadisticas" element={<ProtectedRoute><Estadisticas /></ProtectedRoute>} />
+
         <Route path="/administrar" element={<ProtectedRoute><Administrar /></ProtectedRoute>} />
         <Route path="/revisiones" element={<ProtectedRoute><Revisiones /></ProtectedRoute>} />
         <Route path="/forms" element={<ProtectedRoute><FormView /></ProtectedRoute>} />

@@ -1,4 +1,4 @@
-import CustomButton from "../../../components/button";
+import CustomButton from "../../../components/ui/button";
 import { FileChartColumn, FolderCog } from "lucide-react";
 
 const columnsRequest=({navigate})=>[

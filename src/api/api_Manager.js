@@ -10,7 +10,7 @@ const login = async (usuario, password) => {
         const response = await axios.post(`${API_URL}/access/api/login/`, { usuario, password });
         const { access, refresh }= response.data;
 
-        //Guardamos ambos tokens en localstorage
+        //Guardamos ambos tokens en sessionstorage
         sessionStorage.setItem('access',access);
         sessionStorage.setItem('refresh',refresh);
 

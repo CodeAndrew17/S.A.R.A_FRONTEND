@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../../components/sidebar';
+import Sidebar from '../../components/layout/sidebar';
 import styled from 'styled-components';
 import { Trash, Plus, Building, Building2, Handshake  } from 'lucide-react';
-import Toolbar from '../../components/toolbar';
-import Table from '../../components/table';
-import UserForm from '../../components/userForm';
-import TabsContainer from '../../components/TabContainer';
+import Toolbar from '../../components/layout/toolbar';
+import Table from '../../components/tables/table';
+import UserForm from '../../components/modals/userForm';
+import TabsContainer from '../../components/ui/TabContainer';
 
 import columnsBranch from './TableBranches/columnsBranches';
 import ConveniosPanel from './convenios'; 
