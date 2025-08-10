@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { UploadCloud, Image as ImageIcon } from "lucide-react";
+import { ImageUp, Image as ImageIcon } from "lucide-react"; //<ImageUp />
 
 const FormContainer = styled.form`
   display: flex;
@@ -9,9 +9,14 @@ const FormContainer = styled.form`
   gap: 1rem;
   width: auto;
   max-width: 475px;
-  padding: 1rem;
-  border: 1px solid #90a4ae;
-  border-radius: 8px;
+  padding: 1.5rem;
+
+  background: rgba(250, 250, 250, 0.75); /* Blanco translúcido */
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(102, 204, 204, 0.7); /* Verde menta suave que resalta */
+  border-radius: 12px;
+
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   max-height: 277px;
 
@@ -21,9 +26,11 @@ const FormContainer = styled.form`
   }
 
   @media (max-width: 500px) {
-
+    max-width: 90%;
   }
 `;
+
+
 
 const InputFile = styled.input`
   padding: 0.5rem;
@@ -153,7 +160,7 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
           "Subiendo..."
         ) : (
           <>
-            <UploadCloud size={18} /> Subir Imagen
+            <ImageUp size={18} /> Subir Imagen
           </>
         )}
       </SubmitButton>

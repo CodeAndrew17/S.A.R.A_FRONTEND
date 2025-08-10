@@ -125,7 +125,9 @@ function Revisiones() {
               ? "cancelado"
               : solicitud.estado === "PRO"
                 ? "en progreso"
-                : "";
+                : solicitud.estado === "FIN"
+                  ? "finalizado"
+                  : "";
         return estadoTexto.toLowerCase() === estado.toLowerCase();
       });
     }
@@ -272,6 +274,7 @@ function Revisiones() {
             "activo": "Activo",
             "cancelado": "Cancelado",
             "en progreso": "En progreso",
+            "finalizado": "Finalizado",
             "": "Todos"
           }}
           onSelect={handleFilterEstado}

@@ -4,8 +4,17 @@ const SideAndContent = styled.div`
     display: flex;
     flex-direction: row;
     height: 100vh;
-    background: linear-gradient(to bottom right, #e5e7eb, #d1d5db);
+    background: linear-gradient(
+        135deg,
+        #eaf1f3,  /* gris azulado más marcado que #f5fbfc */
+        #dfe7e7,  /* gris menta suave, un poco más profundo */
+        #dce4ee,  /* gris azulado medio */
+        #dff7f0   /* menta más apagada que #e9fdf6 */
+    );
 `;
+
+
+
 
 const Content = styled.div`
     flex: 1;

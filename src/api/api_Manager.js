@@ -129,6 +129,43 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
     }
 };
 
+    //funcion especial para descargar los archivos para ello se arma el cuerpo o payload de manera distinta a las demas peticiones 
+    const axiosWithAuthFile = async (url, method = "GET", body = null) => {
+    let token = sessionStorage.getItem("access");
+
+    // renovar token si hace falta
+    if (!token || isTokenExpired(token)) {
+        try {
+        token = await refreshToken();
+        } catch (err) {
+        throw new Error("Sesión expirada. Inicia sesión nuevamente.");
+        }
+    }
+
+    try {
+        const config = {
+        method,
+        url: `${API_URL}${url}`,
+        headers: {
+            Authorization: `Bearer ${token}`,
+            // no ponemos Content-Type porque no lo necesitamos para descargar
+        },
+        responseType: "blob", //lo importante para archivos binarios
+        data: body ? body : null, // NOTA: q es blob? binary large object tipo de objeto especial en js ideal para los archivos pdf excel etc 
+        };
+
+        const response = await axios(config);
+        return response; // devolvemos la respuesta completa (response.data sera el Blob)
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+        logout();
+        return;
+        }
+        throw error;
+    }
+    };
+
+
 //Funcion para solictar restablecer contraseña mediante correo electronico 
 const solicitarPassword = async (usuario,correo) => {
     try {
@@ -154,4 +191,4 @@ const logout = () => {
 
 }
 
-export { login, axiosWithAuth, refreshToken, solicitarPassword, logout};
+export { login, axiosWithAuth, refreshToken, solicitarPassword, logout, axiosWithAuthFile};

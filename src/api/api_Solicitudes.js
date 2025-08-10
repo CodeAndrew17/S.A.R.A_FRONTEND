@@ -1,5 +1,5 @@
 
-import { axiosWithAuth } from "./api_Manager";
+import { axiosWithAuth, axiosWithAuthFile } from "./api_Manager";
 
 //! Peticiones Get 
 const getPlanes= async()=>{
@@ -57,16 +57,24 @@ const patchRequest = async(id,editRequestData) =>{
     }
 }
 const deleteRequest =async(id)=>{
-    try{
+    try {
         return await axiosWithAuth(`/request/api/solicitud/delete/${id}/`,"DELETE")
-
-    }catch(errros){
-        console.log(errros)
-        throw errros        
-
+    } catch(error){
+        console.log(error)
+        throw error        
     }
-
 }
 
+//api get para descargar el informe de la solicitud con el id 
+const downloadRequest = async (id) => {
+    try {
+        const response =  await axiosWithAuthFile(`/result/api/descarga/reporte/${id}/`, "GET");
+        return response; //aqui devolvemos la respuesta completa que seria el blob del archivo descargado (esto aun no lo descarga)
+    } catch (error) {
+        console.error("Error al descargar el informe:", error);
+        throw error;
+    }
+};
 
-export {getRequest,getPlanes,getTipoVehiculo,addRequest,patchRequest,deleteRequest}
+
+export {getRequest,getPlanes,getTipoVehiculo,addRequest,patchRequest,deleteRequest, downloadRequest}

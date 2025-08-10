@@ -1,3 +1,4 @@
+//vista para envio del correo para la recuperacion de contraseña 
 import { useForm } from 'react-hook-form';
 import { solicitarPassword } from '../../api/api_Manager';  
 import { useNavigate } from 'react-router-dom';
@@ -59,8 +60,8 @@ const StyledInput = styled.input`
 `;
 
 const IconWrapper = styled.span`
-  margin-left: 10px;
-  color: #666;
+    margin-left: 10px;
+    color: #666;
 `;
 
 const ErrorText = styled.span`
@@ -89,6 +90,18 @@ const StyledButton = styled.button`
 
     &:hover {
         background-color: #2575fc;
+    }
+`;
+
+const Title = styled.h1`
+    font-size: 24px;
+    color: #333;
+
+    @media (max-width: 600px) {
+        font-size: 20px;
+        color: #444;
+        line-height: 2.3; // más compacto
+        padding-bottom: 10px;
     }
 `;
 
@@ -123,7 +136,7 @@ const RestorePassword = () => {
             <RequestPassword>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Header>
-                        <h1>Recuperación de Contraseña</h1>
+                        <Title>Recuperación de Contraseña</Title>
                     </Header>
                     <hr style={{ 
                                 border: '1px solid #ccc', 

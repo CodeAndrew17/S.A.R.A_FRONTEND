@@ -442,19 +442,19 @@ function FormsView() {
             >
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Cuestionario:</strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
+                <strong>Cuestionario </strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
               </InfoLine>
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
+                <strong>Tipo de vehículo</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
               </InfoLine>
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Formularios principales:</strong> {conteoPrincipales}
+                <strong>Formularios principales</strong> {conteoPrincipales}
               </InfoLine>
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Formularios adicionales:</strong> {conteoAdicionales}
+                <strong>Formularios adicionales</strong> {conteoAdicionales}
               </InfoLine>
             </GlassCardPro>
           </Column>
@@ -469,23 +469,23 @@ function FormsView() {
             >
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Convenio:</strong> {convenio}
+                <strong>Convenio</strong> {convenio}
               </InfoLine>
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Sucursal:</strong> {sucursal}
+                <strong>Sucursal</strong> {sucursal}
               </InfoLine>
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Tipo de vehículo:</strong> {diccionaryVehicleType[tipo_vehiculo]}
+                <strong>Tipo de vehículo</strong> {diccionaryVehicleType[tipo_vehiculo]}
               </InfoLine>
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Fecha de creación:</strong> {fecha}
+                <strong>Fecha de creación</strong> {fecha}
               </InfoLine>
               <InfoLine>
                 <Check size={18} color="green" />
-                <strong>Teléfono:</strong> {telefono}
+                <strong>Teléfono</strong> {telefono}
               </InfoLine>
               <Divider />
               <ObservationNote>
@@ -498,6 +498,10 @@ function FormsView() {
               </ObservationNote>
             </GlassCardPro>
 
+            <h5 style={{textAlign: 'center', height: '10px'}}><Info 
+            size={18}
+            style={{position: 'relative', top: '5px', marginRight: '8px' }}/>Completa todos los formularios y sube la imagen del vehiculo para finalizar esta solictud </h5>
+
             <CustomButton
               width="auto"
               bgColor=""
@@ -508,6 +512,7 @@ function FormsView() {
                   formulariosRespondidos.length === (conteoPrincipales + conteoAdicionales)
                 )
               }
+              disableMessage="No puedes finalizar la solicitud hasta que respondas todos los formularios."
             >
               <ClipboardCheck /> Finalizar
             </CustomButton>

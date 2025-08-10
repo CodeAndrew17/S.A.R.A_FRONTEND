@@ -32,7 +32,7 @@ export const columnsEmployees = (handleToggleExpand, expandedRow, handleAssignCl
                     </CustomButton>
                 ) : (
                     <CustomButton
-                        bgColor="#27D3A3"  
+                        bgColor="#20B993"  
                         hoverColor="#1CA187"
                         width="100px"
                         height="35px"

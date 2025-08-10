@@ -4,11 +4,11 @@ import styled from 'styled-components';
 
 
 const GlassWrapper = styled.div`
-  background: rgba(250, 250, 250, 0.10);
+  background: rgba(250, 250, 250, 0.75); /* antes era 0.10 */
   border-radius: 18px;
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid ${({ borderClr }) => borderClr || 'rgba(0, 0, 0, 0.35)'};
+  border: 1px solid ${({ borderClr }) => borderClr || 'rgba(255, 255, 255, 0.3)'};
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
   padding: 2rem;
   color: #1f1f1f;
@@ -16,7 +16,6 @@ const GlassWrapper = styled.div`
   min-width: 280px;
   width: auto;
   height: ${({ cardHeight }) => cardHeight || 'auto'};
-
   transition: transform .3s ease, box-shadow .3s ease;
 
   &:hover {
@@ -28,6 +27,7 @@ const GlassWrapper = styled.div`
     max-width: 300px;
   }
 `;
+
 
 
 const Header = styled.div`
