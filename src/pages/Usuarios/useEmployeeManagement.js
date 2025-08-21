@@ -35,7 +35,7 @@ const useEmployeeManagement = () => {
                     rol_usuario: user ? user.rol : 'No asignado',
                     estado_usuario: user ? user.estado : 'No asignado'
                 }
-            })    
+            })
             setEmployees(employeesComplete);
             setBranches(branchesData);
         } catch (error) {

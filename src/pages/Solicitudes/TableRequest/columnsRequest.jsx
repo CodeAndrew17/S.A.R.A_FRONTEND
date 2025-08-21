@@ -84,7 +84,7 @@ const columnsRequest=({navigate})=> {
         }
         return record.estado === "FIN" ? (
           <CustomButton
-            bgColor="#3399ff"
+            bgColor="#4F98D3"
             hoverColor="#337ab7"
             width="100px"
             height="35px"

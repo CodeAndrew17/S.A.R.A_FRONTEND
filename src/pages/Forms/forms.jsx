@@ -498,7 +498,7 @@ function FormsView() {
               </ObservationNote>
             </GlassCardPro>
 
-            <h5 style={{textAlign: 'center', height: '10px'}}><Info 
+            <h5 style={{textAlign: 'left', height: '10px'}}><Info 
             size={18}
             style={{position: 'relative', top: '5px', marginRight: '8px' }}/>Completa todos los formularios y sube la imagen del vehiculo para finalizar esta solictud </h5>
 

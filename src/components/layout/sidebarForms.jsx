@@ -3,7 +3,7 @@ import React, {useRef, useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { ArrowLeftCircle, FileText, ClipboardList, ChevronDown, CheckCircle, FilePlus, PanelTopOpen, PanelTopClose } from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
-import autosef from "../../assets/images/autosef.png"
+import autosef from "../../assets/images/autosef_white.png"
 
 const SidebarContainer = styled.div`
   width: 260px;
@@ -21,7 +21,7 @@ const SidebarContainer = styled.div`
   overflow-y: auto;
   scrollbar-width: none;
   z-index: 1000;
-  transition: transform 0.3s ease-in-out; /* 👈 animación elegante */
+  transition: transform 0.3s ease-in-out; 
 
   &::-webkit-scrollbar {
     display: none;
@@ -236,7 +236,7 @@ const Footer = styled.footer`
 
 const ToggleButton = styled.button`
   position: fixed;
-  top: 30px;
+  top: 20px;
   right: 15px;
   z-index: 1100;
   background: rgba(16, 78, 139, 0.9);
@@ -253,7 +253,7 @@ const ToggleButton = styled.button`
   @media (max-width: 768px) {
     display: block;
     right: 20px;
-    top: 20px;
+    top: 25px;
     width: 50px;
     height: 50px;
   }

@@ -53,7 +53,7 @@ function AppRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Login />} />
         <Route path="/contraseña" element={<RestorePassword />} />
-        <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
+        <Route path="/inicio" element={<Inicio />} />
         <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
         <Route path="/sucursales" element={<ProtectedRoute><Sucursales /></ProtectedRoute>} />
         <Route path="/reset" element={<ProtectedRoute><ResetPassword /></ProtectedRoute>} />
@@ -64,7 +64,9 @@ function AppRoutes() {
     </AnimatePresence>
   );
 }
-
+// <Route path="/reset" element={<ProtectedRoute><ResetPassword /></ProtectedRoute>} /> esta ruta toca sacarla 
+// de el protected route ya que si cuenta con proteccion de tokens (si no tiene tokens no lo deja ingresar)
+// pero los tokens son distintos a los de acces y refresh hacer otro ProtectedRoute pero especial para los tokens de la ruta reset password 
 function App() {
   return (
     <>

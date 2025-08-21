@@ -153,11 +153,11 @@ const Login = () => {
     setApiError(null);
     try {
       const result = await login(data.usuario, data.password);
-      sessionStorage.setItem('access', result.access);
+      sessionStorage.setItem('access', result.access); //obtenemos todos los datos que nos devuelve el backend despues del inciio de sesio y los guardamos en el sessionStorage
       sessionStorage.setItem('refresh', result.refresh);
       sessionStorage.setItem('username', result.usuario);
       sessionStorage.setItem('rol', result.rol);
-      navigate('/inicio');
+      navigate('/inicio'); //navegamos al usuario a el incio si fue exitoso el logeo
     } catch (err) {
       setApiError(err.message);
     }
@@ -183,8 +183,8 @@ const Login = () => {
                 id="username"
                 placeholder="Ingrese su nombre de usuario"
                 {...register('usuario', { 
-                  required: 'El campo usuario es obligatorio', 
-                  onChange: () => setApiError(null) 
+                  required: 'El campo usuario es obligatorio', //indicamos que el campo es requerido
+                  onChange: () => setApiError(null) // refrescamos lo q haya en el input para mostrar erroes en caso de que no coplete el campo 
                 })}
               />
             </InputContainer>
@@ -199,7 +199,7 @@ const Login = () => {
               <Input
                 type="password"
                 id="password"
-                placeholder="Ingrese su contraseña"
+                placeholder="Ingrese su contraseña" //hacemos el input de type pasword e indicamos que es obligatorio
                 {...register('password', { 
                   required: 'El campo contraseña es obligatorio', 
                   onChange: () => setApiError(null) 

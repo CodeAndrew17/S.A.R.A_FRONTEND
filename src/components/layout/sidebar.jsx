@@ -86,18 +86,19 @@ const MenuItem = styled.li`
   display: flex;
   align-items: center;
   padding: 15px;
-  padding-left: ${({ $isOpen }) => ($isOpen ? "15px" : "26px")}; 
+  padding-left: ${({ $isOpen }) => ($isOpen ? "25px" : "25px")}; 
   cursor: pointer;
   width: 100%;
   position: relative;
+  justify-content: ${({ $isOpen }) => ($isOpen ? "flex-start" : "flex-start")};
 
   &:hover {
     background: #0c3b66;
   }
 
-  ${({ $active}) => $active && `
+  ${({ $active }) => $active && `
       background: #0b2f4d;
-      box-shadow: inset 4px 0 0 #2ec4b6; /* línea amarilla al lado izquierdo */
+      box-shadow: inset 4px 0 0 #2ec4b6;
   `}
 `;
 

@@ -8,7 +8,7 @@ import Table from '../../components/tables/table'
 import useEmployeeManagement from './useEmployeeManagement';
 import {columnsEmployees} from './columnsEmployees'; 
 import CustomButton from '../../components/ui/button';
-import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft } from "lucide-react";
+import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft, UserPen } from "lucide-react";
 import filterData from '../../utils/unitySearch';
 import getOrderRegister from '../../utils/getLastRegister';
 import { ImTextColor } from 'react-icons/im';
@@ -60,30 +60,28 @@ const Usuarios = () => {
   return (
     <div style={{ 
       padding: '16px', 
-backgroundColor: '#E6E8EB',
-borderTop: '1px solid #B4B8BC'
+      backgroundColor: '#E6E8EB',
+      borderTop: '1px solid #B4B8BC'
     }}>
-      
-      
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px'}}>
-        <div style={{color:'blue'}}><strong>Informacion de Usuario</strong></div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <SquareUserRound size={20} />
-          <strong>Rol - </strong> {roles[row.rol_usuario] || 'No disponible'}
-        </div>
+      <div style={{color:'blue'}}><strong>Informacion de Usuario</strong></div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', justifyItems: 'center'}}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <User size={20} />
           <strong>Usuario -</strong> {row.nombre_usuario || 'No asignado'}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <SquareUserRound size={20} />
+          <strong>Rol - </strong> {roles[row.rol_usuario] || 'No disponible'}
+        </div>
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'start' }}>
           <ToggleLeft size={20} />
-          <strong>Estado Usuario - </strong> {estado[row.estado_usuario] || 'No disponible'}
+          <strong>Estado - </strong> {estado[row.estado_usuario] || 'No disponible'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', 
         marginBottom: '12px', paddingTop: '20px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '18px', paddingRight: '20px' }}>
           <CustomButton
             bgColor="#4F98D3"
             hoverColor="#3E86C2"
@@ -94,7 +92,7 @@ borderTop: '1px solid #B4B8BC'
               handleEditUserClick(row);
             }}
           >
-            <UserRoundPen size={16} /> Editar Usuario
+            <UserPen size={16} /> Editar Usuario
           </CustomButton>
           
           <CustomButton

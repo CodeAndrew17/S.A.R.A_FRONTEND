@@ -9,9 +9,9 @@ const DropdownContainer = styled.div`
 `;
 
 const DropdownButton = styled.button`
-  width: 140px; 
+  width: 150px; 
   padding: 8px 12px;
-  background:rgb(94, 167, 209);
+  background: #4F98D3;
   color: white;
   border: 2px solid transparent;
   border-radius: 4px;
@@ -26,7 +26,7 @@ const DropdownButton = styled.button`
   transform: translateY(0);
 
   &:hover {
-    background:rgb(78, 143, 179);
+    background: #3E86C2;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }

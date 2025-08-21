@@ -2,39 +2,56 @@
 import React from 'react';
 import Sidebar from '../components/layout/sidebar';
 import styled from 'styled-components'; 
-import CustomButton from '../components/ui/button';
+import Card from '../components/ui/CardHome';
 import iconForm from '../assets/images/iconForm.png';
+import SalesChart from '../components/charts/requestsChart';
+import SalesChart2 from '../components/charts/planChart';
 
-// CSS para el texto de bienvenida
-const UserInfo = styled.div`
-    justify-content: center;
-    margin-top: -680px;
-    font-size: 25px;
-    font-weight: bold;
-    padding: 5px 10px;
-    border-radius: 20px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+const GeneralContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(12,1fr); /*aca le decimos que vamos a usar 12 columnas */
+    gap: 15px;
+    max-height: 100vh;
+    padding-left: 95px;
+    padding-right: 20px;
 `;
 
-const StyledIconForm = styled.img`
-    width: 50px;
-    height: 50px;
-    border-radius: 5%; /* Ejemplo: hazla circular */
-    margin-top: -680px;
-`;
+// const Card = styled.div`
+//     background: #fff;         /* fondo blanco (luego puedes cambiarlo) */
+//     border: 1px solid #ddd;   /* borde ligero */
+//     border-radius: 8px;       /* esquinas redondeadas */
+//     padding: 16px;            /* espacio interno */
+//     display: flex;            /* para alinear contenido dentro */
+//     flex-direction: column;   /* contenido en columna */
+//     justify-content: center;
+//     align-items: center;
+// `;
 
 
 export function Inicio() {
-    const username = sessionStorage.getItem('username') || "Invitado";
+    // const username = sessionStorage.getItem('username') || "Invitado";
 
 
     return (
-        <div>
+        <>
             <Sidebar />
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-                <StyledIconForm src={iconForm} alt="Logo" />
+            <GeneralContainer>
+                <Card gridColumn="span 4">Tiempo de respuesta</Card>
+                <Card gridColumn="span 4">Usuarios activos</Card>
+                <Card gridColumn="span 4">Total planes</Card>
+                
 
-            </div>
-        </div>
+                <Card gridColumn="span 9">
+                    <SalesChart />
+                </Card>
+                <Card gridColumn="span 3">Ranking top users</Card>
+
+
+                <Card gridColumn="span 7"><SalesChart2 /> 
+                </Card>
+                <Card gridColumn="span 5">Descarga usuarios</Card>
+
+            </GeneralContainer>
+        </>
     );
 }
