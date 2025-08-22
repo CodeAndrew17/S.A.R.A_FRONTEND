@@ -78,6 +78,7 @@ const Column = styled.div`
     flex-direction: column;
     gap: 1.5rem;
     flex: 1;
+    
 `;
 
 const InfoBlock = styled.div`

@@ -6,13 +6,14 @@ import UserForm from '../../components/modals/Form_UserForm';
 import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers, finishRequest ,uploadImage } from '../../api/api_Forms';
 import CustomButton from '../../components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Undo2, ChevronLeft , ArrowLeftCircle ,Reply, RotateCcw, CheckCircle, Upload, Image, ClipboardCheck, ClipboardList, Car, Check, Undo, StickyNote, Info  } from 'lucide-react';
+import { Undo2, ChevronLeft , ArrowLeftCircle ,Reply, RotateCcw, CheckCircle, Upload, Image, ClipboardCheck, 
+  CarFront,Building,Handshake,ListTodo,FileText , ClipboardList, Car, Check, Undo, StickyNote, Info, Calendar, Phone  } from 'lucide-react';
 import GlassCardPro from "../../components/ui/glassCard";
 import Swal from 'sweetalert2';
 import UploadImageForm from "../../components/uploadImage/imageForm";
-import { motion } from "framer-motion";
+import { m, motion } from "framer-motion";
 import ProgressBar from '../../components/ui/ProgressBar';
-import {InfoLine,SideAndContent,ObservationNote,Divider,Head,Content,Body,Column,} from './styles'; 
+import {InfoLine,SideAndContent,ObservationNote,Divider,Head,Content,Body,Column} from './styles'; 
 import { BackSquareButton } from '../../components/ui/BackButton'; 
 
 function FormsView() {
@@ -441,81 +442,128 @@ function FormsView() {
               borderColor="rgba(37, 99, 235, 0.4)"
             >
               <InfoLine>
-                <Check size={18} color="green" />
+                <ListTodo size={18} color="green" />
                 <strong>Cuestionario </strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
               </InfoLine>
               <InfoLine>
-                <Check size={18} color="green" />
+                <CarFront size={18} color="#3B82F6" />
                 <strong>Tipo de vehículo</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
               </InfoLine>
               <InfoLine>
-                <Check size={18} color="green" />
+                <ClipboardList size={18} color="green" />
                 <strong>Formularios principales</strong> {conteoPrincipales}
               </InfoLine>
               <InfoLine>
-                <Check size={18} color="green" />
+                <FileText size={18} color="#3B82F6" />
                 <strong>Formularios adicionales</strong> {conteoAdicionales}
               </InfoLine>
             </GlassCardPro>
           </Column>
 
           <Column>
-            <GlassCardPro
-              title="Solicitud:"
-              badgeText={placa}
-              icon={Car}
-              headerBg="rgba(143, 251, 255, 0.6)"
-              borderColor="rgba(0, 102, 255, 0.3)"
-            >
-              <InfoLine>
-                <Check size={18} color="green" />
-                <strong>Convenio</strong> {convenio}
-              </InfoLine>
-              <InfoLine>
-                <Check size={18} color="green" />
-                <strong>Sucursal</strong> {sucursal}
-              </InfoLine>
-              <InfoLine>
-                <Check size={18} color="green" />
-                <strong>Tipo de vehículo</strong> {diccionaryVehicleType[tipo_vehiculo]}
-              </InfoLine>
-              <InfoLine>
-                <Check size={18} color="green" />
-                <strong>Fecha de creación</strong> {fecha}
-              </InfoLine>
-              <InfoLine>
-                <Check size={18} color="green" />
-                <strong>Teléfono</strong> {telefono}
-              </InfoLine>
-              <Divider />
-              <ObservationNote>
-                <StickyNote
-                  size={24}
-                  color="#555"
-                  style={{ position: 'relative', top: '5px', marginRight: '8px' }}
-                />
-                <strong>Observaciones: </strong> {observacionesPlan || "No hay observaciones"}
-              </ObservationNote>
-            </GlassCardPro>
+<GlassCardPro
+  title="Solicitud:"
+  badgeText={placa}
+  icon={Car}
+  minHeight={"485px"}
+  headerBg="rgba(143, 251, 255, 0.6)"
+  borderColor="rgba(0, 102, 255, 0.3)"
+>
+  <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ flex: "1" }}>
+      <InfoLine>
+        <Handshake size={18} color="green" />
+        <strong>Convenio</strong> {convenio}
+      </InfoLine>
+      <InfoLine>
+        <Building size={18} color="#3B82F6" />
+        <strong>Sucursal</strong> {sucursal}
+      </InfoLine>
+      <InfoLine>
+        <CarFront size={18} color="green" />
+        <strong>Tipo de vehículo</strong> {diccionaryVehicleType[tipo_vehiculo]}
+      </InfoLine>
+      <InfoLine>
+        <Calendar size={18} color="#3B82F6" style={{ marginRight: "6px" }} />
+        <strong>Fecha de creación</strong> {fecha}
+      </InfoLine>
+      <InfoLine>
+        <Phone size={18} color="#10B981" style={{ marginRight: "6px" }} />
+        <strong>Teléfono</strong> {telefono}
+      </InfoLine>
 
-            <h5 style={{textAlign: 'left', height: '10px'}}><Info 
-            size={18}
-            style={{position: 'relative', top: '5px', marginRight: '8px' }}/>Completa todos los formularios y sube la imagen del vehiculo para finalizar esta solictud </h5>
+      <Divider style={{ margin: "12px 0" }} />
 
-            <CustomButton
-              width="auto"
-              bgColor=""
-              hoverColor="#48A2BF"
-              onClick={handleFinishRequest}
-              disabled={
-                !(conteoPrincipales > 0 && conteoAdicionales > 0  && 
-                  formulariosRespondidos.length === (conteoPrincipales + conteoAdicionales)
-                )
-              }
-              disableMessage="No puedes finalizar la solicitud hasta que respondas todos los formularios."
-            >
-              <ClipboardCheck /> Finalizar
-            </CustomButton>
+      {/* Observaciones */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          background: "rgba(240, 240, 240, 0.5)",
+          borderRadius: "12px",
+          padding: "12px",
+          border: "1px dashed rgba(0,0,0,0.1)",
+          minHeight: "110px", // << más alto que antes
+        }}
+      >
+        <StickyNote
+          size={22}
+          color="#555"
+          style={{ marginRight: "10px", marginTop: "2px" }}
+        />
+        <div>
+          <strong>Observaciones:</strong>
+          <p style={{ margin: "4px 0 0 0", color: "#444", fontSize: "14px" }}>
+            {observacionesPlan || "No hay observaciones"}
+          </p>
+        </div>
+      </div>
+
+      {/* Texto auxiliar */}
+      <p
+        style={{
+          marginTop: "8px",
+          fontSize: "12px",
+          color: "#6B7280",
+          fontStyle: "italic",
+          textAlign: "center",
+        }}
+      >
+        <Info
+          size={18}
+          style={{ position: "relative", top: "5px", marginRight: "3px" }}
+        /> Completa todos los formularios y sube la imagen del vehículo para
+        finalizar esta solicitud.
+      </p>
+    </div>
+
+    {/* Botón fijo abajo */}
+    <CustomButton
+      width="100%"
+      bgColor=""
+      hoverColor="#48A2BF"
+      onClick={handleFinishRequest}
+      disabled={
+        !(
+          conteoPrincipales > 0 &&
+          conteoAdicionales > 0 &&
+          formulariosRespondidos.length ===
+            conteoPrincipales + conteoAdicionales
+        )
+      }
+      disableMessage="No puedes finalizar la solicitud hasta que respondas todos los formularios."
+      style={{
+        marginTop: "20px",
+        borderRadius: "12px",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+      }}
+    >
+      <ClipboardCheck style={{ marginRight: "6px" }} /> Finalizar
+    </CustomButton>
+  </div>
+</GlassCardPro>
+
+
           </Column>
         </Body>
 

@@ -1,7 +1,5 @@
-
 import React from 'react';
 import styled from 'styled-components';
-
 
 const GlassWrapper = styled.div`
   background: rgba(250, 250, 250, 0.75); /* antes era 0.10 */
@@ -13,9 +11,9 @@ const GlassWrapper = styled.div`
   padding: 2rem;
   color: #1f1f1f;
   max-width: ${({ cardWidth }) => cardWidth || '455px'};
-  min-width: 280px;
   width: auto;
   height: ${({ cardHeight }) => cardHeight || 'auto'};
+  min-height: ${({ cardMinHeight }) => cardMinHeight || 'auto'};
   transition: transform .3s ease, box-shadow .3s ease;
 
   &:hover {
@@ -27,8 +25,6 @@ const GlassWrapper = styled.div`
     max-width: 300px;
   }
 `;
-
-
 
 const Header = styled.div`
   display: flex;
@@ -69,7 +65,6 @@ const Badge = styled.span`
   font-family: 'Segoe UI', Roboto, 'Open Sans', sans-serif;
 `;
 
-
 const GlassCardPro = ({
   title,
   badgeText,
@@ -78,9 +73,15 @@ const GlassCardPro = ({
   headerBg,
   borderColor,
   height,
+  minHeight,  
   width,
 }) => (
-  <GlassWrapper cardWidth={width} cardHeight={height} borderClr={borderColor}>
+  <GlassWrapper
+    cardWidth={width}
+    cardHeight={height}
+    cardMinHeight={minHeight} 
+    borderClr={borderColor}
+  >
     {(title || Icon) && (
       <Header bg={headerBg} borderClr={borderColor}>
         {Icon && <Icon size={25} color="black" />}

@@ -1,34 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
+import { getPlans } from "../../api/api_Dashboard";
 
-const SalesChart2 = () => {
+const PlansTreemap = () => {
+  const [series, setSeries] = useState([]);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      const response = await getPlans();
+      const data = response.data;
+      console.log("data", data);
+
+      // Transformamos el objeto { plan: cantidad } en formato treemap
+      const formattedData = Object.entries(data).map(([name, value]) => ({
+        x: name, // nombre del plan
+        y: value // cantidad
+      }));
+
+      setSeries([{ data: formattedData }]);
+    };
+    fetchPlans();
+  }, []);
+
   const options = {
-    chart: { id: "planes-chart" },
-    xaxis: { categories: ["Plan Básico", "Plan Premium", "Plan Autosef", "Plan Ejecutivo"] },
+    chart: {
+      type: "treemap",
+    },
+    legend: {
+      show: false, // quítalo si quieres la leyenda aparte
+    },
+    title: {
+      text: "Planes",
+      align: "left",
+      style: {
+        fontSize: "16px",
+        fontWeight: "600",
+      },
+    },
+    tooltip: {
+      y: {
+        formatter: (val) => `${val} solicitudes`,
+      },
+    },
     plotOptions: {
-      bar: { horizontal: false, columnWidth: "50%" }
-    }
+      treemap: {
+        distributed: true, // colores distintos por plan
+        enableShades: true,
+      },
+    },
   };
 
-  const series = [
-    {
-      name: "Cantidad de Planes",
-      data: [18, 9, 28, 12] // cada valor corresponde al label en xaxis.categories
-    }
-  ];
-
   return (
-    <div style={{ background: "#fff", padding: "16px", borderRadius: "8px", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
-      <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>Planes</h2>
+    <div
+      style={{
+        background: "#fff",
+        padding: "16px",
+        borderRadius: "8px",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      }}
+    >
       <Chart
         options={options}
         series={series}
-        type="bar"
-        height='100%'
-        width='100%'
+        type="treemap"
+        height="140%"
+        width="100%"
       />
     </div>
   );
 };
 
-export default SalesChart2;
+export default PlansTreemap;

@@ -140,7 +140,7 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
   return (
     <FormContainer onSubmit={handleSubmit}>
       <label>
-        Sube la imagen del vehiculo:
+        Sube la imagen del vehiculo, formato de archivo requerido: JPG o PNG.
         <InputFile type="file" accept="image/*" onChange={handleFileChange} />
       </label>
 
