@@ -442,7 +442,7 @@ function FormsView() {
               borderColor="rgba(37, 99, 235, 0.4)"
             >
               <InfoLine>
-                <ListTodo size={18} color="green" />
+                <ListTodo size={18} color="#10B981" />
                 <strong>Cuestionario </strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
               </InfoLine>
               <InfoLine>
@@ -450,7 +450,7 @@ function FormsView() {
                 <strong>Tipo de vehículo</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
               </InfoLine>
               <InfoLine>
-                <ClipboardList size={18} color="green" />
+                <ClipboardList size={18} color="#10B981" />
                 <strong>Formularios principales</strong> {conteoPrincipales}
               </InfoLine>
               <InfoLine>
@@ -472,7 +472,7 @@ function FormsView() {
   <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
     <div style={{ flex: "1" }}>
       <InfoLine>
-        <Handshake size={18} color="green" />
+        <Handshake size={18} color="#10B981" />
         <strong>Convenio</strong> {convenio}
       </InfoLine>
       <InfoLine>
@@ -480,7 +480,7 @@ function FormsView() {
         <strong>Sucursal</strong> {sucursal}
       </InfoLine>
       <InfoLine>
-        <CarFront size={18} color="green" />
+        <CarFront size={18} color="#10B981" />
         <strong>Tipo de vehículo</strong> {diccionaryVehicleType[tipo_vehiculo]}
       </InfoLine>
       <InfoLine>

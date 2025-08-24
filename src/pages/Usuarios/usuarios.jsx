@@ -132,10 +132,18 @@ const Usuarios = () => {
 
   const handleEditEmployee = () => {
     if (selectedRows.length === 0) {
-      alert("Por favor selecciona un registro para editar");
+      Swal.fire({
+            icon: 'warning',
+            title: 'Seleccion inválida',
+            text: 'Selecciona un Empleado para editar.',
+        });
     }
     else if (selectedRows.length >= 2) {
-      alert("Por favor selecciona exactamente un registro para editar");
+            Swal.fire({
+            icon: 'warning',
+            title: 'Seleccion inválida',
+            text: 'Selecciona un solo Empleado para editar.',
+        });
     } else {
       // Busca el empleado completo basado en el ID seleccionado ya que selectedRows es solo el id no todo el employee completo que es lo q se nececita
       const employeeToEdit = employees.find(emp => emp.id === selectedRows[0]); //obtenemos solo el primero para que en caso de falla solo modifica/edita el primero encontrado ya q no se puede hacer ediciones multiples 
@@ -205,9 +213,18 @@ const Usuarios = () => {
     }
   };
 
-  const handleDeleteEmloyee = async (selectedRows) =>  {
+  const handledelete = async () => {
+    await removeRequest(selectedRequests);
+    //setSelectedRequests([]);
+  };
+
+  const handleDeleteEmloyee = async () =>  {
     if (selectedRows.length === 0) {
-    alert("Porfavor selecciona por lo menos un empleado para eliminar")
+    Swal.fire({
+            icon: 'warning',
+            title: 'Seleccion inválida',
+            text: 'Selecciona por lo menos un Empleado para eliminar.',
+        });
     } else {
       await deleteEmployee(selectedRows)
     }
@@ -285,6 +302,7 @@ const Usuarios = () => {
         columns={columns}
         containerStyle={{ fontSize: '13px' }}
         expandable={true}
+        
         renderExpandedContent={renderUserDetails}
         expandedRows={expandedRow ? [expandedRow] : []}
       />
@@ -337,7 +355,7 @@ const Usuarios = () => {
               name: "id_sucursal",
               label: "Sucursal",
               type: "select", 
-              options: branches?.map(bra => ({
+              options: branches?.filter(b=> b.estado =="AC").map(bra => ({
                 value: bra.id,
                 label: bra.nombre
               })) || [],

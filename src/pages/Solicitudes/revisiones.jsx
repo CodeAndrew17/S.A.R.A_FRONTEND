@@ -12,6 +12,7 @@ import CustomButton from "../../components/ui/button";
 import { LucideBrush, FilterX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import getOrderRegister from "../../utils/getLastRegister";
+import { handleAxiosError } from "../../utils/alertUnauthorized";
 
 
 const CustomButtonWrapper = styled.div`
@@ -209,10 +210,9 @@ function Revisiones() {
       }
     } else {
       Swal.fire({
-        title: "Error",
-        text: "Debes seleccionar exactamente una solicitud para editar",
-        icon: "error",
-        confirmButtonText: "Aceptar",
+            icon: 'warning',
+            title: 'Seleccion inválida',
+            text: 'Selecciona exactamente una Solicitud para editar.',
       });
     }
   };
@@ -240,12 +240,7 @@ function Revisiones() {
       await fetchRequest(); //frozar actualizacion 
     } catch (error) {
       console.error("Error al procesar el formulario:", error);
-      Swal.fire({
-        title: "Error",
-        text: "Ocurrió un error al procesar la solicitud",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
+      handleAxiosError(error);
     } finally {
       setIsLoading(false);
     }

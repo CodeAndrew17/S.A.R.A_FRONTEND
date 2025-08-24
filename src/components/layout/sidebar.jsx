@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {logout} from '../../api/api_Manager';
 import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipboardList, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { User, House, NotepadText, Users, NotebookPen, Folder, Logs } from "lucide-react";
+import { User, House, NotepadText, Users, NotebookPen, Folder, Logs, LogOut } from "lucide-react";
 
+//<LogOut />
 
 const UserContainer = styled.div`
   display: flex;
@@ -135,13 +136,7 @@ const Tooltip = styled.div`
 
 
 const LogoutWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 18px; /* Misma altura que el botón de menú */
-  right: ${({ $isOpen }) => ($isOpen ? '25px' : '-40px')}; /* Se esconde fuera del sidebar */
-  z-index: 1001;
-  transition: right 0.3s ease;
+  margin-left: 10px;
 `;
 
 const LogoutButton = styled.button`

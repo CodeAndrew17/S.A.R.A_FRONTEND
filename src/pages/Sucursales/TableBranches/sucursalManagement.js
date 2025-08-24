@@ -21,7 +21,7 @@ const handleSucursalSubmit = async (newData, setConvenios, setActiveForm, setSuc
 
     // Relacionamos las sucursales con sus convenios
     const sucursalesConConvenios = sucursales.map(sucursal => {
-      const convenio = convenios.find(c => c.id === sucursal.id_convenio);
+    const convenio = convenios.find(c => (c.id === sucursal.id_convenio) && (c.estado === "AC"));
       return {
         ...sucursal,
         convenio: convenio ? convenio.nombre : "Sin convenio"
@@ -54,7 +54,7 @@ const refreshData = async (setConvenios, setSucursalesConvenios) => {
       const convenios = await getAgreement();
   
       const sucursalesConConvenios = sucursales.map(sucursal => {
-        const convenio = convenios.find(c => c.id === sucursal.convenio);
+        const convenio = convenios.find(c => (c.id === sucursal.id_convenio) && (c.estado === "AC"));
         return {
           ...sucursal,
           convenio: convenio ? convenio.nombre : "Sin convenio"
@@ -75,8 +75,8 @@ const handleDeleteBranches = async (selectedIDs, setConvenios, setSucursalesConv
     if (selectedIDs.length === 0) {
         await Swal.fire({
             icon: 'warning',
-            title: 'Oops...',
-            text: 'Por favor selecciona al menos una sucursal',
+            title: 'Seleccion inválida',
+            text: 'Selecciona por lo menos una Sucursal para eliminar.',
         });
         return { success: false };
     }

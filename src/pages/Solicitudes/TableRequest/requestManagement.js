@@ -169,6 +169,7 @@ const useRequestManage = () => {
     }
   } catch (error) {
     handleAxiosError(error);
+    throw error;
   }
 };
 
@@ -222,9 +223,9 @@ const useRequestManage = () => {
   const removeRequest = async (listIds) => {
     if (listIds.length === 0) {
       await Swal.fire({
-        title: "Error",
-        text: "Debe seleccionar al menos una solicitud",
-        icon: "error",
+        title: "Selección inválida",
+        text: "Debe seleccionar al menos una Solicitud para eliminar.",
+        icon: "warning",
       });
       return false;
     }

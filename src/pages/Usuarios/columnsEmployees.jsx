@@ -20,7 +20,7 @@ export const columnsEmployees = (handleToggleExpand, expandedRow, handleAssignCl
                     <CustomButton 
                     bgColor={"#4F98D3"}
                     hoverColor="#3E86C2" 
-                    width="100px"
+                    width="140px"
                     height="35px"
                     onClick={(e) => {
                         e.stopPropagation();
@@ -28,19 +28,19 @@ export const columnsEmployees = (handleToggleExpand, expandedRow, handleAssignCl
                     }}
                     >
                     {expandedRow === row.id ? <EyeClosed size={16} /> : <Eye size={16} />} 
-                    {expandedRow === row.id ? "Ocultar" : "Ver"}
+                    {expandedRow === row.id ? "Ocultar" : "Ver Usuario"}
                     </CustomButton>
                 ) : (
                     <CustomButton
                         bgColor="#20B993"  
                         hoverColor="#1CA187"
-                        width="100px"
+                        width="140px"
                         height="35px"
                         onClick={(e) => {
                             e.stopPropagation();
                             handleAssignClick(row);
                         }}>
-                        <UserPlus size={16} /> Asignar
+                        <UserPlus size={16} /> Crear Usuario
                     </CustomButton>
                 )
             )

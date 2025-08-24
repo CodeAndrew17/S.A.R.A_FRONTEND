@@ -60,7 +60,7 @@ function Administrar() {
   if (selectedRows.length === 0) {
     Swal.fire({
       icon: 'warning',
-      title: 'Ningún plan seleccionado',
+      title: 'Seleccion inválida',
       text: 'Por favor selecciona un plan para editar',
     });
   } else if (selectedRows.length > 1) {
@@ -112,7 +112,7 @@ function Administrar() {
   if (selectedRows.length === 0) {
     Swal.fire({
       icon: 'warning',
-      title: 'Ningún plan seleccionado',
+      title: 'Selección inválida',
       text: 'Selecciona al menos un plan para eliminar',
     });
     return;

@@ -105,6 +105,8 @@ const useAgreementManagement = () => {
           confirmButtonText: "Aceptar",
         });
         fetchAgreementData();
+
+        window.dispatchEvent(new CustomEvent('conveniosUpdated')); //este window lo ponemos para escuchar cuando se toquen los convenios en sucursales(no muy recomendado pero es lo que hay)
         
       }
     } catch (error) {
@@ -119,9 +121,9 @@ const useAgreementManagement = () => {
   const removeAgreement = async (ids) => {
     if (ids.length === 0) {
       await Swal.fire({
-        title: "Error",
-        text: "Es necesario seleccionar al menos un Convenio para proceder con la eliminación.",
-        icon: "error",
+        title: "Selección inválida",
+        text: "Selecciona por lo menos un Convenio para eliminar.",
+        icon: "warning",
       });
       return false;
     }
@@ -148,7 +150,7 @@ const useAgreementManagement = () => {
     if (!resultado.isConfirmed) return false;
 
     try {
-      // Eliminar todos los convenios en paralelo (si el backend lo permite)
+      // Eliminar todos los convenios en paralelo 
       for (const id of ids) {
         await deleteAgreement(id)
         console.log("eliminados ", id )
@@ -159,6 +161,8 @@ const useAgreementManagement = () => {
         icon: "success",
         confirmButtonText: "Aceptar",
       });
+
+      window.dispatchEvent(new CustomEvent('conveniosUpdated'));
       return true;
       
     } catch (error) {
@@ -207,6 +211,8 @@ const useAgreementManagement = () => {
                 confirmButtonText: "Aceptar",
             });
             fetchAgreementData();
+
+            window.dispatchEvent(new CustomEvent('conveniosUpdated'));
         }
     } catch (error) {
         console.error("Error al actualizar el convenio:", error);

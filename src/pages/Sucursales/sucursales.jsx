@@ -55,28 +55,47 @@ export default function Sucursales() {
   const [statusFilter, setStatusFilter] = useState('');
 
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const [sucursales, convenios] = await Promise.all([
-          getBranches(),
-          getAgreement(),
-        ]);
+    useEffect(() => { //montamos el useeffect para escuchar los cambios en el elemnto conveniospanel para actualizarlo cada vez q cambien en las options 
+    const handleConveniosUpdated = () => {
+      // Forzar la recarga cuando se dispare el evento
+      loadData();
+    };
 
-        // une sucursales con convenios
-        const data = sucursales.map(s => ({
-          ...s,
-          convenio: convenios.find(c => c.id === s.id_convenio)?.nombre ?? 'Sin convenio',
-        }));
-
-        setSucursalesConvenios(data);
-        setFilteredSucursales(data);
-        setConveniosOptions(convenios);
-      } catch (err) { console.error(err); }
-      finally { setLoading(false); }
-    })();
+    // Escuchar el evento personalizado
+    window.addEventListener('conveniosUpdated', handleConveniosUpdated);
+    
+    return () => {
+      window.removeEventListener('conveniosUpdated', handleConveniosUpdated);
+    };
   }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [sucursales, convenios] = await Promise.all([
+        getBranches(),
+        getAgreement(),
+      ]);
+
+      const data = sucursales.map(s => ({
+        ...s,
+        convenio: convenios.find(c => c.id === s.id_convenio)?.nombre ?? 'Sin convenio',
+      }));
+
+      setSucursalesConvenios(data);
+      setFilteredSucursales(data);
+      setConveniosOptions(convenios);
+    } catch (err) { 
+      console.error(err); 
+    } finally { 
+      setLoading(false); 
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
 
   
   const refreshBranches = async () => {
@@ -181,7 +200,7 @@ export default function Sucursales() {
                       },
                       {
                         name: 'id_convenio', label: 'Convenio', type: 'select', required: true,
-                        options: conveniosOptions.map(c => ({ value: c.id, label: c.nombre })),
+                        options: conveniosOptions.filter(c=> c.estado =="AC").map(c => ({ value: c.id, label: c.nombre })),
                       },
                     ]}
                     initialValues={editingBranch}

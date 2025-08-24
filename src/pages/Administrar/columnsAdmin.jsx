@@ -62,7 +62,7 @@ export const useColumnsManage = () => {
     { key: "estado", title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Estado</span> },
     {
       key: "lista_adicionales",
-      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Adicionales</span>,
+      title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Formularios Adicionales</span>,
       render: (valorCelda, fila) => (
         <CheckboxDropdown
           options={optionsDrop}

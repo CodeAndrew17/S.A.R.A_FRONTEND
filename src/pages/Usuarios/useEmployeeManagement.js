@@ -66,45 +66,80 @@ const useEmployeeManagement = () => {
         }
 
         const deleteEmployee = async (ids) => {
-            try {
+        try {
             const idList = Array.isArray(ids) ? ids : [ids];
+
+            // confirmacion de eliminacion incial
+            const result = await Swal.fire({
+            title: "¿Estás seguro?",
+            text: `Vas a eliminar ${idList.length} empleado(s). Esta acción no se puede deshacer.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+            });
+
+            if (!result.isConfirmed) {
+            await Swal.fire("Operación cancelada", "No se eliminó ningún registro.", "info");
+            return; //detiene la ejecucion si no se confirma 
+            }
+
+            // verificar si los empleados seleccionados tienen usuarios vinculados 
             const usuarios = await getUsers();
-            
             const usuariosRelacionados = usuarios.filter(user => idList.includes(user.id_empleado));
-            
+
+            let eliminarUsuarios = false;
+
             if (usuariosRelacionados.length > 0) {
-                const confirm = await Swal.fire({
-                title: "¿Estás seguro?",
-                text: 'Este empleado tiene un usuario asignado. ¿Desea eliminar tanto el registro del empleado como el usuario vinculado?',
+            // Mostrar lista de nombres de usuarios vinculados
+            const nombresUsuarios = usuariosRelacionados.map(u => u.nombres).join(", ");
+
+            const confirmUsuarios = await Swal.fire({ //NOTA: mas adelante implementar que muestre el nombre de los empleados que tienen usuarios asignados 
+                title: "Usuarios vinculados encontrados",
+                text: `Los siguientes empleados tienen usuarios vinculados: ${[nombresUsuarios]}. 
+        ¿Deseas eliminar también sus usuarios junto con los empleados?`,
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#d33",
                 cancelButtonColor: "#3085d6",
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "Cancelar"
-                });
+                confirmButtonText: "Sí, eliminar ambos",
+                cancelButtonText: "Cancelar",
+            });
 
-                if (!confirm.isConfirmed) return;
+            if (!confirmUsuarios.isConfirmed) {
+                await Swal.fire("Operación cancelada", "No se eliminó ningún registro.", "info");
+                return; //detiene la ejecucion si no se confirma
             }
 
+            eliminarUsuarios = true;
+            }
+            
+
+            // eliminacion en paralelo de emplados y usuarios si aplica
             await Promise.all(
-                idList.map(async (id) => {
+            idList.map(async (id) => {
                 try {
-                    await deleteEmployees(id);
-                    if (usuarios.some(user => user.id_empleado === id)) {
+                await deleteEmployees(id);
+
+                if (eliminarUsuarios && usuarios.some(user => user.id_empleado === id)) {
                     await deleteUsers(id);
-                    }
-                } catch (error) {
-                    handleAxiosError(error);
                 }
-                })
+                } catch (error) {
+                handleAxiosError(error);
+                }
+            })
             );
 
+            await Swal.fire("Eliminado", "El/los empleado(s) fueron eliminados.", "success");
+
             fetchAll();
-            } catch (error) {
+        } catch (error) {
             handleAxiosError(error);
-            }
+        }
         };
+
 
         const createUser = async (newUserData) => {
             try {
