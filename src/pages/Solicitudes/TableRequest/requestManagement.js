@@ -5,6 +5,7 @@ import { getEmployees } from "../../../api/api_Usuarios";
 import { getPlanes } from "../../../api/api_Solicitudes";
 import Swal from "sweetalert2";
 import {handleAxiosError} from "../../../utils/alertUnauthorized";
+import { number } from "framer-motion";
 
 
 const useRequestManage = () => {
@@ -223,6 +224,25 @@ const useRequestManage = () => {
                 value: e.id,
                 label: `${e.nombres} ${e.apellidos}`,
               })),
+          };
+        }
+        return field;
+      });
+    }
+
+    if (name === "id_tipo_vehiculo") {
+      const filteredPlans = planList.filter(
+        (p) => Number(p.id_tipo_vehiculo) === Number(value)
+      );
+
+      updatedFields = updatedFields.map((field) => {
+        if (field.name === "id_plan") {
+          return {
+            ...field,
+            options: filteredPlans.filter((f)=> f.estado=="AC").map((p) => ({
+              value: p.id,
+              label: p.nombre_plan,
+            })),
           };
         }
         return field;
