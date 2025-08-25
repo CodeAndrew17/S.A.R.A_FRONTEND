@@ -30,27 +30,27 @@ const useRequestManage = () => {
         required: true 
       },
       { name: "id_convenio", label: "Convenio", type: "select", placeholder: "Seleccione un convenio", 
-        options: convenioList.map((c) => ({ value: c.id, label: c.nombre })), 
+        options: convenioList.filter(c=> c.estado =="AC").map((c) => ({ value: c.id, label: c.nombre })), 
         defaultValue: null, 
         required: true 
       },
       { name: "id_sucursal", label: "Sucursales", type: "select", placeholder: "Seleccione una Sucursal", 
-        options: sucursalList.map((s) => ({ value: s.id, label: s.nombre })),
+        options: sucursalList.filter(s=> s.estado=="AC").map((s) => ({ value: s.id, label: s.nombre })),
         defaultValue: null, 
         required: true 
       },
       {name:"telefono", label:"Telefono", type:"text", placeholder:"Número de contacto",defaultValue: null, required:true},
       { name: "id_empleado", label: "Solicitado por", type: "select", placeholder: "Seleccione un empleado", 
-        options: empleadoList.map((e) => ({ value: e.id, label: `${e.nombres} ${e.apellidos}` })), 
+        options: empleadoList.filter(e=>e.estado=="AC").map((e) => ({ value: e.id, label: `${e.nombres} ${e.apellidos}` })), 
         defaultValue: null, 
         required: true },
 
       { name: "id_tipo_vehiculo", label: "Tipo de Vehiculo", type: "select", placeholder: "Seleccione un tipo de Vehiculo", 
-        options: tipovehiculoList.map((t) => ({ value: t.id, label: t.nombre_vehiculo })), 
+        options: tipovehiculoList.filter(t=> t.estado=="AC").map((t) => ({ value: t.id, label: t.nombre_vehiculo })), 
         defaultValue: null, 
         required: true },
       { name: "id_plan", label: "Plan", type: "select", placeholder: "Seleccione el plan que requiere", 
-        options: planList.map((p) => ({ value: p.id, label: p.nombre_plan })), 
+        options: planList.filter(p=> p.estado=="AC").map((p) => ({ value: p.id, label: p.nombre_plan })), 
         defaultValue: null, 
         required: true },
       { name: "observaciones", label: "Observación", type: "textarea", placeholder: "Escriba una recomendación del servicio",  defaultValue: null,fullWidth: true   }
@@ -174,7 +174,7 @@ const useRequestManage = () => {
 };
 
   //Funcion para aplicar filtros
-  const handleFiledChage = (name, value,) => {
+  const handleFiledChage = (name, value) => {
     let updatedFields = [...formsData];
 
     if (name === 'id_convenio') {
@@ -182,34 +182,47 @@ const useRequestManage = () => {
         (s) => Number(s.id_convenio) === Number(value)
       );
 
-
       updatedFields = updatedFields.map((field) => {
         if (field.name === "id_sucursal") {
           return {
             ...field,
-            options: filtersucursal.map((s) => ({
-              value: s.id,
-              label: s.nombre,
-            })),
+            value: "", 
+            options: filtersucursal
+              .filter(s => s.estado == "AC")
+              .map((s) => ({
+                value: s.id,
+                label: s.nombre,
+              })),
+          };
+        }
+        if (field.name === "id_empleado") {
+          return {
+            ...field,
+            value: "", 
+            options: [],
           };
         }
         return field;
       });
     }
 
-    if (name === "id_tipo_vehiculo") {
-      const filteredPlans = planList.filter(
-        (p) => Number(p.id_tipo_vehiculo) === Number(value)
+    // Sucursal -> actualizar empleados
+    if (name === "id_sucursal") {
+      const filterempleado = empleadoList.filter(
+        (e) => Number(e.id_sucursal) === Number(value)
       );
 
       updatedFields = updatedFields.map((field) => {
-        if (field.name === "id_plan") {
+        if (field.name === "id_empleado") {
           return {
             ...field,
-            options: filteredPlans.map((p) => ({
-              value: p.id,
-              label: p.nombre_plan,
-            })),
+            value: "", 
+            options: filterempleado
+              .filter(e => e.estado == "AC")
+              .map((e) => ({
+                value: e.id,
+                label: `${e.nombres} ${e.apellidos}`,
+              })),
           };
         }
         return field;
