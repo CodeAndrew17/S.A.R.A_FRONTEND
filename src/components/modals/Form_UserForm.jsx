@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled, {keyframes} from "styled-components";
 import { validateCreateUserForm } from "../../utils/validaciones";
 import Swal from "sweetalert2";
@@ -239,9 +239,18 @@ const UserForm = ({
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
+  const normalizedFields = fields.map(f => {
+
+    const nombre = f.id_items?.nombre_items?.toLowerCase();//intento de hacer q novedad sea opcional(salio mal )
+    return {
+      ...f, 
+    required: nombre !== "novedad"
+  };
+  });
+
   useEffect(() => {
     const initialData = {};
-    fields.forEach((field) => {
+    normalizedFields.forEach((field) => {
       if (initialValues && initialValues[field.name] !== undefined) {
         initialData[field.name] = initialValues[field.name];
       } else if (field.defaultValue !== undefined) {
@@ -273,7 +282,7 @@ const UserForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validateCreateUserForm(formData, fields);
+    const validationErrors = validateCreateUserForm(formData, normalizedFields);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
@@ -374,7 +383,7 @@ const UserForm = ({
 
         <form onSubmit={handleSubmit}>
           <FormContent>
-            {fields.map((field, index) => {
+            {normalizedFields.map((field, index) => {
               if (field.type === "select") {
                 return (
                   <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>

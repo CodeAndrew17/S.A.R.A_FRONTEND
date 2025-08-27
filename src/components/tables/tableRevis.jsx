@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { X } from 'lucide-react';
+import {X}  from 'lucide-react';  
 
 // Estilos base
 const TableContainer = styled.div`
@@ -13,21 +13,25 @@ const TableContainer = styled.div`
   }
 `;
 
-// estilo para boton de limpiar checbox 
+//estilo para boton de limpiar checbox 
 const ClearButton = styled.button`
   background: green;
   border: none;
   color: white;
+
   border-radius: 6px;
   cursor: pointer;
   height: 17px;
   width: 18px;
+
   font-weight: bold;
+
 
   &:hover {
     background: #dc2626; /* rojo más oscuro */
   }
 `;
+
 
 const ScrollWrapper = styled.div`
   background: white;
@@ -122,50 +126,57 @@ const Table = ({
   onRowClick,
   expandable, 
   selectable,
-  selectedRows = [],       // 👈 controlado desde el padre
   onSelectionChange,
   renderExpandedContent,
   containerStyle,
   expandedRows = []
 }) => {
+  const [selectedRows, setSelectedRows] = React.useState([]);
 
   const toggleSelect = (id, e) => {
     e.stopPropagation();
-    const newSelected = selectedRows.includes(id)
-      ? selectedRows.filter(rowId => rowId !== id)
-      : [...selectedRows, id];
+    setSelectedRows(prev => 
+      prev.includes(id)
+        ? prev.filter(rowId => rowId !== id)
+        : [...prev, id]
+    );
     
     if (onSelectionChange) {
-      onSelectionChange(newSelected);
+      onSelectionChange(
+        selectedRows.includes(id)
+          ? selectedRows.filter(rowId => rowId !== id)
+          : [...selectedRows, id]
+      );
     }
   };
 
   const clearSelection = () => {
+    setSelectedRows([]);
     if (onSelectionChange) {
       onSelectionChange([]);
     }
-  };
+  }
 
-  return (
+return (
     <TableContainer style={containerStyle}>
       <ScrollWrapper>
         <StyledTable>
-          <thead>
-            <tr>
-              {selectable && (
-                <TableHeader style={{ width: '50px', textAlign: 'center' }}>
-                  {selectedRows.length > 0 && (
-                    <ClearButton onClick={clearSelection}>
-                      <X size={'15px'} style={{ marginLeft: '-4px' }} />
-                    </ClearButton>
-                  )}
-                </TableHeader>
-              )}
-              {columns.map((column) => (
-                <TableHeader key={column.key}>{column.title}</TableHeader>
-              ))}
-            </tr>
-          </thead>
+        <thead>
+  <tr>
+    {selectable && (
+      <TableHeader style={{ width: '50px', textAlign: 'center' }}>
+        {selectedRows.length > 0 && (
+          <ClearButton onClick={clearSelection}>
+            <X size={'15px'} style={{marginLeft: '-4px'}}/>
+          </ClearButton>
+        )}
+      </TableHeader>
+    )}
+    {columns.map((column) => (
+      <TableHeader key={column.key}>{column.title}</TableHeader>
+    ))}
+  </tr>
+</thead>
 
           <tbody>
             {data.length > 0 ? (

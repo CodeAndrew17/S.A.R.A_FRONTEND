@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import RestorePassword from './pages/login/restorePassword';
 import { Inicio } from './pages/home';
-import Login from './pages/login/login';
+import Login from './pages/Login/login';
 import { createGlobalStyle } from 'styled-components';
 import Usuarios from './pages/Usuarios/usuarios';
 import Administrar from './pages/Administrar/administrar';
@@ -53,7 +53,7 @@ function AppRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Login />} />
         <Route path="/contraseña" element={<RestorePassword />} />
-        <Route path="/inicio" element={<Inicio />} />
+        <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
         <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
         <Route path="/sucursales" element={<ProtectedRoute><Sucursales /></ProtectedRoute>} />
         <Route path="/reset" element={<ProtectedRoute><ResetPassword /></ProtectedRoute>} />

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { ImageUp, Image as ImageIcon } from "lucide-react"; //<ImageUp />
+import Swal from "sweetalert2";
+import { handleAxiosError } from "../../utils/alertUnauthorized";
 
 const FormContainer = styled.form`
   display: flex;
@@ -117,7 +119,7 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) return alert("Por favor selecciona una imagen antes de enviar.");
+    if (!file) return Swal .fire("Ningun archivo seleccionado", "Por favor selecciona un archivo para subir ", "warning");
 
     const formData = new FormData();
     formData.append("imagen", file);
@@ -128,10 +130,10 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       onSuccess?.(data);
-      alert("Imagen subida con éxito");
+      Swal .fire("Imagen subida con exito", "La imagen  se envio correctamente", "success");
     } catch (err) {
       console.error(err);
-      alert("Error al subir la imagen");
+      handleAxiosError(err);
     } finally {
       setLoading(false);
     }

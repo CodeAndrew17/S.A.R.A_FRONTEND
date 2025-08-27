@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-//const API_URL = "http://192.168.1.24:8000";  // vista local movil 
+// const API_URL = "http://192.168.1.24:8000";  // vista local movil 
 const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
 // Función de login para obtener el token de access

@@ -9,7 +9,7 @@ const StyledButton = styled.button`
   min-height: 40px; /* Altura mínima accesible */
   padding: 8px 12px;
   font-size: 14px;
-  font-family: Helvetica, Arial, sans-serif;
+
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease; 
@@ -26,6 +26,7 @@ const StyledButton = styled.button`
     cursor: not-allowed;
     background-color: ${(props) => props.$bgColor || "#5FB8D6"}; 
     transform: none !important; /* Anima efectos de hover/active */
+    background-color: gray;
   }
 
   /* Efecto hover solo si no está deshabilitado */

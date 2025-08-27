@@ -22,6 +22,7 @@ import {
 
 import filterData from '../../utils/unitySearch';
 import getOrderRegister from '../../utils/getLastRegister';
+import { title } from 'framer-motion/client';
 
 
 const TitleWrapper = styled.div`
@@ -180,6 +181,7 @@ export default function Sucursales() {
                     data={orderData}
                     columns={columnsBranch({ setEditingBranch, setActiveForm })}
                     selectable
+                    selectedRows={selectedBranches}
                     onSelectionChange={setSelectedBranches}
                     containerStyle={{ fontSize: '13px' }}
                   />
@@ -194,7 +196,7 @@ export default function Sucursales() {
                       { name: 'direccion', placeholder: 'Dirección', type: 'text', required: true },
                       { name: 'telefono', placeholder: 'Teléfono', type: 'tel', required: true },
                       {
-                        name: 'estado',  placeholder: 'Estado',type: 'select', required: true,
+                        name: 'estado', label: 'Estado' ,placeholder: 'Estado',type: 'switch', required: true,
                         options: [{ value: 'AC', label: 'Activo' }, { value: 'IN', label: 'Inactivo' }],
                         defaultValue: 'AC',
                       },

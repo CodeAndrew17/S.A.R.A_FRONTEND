@@ -5,6 +5,11 @@ import { getRequestYear } from "../../api/api_Dashboard";
 const SalesChart = () => {
   const [series, setSeries] = useState([]);
 
+  const monthsOrder = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await getRequestYear(2025);
@@ -12,15 +17,17 @@ const SalesChart = () => {
       console.log(data);
 
       // Hasta agosto tenemos valores, después rellenamos con ceros
-      const months = 12;
-      const fillArray = (value, monthCount) =>
-        [...Array(months)].map((_, i) => (i < monthCount ? value : 0));
+      
+      const activas = monthsOrder.map(m => data[m]?.solicitudes_activas || 0); 
+      const canceladas = monthsOrder.map(m => data[m]?.solicitudes_canceladas || 0); 
+      const progreso = monthsOrder.map(m => data[m]?.solicitudes_progreso || 0); 
+      const finalizadas = monthsOrder.map(m => data[m]?.solicitudes_finalizadas || 0); 
 
       setSeries([
-        { name: "Activas", data: fillArray(data.solicitudes_activo, 8) },
-        { name: "Canceladas", data: fillArray(data.solicitudes_cancelado, 8) },
-        { name: "En Progreso", data: fillArray(data.solicitudes_progreso, 8) },
-        { name: "Finalizadas", data: fillArray(data.solicitudes_finalizado, 8) }
+        { name: "Activas", data: activas },
+        { name: "Canceladas", data: canceladas },
+        { name: "En Progreso", data: progreso },
+        { name: "Finalizadas", data: finalizadas }
       ]);
     };
 

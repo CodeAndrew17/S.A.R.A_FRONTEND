@@ -221,11 +221,74 @@ const ErrorMessage = styled.p`
   height: 16px;
 `;
 
+// Estilos del switch
+
+const SwitchWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 42px; /* mismo alto que los inputs */
+  padding: 0 10px;
+  margin: 6px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fff;
+  box-sizing: border-box;
+`;
+
+const SwitchLabel = styled.label`
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+`;
+
+const SwitchInput = styled.input`
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  &:checked + span {
+    background-color: rgb(95, 200, 214);
+  }
+
+  &:checked + span:before {
+    transform: translateX(22px);
+  }
+`;
+
+const SwitchSlider = styled.span`
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+
+  &:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+`;
+
+
+
 const UserForm = ({
   title = "Formulario",
   fields = [],
   onSubmit,
   onCancel,
+  children,
   onFieldChange,
   successMessage = "Usuario creado con éxito",
   successDescription = "El usuario ha sido registrado correctamente",
@@ -351,6 +414,55 @@ const UserForm = ({
     </InputGroup>
   );
 
+  const renderSwitchField = (field) => (
+  <InputGroup $fullWidth={field.fullWidth}>
+    <label
+      style={{
+        marginBottom: "8px",
+        fontWeight: "500",
+        color: "#555",
+        fontSize: "14px",
+      }}
+    >
+      {field.label}
+      {field.required && <span style={{ color: "red" }}> *</span>}
+    </label>
+
+    <SwitchWrapper>
+      <SwitchLabel>
+        <SwitchInput
+          type="checkbox"
+          name={field.name}
+          checked={formData[field.name] === "AC"}
+          onChange={(e) =>
+            handleInputChange({
+              target: {
+                name: field.name,
+                value: e.target.checked ? "AC" : "IN", // logica de activo e inactivo 
+              },
+            })
+          }
+        />
+        <SwitchSlider />
+      </SwitchLabel>
+
+      <span
+        style={{
+          marginLeft: "10px",
+          fontSize: "14px",
+          color: formData[field.name] === "AC" ? "green" : "red",
+          fontWeight: "500",
+        }}
+      >
+        {formData[field.name] === "AC" ? "Activado" : "Desactivado"}
+      </span>
+    </SwitchWrapper>
+
+    <ErrorMessage>{errors[field.name]}</ErrorMessage>
+  </InputGroup>
+);
+
+
   return (
     <ModalContainer>
       <FormContainer>
@@ -378,6 +490,12 @@ const UserForm = ({
                     {renderTextAreaField(field)}
                   </InputGroup>
                 );
+              } else if (field.type === "switch") {   // agregamos el tipo creado switch
+                return (
+                  <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
+                    {renderSwitchField(field)}
+                  </InputGroup>
+                );
               } else if (field.type === "custom") {
                 return (
                   <InputGroup $fullWidth={field.fullWidth} key={field.name || index}>
@@ -393,6 +511,7 @@ const UserForm = ({
                 );
               }
             })}
+            {children}
           </FormContent>
 
           <ButtonContainer>

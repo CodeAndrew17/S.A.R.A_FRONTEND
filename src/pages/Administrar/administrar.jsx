@@ -9,6 +9,7 @@ import usePlansandVehicles from "./adminManager";
 import { toast } from "react-toastify";
 import Swal from 'sweetalert2';
 import getOrderRegister from "../../utils/getLastRegister";
+import { label } from "framer-motion/client";
 
 
 
@@ -121,7 +122,7 @@ function Administrar() {
   try {
     await deletePlan(selectedRows);
     toast.success("Planes eliminados correctamente");
-    //setSelectedRows([]);
+    setSelectedRows([]);
   } catch (error) {
     console.error("Error al eliminar planes", error);
     toast.error("Error al eliminar planes");
@@ -186,6 +187,7 @@ function Administrar() {
         onSelectionChange={handleSelectionChange}
         selectable={true}
         columns={columns}
+        selectedRows={selectedRows}
         containerStyle={{ fontSize: '13px' }}
       />
 
@@ -225,7 +227,8 @@ function Administrar() {
             },
             { 
               name: "estado",
-              type: "select",
+              label: "Estado",
+              type: "switch",
               options: [
                 {value: "AC", label: "Activo"},
                 {value: "IN", label: "Inactivo"}
@@ -277,7 +280,8 @@ function Administrar() {
             },
             { 
               name: "estado",
-              type: "select",
+              label: "Estado",
+              type: "switch",
               options: [
                 {value: "AC", label: "Activo"},
                 {value: "IN", label: "Inactivo"}

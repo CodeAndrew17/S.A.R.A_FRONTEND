@@ -61,6 +61,7 @@ export default function ConveniosPanel() {
         <Table
           selectable
           data={orderData}
+          selectedRows={selected}
           columns={columnsAgreement({ setEditing, setActiveForm })}
           onSelectionChange={setSelected}
           containerStyle={{ fontSize: '13px' }}
@@ -72,11 +73,11 @@ export default function ConveniosPanel() {
         <UserForm
           title={editing ? `Editar Convenio ${editing.nombre}` : 'Crear Convenio'}
           fields={[
-            { name: 'nombre',  label: 'Nombre',  type: 'text', required: true },
-            { name: 'nit',     label: 'NIT',     type: 'text', required: true },
-            { name: 'telefono',label: 'Teléfono',type: 'tel',  required: true },
+            { name: 'nombre',  label: 'Nombre', placeholder:'Nombre',  type: 'text', required: true },
+            { name: 'nit',     label: 'NIT',  placeholder:'Empresa NIT', type: 'text', required: true },
+            { name: 'telefono',label: 'Teléfono', placeholder:'Teléfono',type: 'tel',  required: true },
             {
-              name: 'estado',  label: 'Estado',  type: 'select',
+              name: 'estado',  label: 'Estado',  type: 'switch',
               options: [
                 { value: 'AC', label: 'Activo' },
                 { value: 'IN', label: 'Inactivo' },

@@ -49,7 +49,9 @@ const useEmployeeManagement = () => {
         const createEmployee = async (newEmployeeData) => {
             try {
                 const newEmployee = await addEmployees(newEmployeeData); 
+                console.log("nuevo empleado creado pero desde useEmployee:", newEmployee);
                 fetchAll(); //recargamos los datos para actualizar la tabla 
+                return newEmployee; // devolvemos el nuevo empleado creado
             } catch (error) {
                 handleAxiosError(error);
                 throw error;
@@ -60,10 +62,35 @@ const useEmployeeManagement = () => {
             try {
                 const modifyEmployees = await editEmployees(id, updateData); //enviamos tanto id del registro a actualizar como la data q se valla a actualizar
                 fetchAll(); // volvemos a recurrir a la funcion para simplificar trabajod e recarga en la table
+                Swal.fire("¡Éxito!", "Empleado actualizado", "success");
+            } catch (error) {
+                handleAxiosError(error);
+                throw error;
+            }
+        }
+
+        const deleteUser = async (ids) => {
+            const idList = Array.isArray(ids) ? ids : [ids];
+
+            try {
+                const results = await Promise.all(
+                idList.map(async (id) => {
+                    try {
+                    await deleteUsers(id); 
+                    return { success: true, id };
+                    } catch (error) {
+                    console.error(`Error eliminando usuario con ID ${id}:`, error);
+                    handleAxiosError(error)
+                    return { success: false, id, error };
+                    }
+                })
+                );
+                fetchAll();
+                return results;
             } catch (error) {
                 handleAxiosError(error);
             }
-        }
+        };
 
         const deleteEmployee = async (ids) => {
         try {
@@ -132,9 +159,9 @@ const useEmployeeManagement = () => {
             })
             );
 
-            await Swal.fire("Eliminado", "El/los empleado(s) fueron eliminados.", "success");
-
             fetchAll();
+
+            await Swal.fire("Eliminado", "El/los empleado(s) fueron eliminados.", "success");
         } catch (error) {
             handleAxiosError(error);
         }
@@ -155,30 +182,10 @@ const useEmployeeManagement = () => {
             try {
                 const modifyUser = await editUsers(idUser,updateDataUser );
                 fetchAll(); 
+                Swal.fire("¡Éxito!", "Usuario actualizado correctamente", "success");
             } catch (error) {
                 handleAxiosError(error);
-            }
-        };
-
-        const deleteUser = async (ids) => {
-            const idList = Array.isArray(ids) ? ids : [ids];
-
-            try {
-                const results = await Promise.all(
-                idList.map(async (id) => {
-                    try {
-                    await deleteUsers(id); 
-                    return { success: true, id };
-                    } catch (error) {
-                    console.error(`Error eliminando usuario con ID ${id}:`, error);
-                    return { success: false, id, error };
-                    }
-                })
-                );
-                fetchAll();
-                return results;
-            } catch (error) {
-                handleAxiosError(error);
+                throw error;
             }
         };
 

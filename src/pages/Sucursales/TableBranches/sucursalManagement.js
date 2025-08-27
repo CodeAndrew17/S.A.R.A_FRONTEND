@@ -43,6 +43,7 @@ const handleSucursalSubmit = async (newData, setConvenios, setActiveForm, setSuc
   } catch (error) {
     console.error("Error al crear la sucursal:", error);
     handleAxiosError(error); // Esto ya se encarga de mostrar el SweetAlert de error si es 403 u otro
+    throw error;
   }
 };
 
@@ -170,7 +171,7 @@ const handleUpdateBranches = async (id, newData) => {
     } catch (error) {
         console.error("Error al editar sucursal:", error);
         handleAxiosError(error); 
-        return null;
+        throw error;
     }
 };
 

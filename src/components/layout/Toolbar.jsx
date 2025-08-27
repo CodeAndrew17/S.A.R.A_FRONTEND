@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import SearchBar from "../ui/SearchBar";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { SquarePlus, Edit, Trash2 } from "lucide-react";
 
 /* ============ STYLED COMPONENTS ============ */
 
@@ -9,11 +9,16 @@ const ContainerToolbar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
+  padding: 18px 0;
   width: 100%;
-  margin: 20px 0;
+  margin: 15px 0;
   gap: 15px;
   flex-wrap: wrap;
+  background: #F5F7FA;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3); /* azul */
+
+
 
   /* Estilo por defecto (horizontal) */
   .buttons-group {
@@ -312,7 +317,7 @@ const Toolbar = ({
       {showDefaultButtons && (
         <div className="buttons-group">
           <Button
-            icon={Plus}
+            icon={SquarePlus}
             onClick={onCreate}
             $bgColor="#5FB8D6"
             $hoverColor="#519CB2"

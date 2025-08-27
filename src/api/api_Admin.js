@@ -54,7 +54,7 @@ const getVehicles = async () => {
 };
 ////////////////////////////////////////////////////////////////////
 
-const addVehicles = async (newVehicleData) =>{
+const addVehicles = async (newVehicleData) =>{ //esta funcion para vehiculos nunca se usó por ahora 
     try{
         const response = await axiosWithAuth("/api/TipoVehiculo/post/", "POST", newVehicleData);
         return response;

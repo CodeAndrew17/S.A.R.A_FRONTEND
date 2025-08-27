@@ -15,6 +15,7 @@ import { m, motion } from "framer-motion";
 import ProgressBar from '../../components/ui/ProgressBar';
 import {InfoLine,SideAndContent,ObservationNote,Divider,Head,Content,Body,Column} from './styles'; 
 import { BackSquareButton } from '../../components/ui/BackButton'; 
+import { handleAxiosError } from '../../utils/alertUnauthorized';
 
 function FormsView() {
   const [selected, setSelected] = useState(null);
@@ -58,6 +59,7 @@ function FormsView() {
     for (const formId of idsFormularios) { //usamos for...of para manejar async/await correctamente
       try {
         const respuestas = await getAnswers(solicitud_id, formId);
+        console.log(`Respuestas para el formulario ${formId}:`, respuestas);
         if (respuestas && respuestas.length > 0) {
           respondidos.push(formId); //añadimos si se cumple la condicion para alamcenar los formularios respondidos
         }
@@ -168,6 +170,7 @@ function FormsView() {
       try {
         const data = await getFormItems(selected.id);
         setformData(data);
+        console.log("Items del formulario cargados: ", data);
       } catch (error) {
         console.error("Error al seleccionar el formulario ", error);
       }
@@ -202,8 +205,8 @@ function FormsView() {
   useEffect(() => {
   if (window.innerWidth < 500 && observacionesPlan?.trim()) {
     Swal.fire({
-      title: 'Esta solicitud tiene observaciones',
-      text: 'Desplázate hasta el final para revisarlas con detalle.',
+      title: 'Presiona el boton azul ',
+      text: 'Presiona el boton azul arriba a la derecha para ver los formularios.',
       icon: 'info',
       confirmButtonText: 'Entendido',
     });
@@ -387,7 +390,7 @@ function FormsView() {
       return navigate("/revisiones");
 
     } catch (error) {
-      //manejar error
+      handleAxiosError(error);
     }
   }
 
@@ -432,6 +435,7 @@ function FormsView() {
           <Column>
             <UploadImageForm
               endpoint={`http://localhost:8000/result/api/subirimagen/post/`}>
+                //numero en entero 
             </UploadImageForm>
 
             <GlassCardPro
@@ -443,19 +447,19 @@ function FormsView() {
             >
               <InfoLine>
                 <ListTodo size={18} color="#10B981" />
-                <strong>Cuestionario </strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
+                <strong>Cuestionario •</strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
               </InfoLine>
               <InfoLine>
                 <CarFront size={18} color="#3B82F6" />
-                <strong>Tipo de vehículo</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
+                <strong>Tipo de vehículo •</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
               </InfoLine>
               <InfoLine>
                 <ClipboardList size={18} color="#10B981" />
-                <strong>Formularios principales</strong> {conteoPrincipales}
+                <strong>Formularios principales •</strong> {conteoPrincipales}
               </InfoLine>
               <InfoLine>
                 <FileText size={18} color="#3B82F6" />
-                <strong>Formularios adicionales</strong> {conteoAdicionales}
+                <strong>Formularios adicionales •</strong> {conteoAdicionales}
               </InfoLine>
             </GlassCardPro>
           </Column>
@@ -473,23 +477,23 @@ function FormsView() {
     <div style={{ flex: "1" }}>
       <InfoLine>
         <Handshake size={18} color="#10B981" />
-        <strong>Convenio</strong> {convenio}
+        <strong>Convenio •</strong> {convenio}
       </InfoLine>
       <InfoLine>
         <Building size={18} color="#3B82F6" />
-        <strong>Sucursal</strong> {sucursal}
+        <strong>Sucursal •</strong> {sucursal}
       </InfoLine>
       <InfoLine>
         <CarFront size={18} color="#10B981" />
-        <strong>Tipo de vehículo</strong> {diccionaryVehicleType[tipo_vehiculo]}
+        <strong>Tipo de vehículo •</strong> {diccionaryVehicleType[tipo_vehiculo]}
       </InfoLine>
       <InfoLine>
         <Calendar size={18} color="#3B82F6" style={{ marginRight: "6px" }} />
-        <strong>Fecha de creación</strong> {fecha}
+        <strong>Fecha de creación •</strong> {fecha}
       </InfoLine>
       <InfoLine>
         <Phone size={18} color="#10B981" style={{ marginRight: "6px" }} />
-        <strong>Teléfono</strong> {telefono}
+        <strong>Teléfono •</strong> {telefono}
       </InfoLine>
 
       <Divider style={{ margin: "12px 0" }} />
@@ -546,12 +550,10 @@ function FormsView() {
       disabled={
         !(
           conteoPrincipales > 0 &&
-          conteoAdicionales > 0 &&
-          formulariosRespondidos.length ===
-            conteoPrincipales + conteoAdicionales
+          formulariosRespondidos.length === (conteoPrincipales + (conteoAdicionales || 0)) //formularios respondido con la opsibilidad de q no existan adicionales
         )
       }
-      disableMessage="No puedes finalizar la solicitud hasta que respondas todos los formularios."
+      disableMessage="No puedes finalizar la solicitud hasta que respondas todos los formularios." //esta prop no sirve
       style={{
         marginTop: "20px",
         borderRadius: "12px",

@@ -1,6 +1,8 @@
 import CustomButton from "../../../components/ui/button";
 import { Download, FolderCog } from "lucide-react"; //<Download />
 import {downloadRequest} from "../../../api/api_Solicitudes";  //llamamos la funcion de descarga, lista para usarl al momento de descagrar visualmente el archivo para el usuaorio 
+import { handleAxiosError } from "../../../utils/alertUnauthorized";
+
 
 const columnsRequest=({navigate})=> {
   
@@ -21,6 +23,7 @@ const columnsRequest=({navigate})=> {
       window.URL.revokeObjectURL(url); //libera memoria asociada la url temporal creada con createObjectURL para eficientizar 
     } catch (error) {
       console.error("Error al descargar el informe desde columnsRequest: ", error); 
+      handleAxiosError(error); //llamamos la funcion de manejo de errores
     }
   };
   
@@ -74,8 +77,8 @@ const columnsRequest=({navigate})=> {
         let hover =''
         
         if( record.estado=='PRO'){
-            color='#20C997'
-            hover='#1BAF89'
+            color='#20B993'
+            hover='#337ab7'
 
 
         }else{
@@ -95,11 +98,11 @@ const columnsRequest=({navigate})=> {
           </CustomButton>
         ) : (
           <CustomButton
-            bgColor="#20B993"  
+            bgColor="#20B993"
             hoverColor="#1CA187"
             width="100px"
             height="35px"
-            disabled={isDisabled}
+            disabled={record.estado !== 'PRO'} //desabilitar si no es pro osea en progreso
             onClick={() =>
               navigate("/forms", {
                 state: {

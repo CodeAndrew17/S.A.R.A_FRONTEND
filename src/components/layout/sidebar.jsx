@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {logout} from '../../api/api_Manager';
 import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipboardList, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { User, House, NotepadText, Users, NotebookPen, Folder, Logs, LogOut } from "lucide-react";
+import { User, House, NotepadText, Users, NotebookPen, Folder, Logs } from "lucide-react";
+import Logo from '../../assets/images/logo.png';
 
-//<LogOut />
 
 const UserContainer = styled.div`
   display: flex;
@@ -61,18 +61,22 @@ const Username = styled.span`
 `;
 
 const ToggleButton = styled.button`
-  background: none;
+  background: rgba(10, 42, 74, 0.15);
   border: none;
   color: white;
+  width: 40px;
+  height: 40px; 
   font-size: 24px;
   cursor: pointer;
   position: absolute;
   top: 30px;
   left: 18px;
   transition: transform 0.3s ease;
+  border-radius: 20%;
 
   &:hover {
     transform: scale(1.1);
+    background-color: #123c6d;
   }
 `;
 
@@ -135,31 +139,55 @@ const Tooltip = styled.div`
 `;
 
 
-const LogoutWrapper = styled.div`
-  margin-left: 10px;
+const ImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 20px;
+  right: ${({ $isOpen }) => ($isOpen ? '25px' : '-45px')};
+  z-index: 1001;
+  transition: right 0.3s ease;
+
+  img {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+
+  img:hover {
+    transform: scale(1.1);
+  }
 `;
 
+
 const LogoutButton = styled.button`
-  background: transparent;
-  color: #ff6666;
+  background: rgba(255, 102, 102, 0.15); /* fondo rojizo visible */
+  color: #ff4d4d; /* rojo más vibrante */
   border: none;
-  padding: 8px;
+  padding: 10px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
   transition: all 0.3s ease;
-  
+  margin-top: 15px;
+  margin-left: 8px;
+  box-shadow: 0 0 8px rgba(255, 102, 102, 0.4); /* sutil glow */
+
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
+    background: rgba(255, 102, 102, 0.3); /* más intenso al hover */
+    transform: scale(1.15);
+    box-shadow: 0 0 12px rgba(255, 102, 102, 0.6); /* glow más fuerte */
   }
 
   svg {
-    font-size: 18px;
+    font-size: 22px; /* ícono más grande */
+  }
+
+  @media (max-width: 765px) {
+    margin-left: 5px;
   }
 `;
 
@@ -193,6 +221,7 @@ const RoleTag = styled.span`
 
 //para evitar errores de inicializacion y acceder a variables antes de incializarlas 
 const RoleContainer = styled.div`
+  height: 30px; /* 🔒 altura fija */
   padding: 10px 20px;
   background: linear-gradient(to right, #104E8B, #1D6E94, #2A8E9B);
   color: #ffffffcc;
@@ -205,12 +234,11 @@ const RoleContainer = styled.div`
   z-index: 5;
   overflow: hidden;
 
-  /* Transición elegante */
-  max-height: ${({ $isOpen }) => ($isOpen ? '60px' : '0')};
+  visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
-  padding-top: ${({ $isOpen }) => ($isOpen ? '10px' : '0')};
-  padding-bottom: ${({ $isOpen }) => ($isOpen ? '10px' : '0')};
+  transition: opacity 0.3s ease;
 `;
+
 
 const SidebarContainer = styled.div`
   width: ${({ $isOpen }) => ($isOpen ? "250px" : "80px")};
@@ -363,15 +391,18 @@ useEffect(() => {
           ))}
         </Menu>
 
-        <LogoutWrapper $isOpen={isOpen}>
-          <LogoutButton onClick={logout}>
-            <FaSignOutAlt />
-          </LogoutButton>
-        </LogoutWrapper>
+        <ImageWrapper $isOpen={isOpen}>
+            <img src={Logo} alt="Logo" width="50" height="50" />
+        </ImageWrapper>
 
         <RoleContainer $isOpen={isOpen}>
           <RoleTag>{rol}</RoleTag>
         </RoleContainer>
+
+          <LogoutButton onClick={logout}>
+            <FaSignOutAlt />
+          </LogoutButton>
+
       </SidebarContainer>
     </>
   );

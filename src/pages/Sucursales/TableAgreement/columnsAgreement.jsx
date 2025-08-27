@@ -38,9 +38,9 @@ const columnsAgreement = ({ setEditing, setActiveForm })=>[
         title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Modificar</span>,
     render: (_, record) => (
         <CustomButton
-        bgColor="#5FB8D6"
-        hoverColor="#519CB2"
-        width="100px"
+        bgColor="#4F98D3"
+        hoverColor="#3E86C2"
+        width="110px"
         height="35px"
         onClick={() => {
           setEditing(record); 

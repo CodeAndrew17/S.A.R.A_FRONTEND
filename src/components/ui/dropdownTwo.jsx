@@ -9,7 +9,8 @@ const DropdownContainer = styled.div`
 `;
 
 const DropdownButton = styled.button`
-  width: 150px; 
+  width: 140px; 
+  height: 35px;
   padding: 8px 12px;
   background: #4F98D3;
   color: white;
@@ -24,6 +25,7 @@ const DropdownButton = styled.button`
   gap: 8px;
   transition: all 0.2s ease;
   transform: translateY(0);
+  font-size: 14px;
 
   &:hover {
     background: #3E86C2;
@@ -238,7 +240,7 @@ export const CheckboxDropdown = ({ options, selectedValues, onChange, onSave }) 
     <DropdownContainer ref={dropdownRef}>
       <DropdownButton onClick={toggleDropdown}>
         <ListChecks size={14} />
-        {selected.length > 0 ? `${selected.length} Seleccionados` : "Seleccionar"}
+        {selected.length > 0 ? `${selected.length} Formularios` : "Seleccionar"}
       </DropdownButton>
       {isOpen && (
         <DropdownContent 

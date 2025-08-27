@@ -9,7 +9,7 @@ const PlansTreemap = () => {
     const fetchPlans = async () => {
       const response = await getPlans();
       const data = response.data;
-      console.log("data", data);
+      console.log("planes me los trae?", data);
 
       // Transformamos el objeto { plan: cantidad } en formato treemap
       const formattedData = Object.entries(data).map(([name, value]) => ({
@@ -27,10 +27,10 @@ const PlansTreemap = () => {
       type: "treemap",
     },
     legend: {
-      show: false, // quítalo si quieres la leyenda aparte
+      show: false, 
     },
     title: {
-      text: "Planes",
+      text: "Planes con Solicitudes",
       align: "left",
       style: {
         fontSize: "16px",

@@ -12,6 +12,7 @@ import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft, Use
 import filterData from '../../utils/unitySearch';
 import getOrderRegister from '../../utils/getLastRegister';
 import { ImTextColor } from 'react-icons/im';
+import {handleAxiosError} from '../../utils/alertUnauthorized';
 
 const Usuarios = () => {
   const [selectedRows, setSelectedRows] = useState([]); //estado para las filas seleccionadas
@@ -22,6 +23,7 @@ const Usuarios = () => {
   const [statusFilter, setStatusFilter] = useState(''); //estado para el filtro dropdwon de los estados
   const [expandedRow, setExpandedRow] = useState(null); // estado para las filas expandidas (para mostra la informacion de cada usuario del empleado)
   const [employeeForUser, setEmployeeForUser] = useState(null); //estado para la asigancion directa del usuario con la relaicon del empleado 
+  const [checkedCreateUser, setCheckedCreateUser] = useState(false); //estado para el checkbox si lo marca abre modal para asignar de otra forma no lo hace 
 
 
   const {employees, branches, createEmployee, updateEmployee, deleteEmployee, createUser, updateUser, deleteUser} = useEmployeeManagement();
@@ -121,9 +123,9 @@ const Usuarios = () => {
   }
 }, [activateForm, editingEmployee, branches]);
 
-  const handleSelectionChange = (selectedRows) => {
-    setSelectedRows(selectedRows);
-  };
+    const handleSelectionChange = (selected) => {
+      setSelectedRows(selected);
+    };
 
   const handleCreateEmployee = () => {
     setEditingEmployee(null);
@@ -164,10 +166,19 @@ const Usuarios = () => {
 
   const submitForm = async (newEmployeeData) => {
     try {
-      await createEmployee(newEmployeeData)
-      setActivateForm(null)
+      const newEmployee = await createEmployee(newEmployeeData)
+      console.log("Nuevo empleado creado pero desde usuarios.jsx:", newEmployee);
+      
+      if (checkedCreateUser) {
+        handleAssignClick(newEmployee);
+      } else {
+        cancelForm();
+        setActivateForm(null); 
+      }
+
       Swal.fire("¡Éxito!", "Empleado creado correctamente", "success");
     } catch (error) {
+      handleAxiosError(error);
     }
   };
 
@@ -194,7 +205,6 @@ const Usuarios = () => {
   const handleUpdateEmployee = async (updateDataEmployee) => {
     try {
       await updateEmployee(editingEmployee.id, updateDataEmployee);
-      Swal.fire("¡Éxito!", "Empleado actualizado", "success");
       setActivateForm(null)
     } catch (error) {
 
@@ -204,12 +214,11 @@ const Usuarios = () => {
   const handleUpdateUser = async (updatedUserData) => {
     try {
       await updateUser(editingUser.id_usuario_real, updatedUserData);
-      Swal.fire("¡Éxito!", "Usuario actualizado correctamente", "success");
+      
       setActivateForm(null);
       setEditingUser(null);
     } catch (error) {
-      Swal.fire("Error", "No se pudo actualizar el usuario", "error");
-      console.error(error);
+      //controlado en la otra funcion 
     }
   };
 
@@ -227,6 +236,9 @@ const Usuarios = () => {
         });
     } else {
       await deleteEmployee(selectedRows)
+      setSelectedRows(prev =>
+  prev.filter(id => !selectedRows.includes(id))
+); 
     }
   };
 
@@ -245,11 +257,6 @@ const Usuarios = () => {
 
       if (result.isConfirmed) {
         await deleteUser(userData.id_usuario_real);
-        Swal.fire(
-          '¡Eliminado!',
-          'El usuario ha sido eliminado correctamente.',
-          'success'
-        );
         // Cierra la fila expandida si está abierta
         setExpandedRow(null);
       }
@@ -299,6 +306,7 @@ const Usuarios = () => {
         data={orderData}
         onSelectionChange={handleSelectionChange}
         selectable={true}
+        selectedRows={selectedRows} 
         columns={columns}
         containerStyle={{ fontSize: '13px' }}
         expandable={true}
@@ -343,7 +351,7 @@ const Usuarios = () => {
             {
               name: "estado",
               label: "Estado",
-              type: "select", 
+              type: "switch", 
               options: [
                 {value: "AC", label: "Activo"},
                 {value: "IN", label: "Inactivo"}
@@ -364,12 +372,26 @@ const Usuarios = () => {
           ]}
           onCancel={cancelForm}
           initialValues={editingEmployee}
+        > 
+          {activateForm === "Crear" && (
+    <div style={{ marginTop: "1rem" }}>
+      <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: 'pointer' }}>
+        <input 
+          type="checkbox" 
+          name="asignarUsuario" 
+          checked={checkedCreateUser} 
+          onChange={(e) => setCheckedCreateUser(e.target.checked)} 
         />
+        <span>¿Asignar usuario después de crear empleado?</span>
+      </label>
+    </div>
+  )}
+        </UserForm>
       )}
 
       {(activateForm === "Crear Usuario") && (
         <UserForm 
-          title={`Asignar Usuario a ${employeeForUser?.nombres} ${employeeForUser?.apellidos}`}
+          title={`Asignar Usuario a ${employeeForUser?.nombres}`}
           onSubmit={submitFormUser}
           fields={[
             {
@@ -400,7 +422,7 @@ const Usuarios = () => {
             {
               name: "estado",
               label: "Estado",
-              type: "select",
+              type: "switch",
               options: [
                 {value: "AC", label: "Activo"},
                 {value: "IN", label: "Inactivo"}
@@ -443,7 +465,7 @@ const Usuarios = () => {
           {
             name: "estado",
             label: "Estado",
-            type: "select",
+            type: "switch",
             options: [
               {value: "AC", label: "Activo"},
               {value: "IN", label: "Inactivo"}

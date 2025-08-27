@@ -81,7 +81,9 @@ const InputIcon = styled.span`
   color: #666;
 `;
 
-const Input = styled.input`
+const Input = styled.input.attrs(props => ({ //pasamos props personalizadas para modificar el atributo de autocompletado en navegadores
+  autoComplete: props.autoComplete || 'off'
+}))`
   width: 80%;
   padding: 12px 12px 12px 40px; /* Añadido padding para el icono */
   border: 1px solid #ccc;
@@ -169,7 +171,7 @@ const Login = () => {
         <LogoContainer>
           <Logo src={logo} alt="Logo" />
         </LogoContainer>
-        <GradientText>Bienvenido</GradientText>
+        <GradientText>¡Bienvenido!</GradientText>
         <Separator />
         <form onSubmit={handleSubmit(onSubmit)}>
           <InputGroup>
@@ -180,8 +182,10 @@ const Login = () => {
               </InputIcon>
               <Input
                 type="text"
-                id="username"
+                id="usuario_temp"
+                name='usuario_temp'
                 placeholder="Ingrese su nombre de usuario"
+                autoComplete="off"
                 {...register('usuario', { 
                   required: 'El campo usuario es obligatorio', //indicamos que el campo es requerido
                   onChange: () => setApiError(null) // refrescamos lo q haya en el input para mostrar erroes en caso de que no coplete el campo 

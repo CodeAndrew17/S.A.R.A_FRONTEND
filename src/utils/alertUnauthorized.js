@@ -17,7 +17,8 @@ export function handleAxiosError(error) {
     data?.detail ||
     data?.message ||
     data?.error ||
-    null;
+    (typeof data === 'string' ? data : null);
+
 
   // Verifica si hay una propiedad llamada 'errors' con más detalles
   if (!mensaje && data && typeof data === 'object') {

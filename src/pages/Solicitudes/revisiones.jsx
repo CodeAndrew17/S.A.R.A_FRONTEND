@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/layout/sidebar";
 import styled from "styled-components";
-import Table from "../../components/tables/table";
+import Table from "../../components/tables/tableRevis";
 import ColumnsRequest from "./TableRequest/columnsRequest";
 import Toolbar from "../../components/layout/toolbar";
 import useRequestManage from "./TableRequest/requestManagement";
@@ -252,7 +252,7 @@ function Revisiones() {
     <div>
       <Sidebar />
       <TitleWrapper>
-        <TitleText> Panel de Revisiones</TitleText>
+        <TitleText> Panel de Solicitudes</TitleText>
       </TitleWrapper>
 
       <Toolbar
@@ -288,7 +288,7 @@ function Revisiones() {
           <CustomButton
             bgColor="#7C9BAF"
             hoverColor="#5D7E93"
-            width="110px"
+            width="80px"
             height="30px"
             onClick={() => {
               setFechaKey(prev => prev + 1);
@@ -299,7 +299,7 @@ function Revisiones() {
             className="Boton extra"
             icon={FilterX}
           >
-            Limpiar
+            
           </CustomButton>
         </CustomButtonWrapper>
       )}

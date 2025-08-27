@@ -112,6 +112,7 @@ const useAgreementManagement = () => {
     } catch (error) {
       console.error("Error al crear el convenio:", error);
       handleAxiosError(error);
+      throw error;
     }
   };
 
@@ -217,6 +218,7 @@ const useAgreementManagement = () => {
     } catch (error) {
         console.error("Error al actualizar el convenio:", error);
         handleAxiosError(error);
+        throw error;
     }
 };
 

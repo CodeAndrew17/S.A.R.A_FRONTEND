@@ -64,6 +64,7 @@ const usePlansandVehicles = () => {
         } catch (error){
             setError(error); 
             handleAxiosError(error)
+            throw error;
         }
     };
 
@@ -154,6 +155,7 @@ if (fallidos.length > 0) {
             setError(error);
             console.error("Error al editar plan", error);
             handleAxiosError(error)
+            throw error;
         }
     };
 
@@ -185,6 +187,8 @@ if (fallidos.length > 0) {
         } catch (error) {
             setError(error);
             console.error("Error actualizando adicionales", error);
+            handleAxiosError(error)
+            throw error;
         }
     };
 

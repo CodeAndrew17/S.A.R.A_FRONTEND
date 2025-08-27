@@ -24,7 +24,7 @@ const getRequestMonth = async (year, month) => {
 
 const getPlans = async () => {
     try {
-        return await axiosWithAuth("/statistic/api/planes", "GET")
+        return await axiosWithAuth("/statistic/api/planes/", "GET")
     } catch (error) {
         console.error("Error al obtener los planes", error);
         return [];
@@ -39,6 +39,14 @@ const getReport = async () => {
     }
 }
 
+const getRankingUsers = async () => {
+    try {
+        return await axiosWithAuth("/statistic/api/logins/", "GET");
+    } catch (error) {
+        console.error("Error al obtener el rankin top de usuarios", error);
+    }
+};
+
 //hacer la peticion para obtener el reporte usar la otra variante de axioswithAuth para archivos blob osea xlsx
 
-export {getRequestYear, getRequestMonth, getPlans, getReport}
+export {getRequestYear, getRequestMonth, getPlans, getReport, getRankingUsers}
