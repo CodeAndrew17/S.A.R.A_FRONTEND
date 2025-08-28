@@ -240,7 +240,9 @@ export const CheckboxDropdown = ({ options, selectedValues, onChange, onSave }) 
     <DropdownContainer ref={dropdownRef}>
       <DropdownButton onClick={toggleDropdown}>
         <ListChecks size={14} />
-        {selected.length > 0 ? `${selected.length} Formularios` : "Seleccionar"}
+        {selected.length > 0 
+          ? `${selected.length} Formulario${selected.length === 1 ? '' : 's'}` 
+          : 'Seleccionar'}
       </DropdownButton>
       {isOpen && (
         <DropdownContent 

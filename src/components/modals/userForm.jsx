@@ -134,24 +134,33 @@ const Select = styled.select`
   width: 100%;
   padding: 10px;
   margin: 6px 0;
-  border: 1px solid #ddd;
+  border: 1px solid #e2e8f0; /* gris clarito */
   border-radius: 6px;
-  background-color: white;
+  background-color: #f9fafb; /* gris muy claro */
   box-sizing: border-box;
   font-size: 14px;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23999%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  color: #374151; /* gris oscuro elegante */
+
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236b7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 12px auto;
 
+  &:hover {
+    border-color: #94a3b8; /* gris azulado */
+    background-color: #ffffff;
+  }
+
   &:focus {
-    border-color: rgb(95, 200, 214);
+    border-color: #3b82f6; /* azul moderno */
     outline: none;
-    box-shadow: 0 0 0 2px rgba(95, 200, 214, 0.2);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); /* azul suave */
+    background-color: #ffffff;
   }
 `;
+
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -312,6 +321,26 @@ const UserForm = ({
     setFormData(initialData);
   }, []);
 
+    //errores para los inputs 
+  const validationRules = {
+    telefono: { regex: /^[0-9]{10}$/, message: "El teléfono debe tener 10 dígitos" },
+    cedula: { regex: /^[0-9]{6,12}$/, message: "La cédula debe tener entre 6 y 12 números unicamente" },
+    placa: { regex: /^[A-Z]{3}[0-9]{3}$/, message: "La placa debe ser en formato ABC123" },
+    nombres: { regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,40}$/, message: "Solo letras, máximo 40 caracteres" },
+    apellidos: { regex: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,40}$/, message: "Solo letras, máximo 40 caracteres" },
+  };
+
+
+  //funcion para validar y devolver los erroes correctos 
+  const validateField = (name, value) => {
+  const rule = validationRules[name];
+  if (rule && !rule.regex.test(value)) {
+    return rule.message; // devuelve error
+  }
+  return ""; // sin error
+};
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -319,6 +348,10 @@ const UserForm = ({
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
+
+    //validamos errores 
+    const errorMsg = validateField(name,value);
+    setErrors((prev) => ({ ...prev, [name]: errorMsg}));
 
     if (typeof onFieldChange === 'function') {
       onFieldChange(name, value);
@@ -367,29 +400,105 @@ const UserForm = ({
     </InputGroup>
   );
 
-  const renderInputField = (field) => (
+  const renderInputField = (field) => {
+  const isNumericField = field.name === "cedula" || field.name === "telefono";
+  const isAlphaField = ["nombre", "nombre_plan", "nombres", "apellidos"].includes(field.name);
+  const isPlacaField = field.name === "placa";
+
+  // helper para actualizar formData + callback externo
+  const updateValue = (name, value) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (typeof onFieldChange === "function") onFieldChange(name, value);
+  };
+
+  // solo numeros para campo numerico (filtra y muestra error si intentan meter otra cosa)
+  const handleNumericChange = (e) => {
+    const raw = e.target.value;
+    const onlyNumbers = raw.replace(/[^0-9]/g, "");
+    if (raw !== onlyNumbers) {
+      setErrors(prev => ({ ...prev, [field.name]: "Solo se permiten números" }));
+    } else {
+      setErrors(prev => ({ ...prev, [field.name]: "" }));
+    }
+    updateValue(field.name, onlyNumbers);
+  };
+
+  // solo letras y espacios (filtra y muestra error si intentan meter otra cosa)
+  const handleAlphaChange = (e) => {
+    const raw = e.target.value;
+    const onlyLetters = raw.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
+    if (raw !== onlyLetters) {
+      setErrors(prev => ({ ...prev, [field.name]: "Solo se permiten letras" }));
+    } else {
+      setErrors(prev => ({ ...prev, [field.name]: "" }));
+    }
+    updateValue(field.name, onlyLetters);
+  };
+
+  // placa: mayúsculas, solo letras/números, max 6
+  const handlePlacaChange = (e) => {
+    const raw = e.target.value;
+    let valid = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (valid.length > 6) valid = valid.slice(0, 6);
+
+    if (raw.toUpperCase() !== valid) {
+      setErrors(prev => ({ ...prev, [field.name]: "Solo letras y números (ej: ABC123)" }));
+    } else if (valid.length < 6 && /^[A-Z0-9]*$/.test(valid) && valid.length > 0) {
+      // opcional: si quieres que avise cuando está incompleta
+      setErrors(prev => ({ ...prev, [field.name]: "La placa debe tener 6 caracteres (ej: ABC123)" }));
+    } else {
+      setErrors(prev => ({ ...prev, [field.name]: "" }));
+    }
+
+    updateValue(field.name, valid);
+  };
+
+  return (
     <InputGroup $fullWidth={field.fullWidth}>
-      <label style={{ 
-        marginBottom: "8px", 
-        fontWeight: "500",
-        color: "#555",
-        fontSize: "14px"
-      }}>
+      <label style={{ marginBottom: "8px", fontWeight: "500", color: "#555", fontSize: "14px" }}>
         {field.label || field.placeholder}
         {field.required && <span style={{ color: "red" }}> *</span>}
       </label>
       <Input
-        type={field.type || "text"}
+        type="text"
         name={field.name}
         placeholder={field.placeholder}
         value={formData[field.name] ?? ""}
-        onChange={handleInputChange}
+        onChange={
+          isNumericField
+            ? handleNumericChange
+            : isAlphaField
+            ? handleAlphaChange
+            : isPlacaField
+            ? handlePlacaChange
+            : (e) => updateValue(field.name, e.target.value)
+        }
         required={field.required}
+        inputMode={isNumericField ? "numeric" : "text"}
+        pattern={
+          isNumericField
+            ? "[0-9]*"
+            : isAlphaField
+            ? "[A-Za-zÁÉÍÓÚáéíóúÑñ ]*"
+            : isPlacaField
+            ? "^[A-Z]{3}[0-9]{3}$"
+            : undefined
+        }
+        maxLength={
+          isPlacaField ? 6 :
+          field.name === "telefono" ? 10 :
+          field.name === "cedula" ? 12 :
+          isAlphaField ? 40 :
+          field.maxLength ?? undefined
+        }
         style={{ borderColor: errors[field.name] ? "red" : "#ddd" }}
       />
       <ErrorMessage>{errors[field.name]}</ErrorMessage>
     </InputGroup>
   );
+};
+
+
 
   const renderTextAreaField = (field) => (
     <InputGroup $fullWidth={field.fullWidth}>

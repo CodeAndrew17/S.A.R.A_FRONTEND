@@ -104,7 +104,7 @@ const Placeholder = styled.div`
   gap: 0.4rem;
 `;
 
-const UploadImageForm = ({ endpoint, onSuccess }) => {
+const UploadImageForm = ({ endpoint, onSuccess, id_solicitud }) => {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -123,6 +123,7 @@ const UploadImageForm = ({ endpoint, onSuccess }) => {
 
     const formData = new FormData();
     formData.append("imagen", file);
+    formData.append("id_solicitud", id_solicitud)
 
     try {
       setLoading(true);

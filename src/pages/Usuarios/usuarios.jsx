@@ -8,7 +8,7 @@ import Table from '../../components/tables/table'
 import useEmployeeManagement from './useEmployeeManagement';
 import {columnsEmployees} from './columnsEmployees'; 
 import CustomButton from '../../components/ui/button';
-import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft, UserPen } from "lucide-react";
+import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft, UserPen, ToggleRight, Info } from "lucide-react";
 import filterData from '../../utils/unitySearch';
 import getOrderRegister from '../../utils/getLastRegister';
 import { ImTextColor } from 'react-icons/im';
@@ -58,61 +58,123 @@ const Usuarios = () => {
     "IN": "Inactivo",
   };
 
-  const renderUserDetails = (row) => {
+
+const renderUserDetails = (row) => {
+  const estadoTexto = row.estado_usuario === 'AC' ? 'Activo' : 'Inactivo';
+  const estadoColor = row.estado_usuario === 'AC' ? '#065f46' : '#991b1b';
+  const estadoBg = row.estado_usuario === 'AC' ? '#d1fae5' : '#fee2e2';
+
   return (
     <div style={{ 
-      padding: '16px', 
-      backgroundColor: '#E6E8EB',
-      borderTop: '1px solid #B4B8BC'
+      padding: '10px', 
+      background: 'linear-gradient(135deg, #f9fafb, #f3f4f6)',
+      border: '1px solid #e5e7eb',
+      borderRadius: '14px',
+      boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
+      marginTop: '10px',
+      transition: 'all 0.3s ease',
+      cursor: 'default'
     }}>
-      <div style={{color:'blue'}}><strong>Informacion de Usuario</strong></div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', justifyItems: 'center'}}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <User size={20} />
-          <strong>Usuario -</strong> {row.nombre_usuario || 'No asignado'}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <SquareUserRound size={20} />
-          <strong>Rol - </strong> {roles[row.rol_usuario] || 'No disponible'}
-        </div>
-        <div style={{ display: 'flex', gap: '6px', alignItems: 'start' }}>
-          <ToggleLeft size={20} />
-          <strong>Estado - </strong> {estado[row.estado_usuario] || 'No disponible'}
+      
+      {/* Encabezado */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        marginBottom: '8px',
+        borderBottom: '1px solid #e5e7eb',
+        paddingBottom: '10px'
+      }}>
+        <div style={{ 
+          color:'#1e40af',
+          fontWeight: '700',
+          fontSize: '16px',
+          letterSpacing: '0.3px'
+        }}>
+          <strong> Información de Usuario</strong> 
+          {/* <Info />  */}
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', 
-        marginBottom: '12px', paddingTop: '20px' }}>
-        <div style={{ display: 'flex', gap: '18px', paddingRight: '20px' }}>
-          <CustomButton
-            bgColor="#4F98D3"
-            hoverColor="#3E86C2"
-            width="170px"
-            height="35px"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEditUserClick(row);
-            }}
-          >
-            <UserPen size={16} /> Editar Usuario
-          </CustomButton>
-          
-          <CustomButton
-            bgColor="#dc3545"
-            hoverColor="#c82333"
-            width="170px"
-            height="35px"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDeleteUser(row);
-              // Aquí puedes agregar la lógica para eliminar
-            }}
-          >
-            <UserMinus size={16} /> Eliminar Usuario
-          </CustomButton>
+      {/* Grid con info */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr auto', 
+        gap: '18px'
+      }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: '1fr 1fr 1fr', 
+          marginLeft: '90px'
+        }}>
+          {/* Usuario */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#374151' }}>
+            <User size={20} style={{ color: '#2563eb' }} />
+            <span><strong>Usuario:</strong> {row.nombre_usuario || 'No asignado'}</span>
+          </div>
+
+          {/* Estado con ícono */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            borderRadius: '20px',
+            backgroundColor: '#f9fafb',
+            padding: '6px 12px'
+          }}>
+            {row.estado_usuario === 'AC' ? (
+              <ToggleRight size={20} style={{ color: '#065f46' }} />
+            ) : (
+              <ToggleLeft size={20} style={{ color: '#991b1b' }} />
+            )}
+            <span style={{ color: estadoColor, fontWeight: '500' }}>
+              <strong>Estado:</strong> {estadoTexto}
+            </span>
+          </div>
+
+          {/* Rol */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#374151' }}>
+            <SquareUserRound size={20} style={{ color: '#2563eb' }} />
+            <span><strong>Rol:</strong> {roles[row.rol_usuario] || 'No disponible'}</span>
+          </div>
         </div>
-      </div>
+
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column',
+      justifyContent: 'center',
+      gap: '10px'
+    }}>
+      <CustomButton
+        bgColor="#3b82f6"
+        hoverColor="#2563eb"
+        width="160px"
+        height="36px"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleEditUserClick(row);
+        }}
+      >
+        <UserPen size={16} /> Editar Usuario
+      </CustomButton>
+
+      <CustomButton
+        bgColor="#ef4444"
+        hoverColor="#dc2626"
+        width="160px"
+        height="36px"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleDeleteUser(row);
+        }}
+      >
+        <UserMinus size={16} /> Eliminar Usuario
+      </CustomButton>
     </div>
+  </div>
+</div>
+
+
   );
 };
 
@@ -374,18 +436,18 @@ const Usuarios = () => {
           initialValues={editingEmployee}
         > 
           {activateForm === "Crear" && (
-    <div style={{ marginTop: "1rem" }}>
-      <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: 'pointer' }}>
-        <input 
-          type="checkbox" 
-          name="asignarUsuario" 
-          checked={checkedCreateUser} 
-          onChange={(e) => setCheckedCreateUser(e.target.checked)} 
-        />
-        <span>¿Asignar usuario después de crear empleado?</span>
-      </label>
-    </div>
-  )}
+            <div style={{ marginTop: "1rem" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: 'pointer' }}>
+                <input 
+                  type="checkbox" 
+                  name="asignarUsuario" 
+                  checked={checkedCreateUser} 
+                  onChange={(e) => setCheckedCreateUser(e.target.checked)} 
+                />
+                <span>¿Asignar usuario después de crear empleado?</span>
+              </label>
+            </div>
+          )}
         </UserForm>
       )}
 

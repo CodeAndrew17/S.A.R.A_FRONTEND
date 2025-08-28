@@ -115,25 +115,27 @@ const useEmployeeManagement = () => {
 
             // verificar si los empleados seleccionados tienen usuarios vinculados 
             const usuarios = await getUsers();
-            const usuariosRelacionados = usuarios.filter(user => idList.includes(user.id_empleado));
+            const empleadosConUsuarios = employees.filter(emp => idList.includes(emp.id) && usuarios.some(user => user.id_empleado === emp.id));
+            console.log("Empleados con usuarios vinculados:", empleadosConUsuarios);
 
             let eliminarUsuarios = false;
 
-            if (usuariosRelacionados.length > 0) {
-            // Mostrar lista de nombres de usuarios vinculados
-            const nombresUsuarios = usuariosRelacionados.map(u => u.nombres).join(", ");
+            if (empleadosConUsuarios.length > 0) {
+            // Mostrar lista de nombres de usuarios vinculados para confirmacion de eliminacion multiple
+            const nombresUsuarios = empleadosConUsuarios.map(u => u.nombres).join(", ");
 
-            const confirmUsuarios = await Swal.fire({ //NOTA: mas adelante implementar que muestre el nombre de los empleados que tienen usuarios asignados 
+            const confirmUsuarios = await Swal.fire({
                 title: "Usuarios vinculados encontrados",
-                text: `Los siguientes empleados tienen usuarios vinculados: ${[nombresUsuarios]}. 
-        ¿Deseas eliminar también sus usuarios junto con los empleados?`,
+                html: `Los siguientes empleados tienen usuarios vinculados: <strong>${[nombresUsuarios]}</strong>.<br><br>
+                ¿Deseas eliminar también sus usuarios junto con los empleados?`,
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#d33",
                 cancelButtonColor: "#3085d6",
                 confirmButtonText: "Sí, eliminar ambos",
                 cancelButtonText: "Cancelar",
-            });
+                });
+
 
             if (!confirmUsuarios.isConfirmed) {
                 await Swal.fire("Operación cancelada", "No se eliminó ningún registro.", "info");

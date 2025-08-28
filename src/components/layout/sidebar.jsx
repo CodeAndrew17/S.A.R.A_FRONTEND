@@ -274,7 +274,7 @@ const MOBILE_BREAKPOINT = 800;
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(sessionStorage.getItem("sidebarOpen") === "true");
   const [hoveredItem, setHoveredItem] = useState(null);
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_BREAKPOINT);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_BREAKPOINT);//verificamos si es mobile 
   const mobile = window.innerWidth <= MOBILE_BREAKPOINT;
 
   const location = useLocation(); //verificamos la ruta donde se encuentra el usuario 
@@ -335,18 +335,19 @@ useEffect(() => {
   return (
     <>
       {isMobile && (
-        <ToggleButton
+        <ToggleButton //estilos del togle en mobile
           onClick={() => setIsHidden(prev => !prev)}
           style={{
             position: "fixed",
-            top: "10px",
-            left: "8px",
+            top: "30px",
+            left: "18px",
             zIndex: 2000,
 
             color: "black",
-            padding: "8px",
-            borderRadius: "5px",
-            height: "40px"
+            background: "rgba(10, 42, 74, 0.15)",
+            borderRadius: "20%",
+            width: "40px",
+            height: "40px",
           }}
         >
           <Logs />

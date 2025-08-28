@@ -434,8 +434,9 @@ function FormsView() {
         <Body>
           <Column>
             <UploadImageForm
-              endpoint={`http://localhost:8000/result/api/subirimagen/post/`}>
-                //numero en entero 
+              endpoint={`http://localhost:8000/result/api/subirimagen/post/`}
+              id_solicitud={solicitud_id}
+              >
             </UploadImageForm>
 
             <GlassCardPro
