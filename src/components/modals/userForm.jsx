@@ -59,8 +59,8 @@ const FormContainer = styled.div`
 
 const LogoContainer = styled.div`
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 30px;
+  left: 30px;
   width: 50px;
   height: 50px;
   
@@ -437,21 +437,20 @@ const UserForm = ({
 
   // placa: mayúsculas, solo letras/números, max 6
   const handlePlacaChange = (e) => {
-    const raw = e.target.value;
-    let valid = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    if (valid.length > 6) valid = valid.slice(0, 6);
+  const raw = e.target.value;
+  let valid = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (valid.length > 6) valid = valid.slice(0, 6);
 
-    if (raw.toUpperCase() !== valid) {
-      setErrors(prev => ({ ...prev, [field.name]: "Solo letras y números (ej: ABC123)" }));
-    } else if (valid.length < 6 && /^[A-Z0-9]*$/.test(valid) && valid.length > 0) {
-      // opcional: si quieres que avise cuando está incompleta
-      setErrors(prev => ({ ...prev, [field.name]: "La placa debe tener 6 caracteres (ej: ABC123)" }));
-    } else {
-      setErrors(prev => ({ ...prev, [field.name]: "" }));
-    }
+  if (raw.toUpperCase() !== valid) {
+    setErrors(prev => ({ ...prev, [field.name]: "Solo letras y números (máx. 6 caracteres)" }));
+  } else if (valid.length < 6 && valid.length > 0) {
+    setErrors(prev => ({ ...prev, [field.name]: "La placa debe tener 6 caracteres" }));
+  } else {
+    setErrors(prev => ({ ...prev, [field.name]: "" }));
+  }
 
-    updateValue(field.name, valid);
-  };
+  updateValue(field.name, valid);
+};
 
   return (
     <InputGroup $fullWidth={field.fullWidth}>
