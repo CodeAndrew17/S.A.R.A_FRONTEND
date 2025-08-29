@@ -29,11 +29,11 @@ const ContainerToolbar = styled.div`
   }
 
   /* Estilo para móviles muy pequeños (opcional) */
-  @media (max-width: 400px) {
+  @media (max-width: 455px) {
     .buttons-group {
       width: 100%;
       > button {
-        width: 100%;
+        width: 80%;
       }
     }
   }
@@ -96,13 +96,7 @@ const ContainerToolbar = styled.div`
     }
   }
 
-  @media (min-width: 490px) and (max-width: 606px) {
-    .buttons-group {
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-  }
+
 
   /* Pantallas muy grandes (monitores gigantes) */
   @media (min-width: 1600px) {
@@ -120,8 +114,9 @@ const BaseButton = styled.button`
   /* Estilos base (mobile-first) */
   background-color: ${(props) => props.$bgColor || "#5FB8D6"};
   border: none;
+  height: 10px;
   color: white;
-  width: 80%;
+  width: auto;
   min-height: 40px;
   min-width: 130px;
   padding: 8px 12px;
@@ -157,9 +152,8 @@ const BaseButton = styled.button`
   }
 
   /* Media queries progresivos */
-  @media (min-width: 480px) {
-    width: ${(props) => props.width || "auto"};
-    padding: 8px 16px;
+  @media (max-width: 480px) {
+    width: ${(props) => props.width || "200px"};
     font-size: 15px;
     
     svg {
@@ -169,10 +163,12 @@ const BaseButton = styled.button`
   }
 
   @media (min-width: 768px) {
-    height: ${(props) => props.height || "auto"};
+    height: ${(props) => props.height || "35px"};
     padding: 10px 20px;
     font-size: 16px;
+    width: 200px
     gap: 8px;
+    width: 200px
     
     svg {
       width: 18px;
@@ -416,4 +412,4 @@ Toolbar.Dropdown = ({
   );
 };
 
-export default Toolbar;
+export default Toolbar

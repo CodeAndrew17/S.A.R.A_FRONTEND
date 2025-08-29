@@ -435,7 +435,7 @@ const UserForm = ({
     updateValue(field.name, onlyLetters);
   };
 
-  // placa: mayúsculas, solo letras/números, max 6
+  // placa limita a 6 caracteres 
   const handlePlacaChange = (e) => {
   const raw = e.target.value;
   let valid = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");

@@ -26,15 +26,10 @@ const SearchContainer = styled.div`
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
   }
 
-  @media (max-width: 768px) {
-    width: ${(props) => props.$responsiveWidth || "10%"};
-    max-width: ${(props) => props.$responsiveMaxWidth || "10%"};
-    gap: 6px;
-    padding: 10px 12px;
-  }
 
-  @media (max-width: 480px) {
-    width: ${(props) => props.$mobileWidth || "20%"};
+
+  @media (max-width: 455px) {
+    width: ${(props) => props.$mobileWidth || "100%"};
     min-width: 0;
     border-radius: 6px;
     padding: 8px 12px;
