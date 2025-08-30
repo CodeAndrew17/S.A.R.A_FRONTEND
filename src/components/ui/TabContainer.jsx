@@ -41,8 +41,10 @@ const TabBtn = styled.button`
   }
 
   @media (max-width: 600px) {
-    font-size: 1.5rem;}
+    font-size: 20px;
+  }
 `;
+
 
 
 export default function TabsContainer({ tabs, activeId, onChange }) {

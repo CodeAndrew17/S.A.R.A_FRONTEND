@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import UserForm from '../../components/modals/userForm';
 import Header from './internalComponents/header';
 import Sidebar from '../../components/layout/sidebar';
-import Toolbar from '../../components/layout/toolbar';
+import Toolbar from '../../components/layout/Toolbar';
 import Table from '../../components/tables/table'
 import useEmployeeManagement from './useEmployeeManagement';
 import {columnsEmployees} from './columnsEmployees'; 

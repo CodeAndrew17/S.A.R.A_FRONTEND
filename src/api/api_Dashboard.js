@@ -33,7 +33,7 @@ const getPlans = async () => {
 
 const getReport = async () => {
     try {
-        return await axiosWithAuthFile("/statistic/api/reportesexcel/", "GET");
+        return await axiosWithAuthFile("/api/reportesexcel/?model=usuarios", "GET"); //#http://localhost:8000/statistic/reporte/?model=convenio&year_start=2024&month_start=6&year_end=2025&month_end=7&state=IN
     } catch (error) {
         console.error("Error al obtener el reporte", error);
     }

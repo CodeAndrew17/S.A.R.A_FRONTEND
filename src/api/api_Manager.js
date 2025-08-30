@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-// const API_URL = "http://192.168.1.24:8000";  // vista local movil 
+// const API_URL = "http://192.168.1.24:8000";  // IP de tu PC (servidor Django) sirve para celular samsung y redmi 
+
+// endpoint={`http://localhost:8000/result/api/subirimagen/post/`} 
+
+// const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
 const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
 // Función de login para obtener el token de access

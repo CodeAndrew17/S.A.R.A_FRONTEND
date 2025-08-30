@@ -3,7 +3,7 @@ import Sidebar from "../../components/layout/sidebar";
 import styled from "styled-components";
 import Table from "../../components/tables/table";
 import { useColumnsManage } from "./columnsAdmin";
-import Toolbar from "../../components/layout/toolbar";
+import Toolbar from "../../components/layout/Toolbar";
 import UserForm from "../../components/modals/userForm";
 import usePlansandVehicles from "./adminManager";
 import { toast } from "react-toastify";
@@ -29,6 +29,11 @@ const TitleText = styled.h1`
   font-size: 32px;
   line-height: 1.2; 
   margin: 0;
+
+  @media (max-width: 500px) {
+    font-size: 25px;
+  }
+
 `;
 
 function Administrar() {

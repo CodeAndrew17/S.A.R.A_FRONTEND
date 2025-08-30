@@ -43,13 +43,13 @@ const Head = styled.div`
     width: 60%;
     margin-bottom: 1rem;
 
-    @media (max-width: 500px) and (min-width: 300px){
-    gap: 20px;
-    justify-content: flex-start;
-    padding-left: 0;
-    padding-right: 0px;
-    flex-direction: row;
-    width: 100%;
+    @media (max-width: 500px){
+        gap: 30px;
+        justify-content: flex-start;
+        padding-left: 0;
+        padding-right: 0px;
+        flex-direction: row;
+        width: 100%;
     }
 
 `;

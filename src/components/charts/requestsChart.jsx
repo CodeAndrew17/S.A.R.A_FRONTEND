@@ -44,7 +44,7 @@ const SalesChart = () => {
   return (
     <div style={{ background: "#fff", padding: "16px", borderRadius: "8px", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
       <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>Solicitudes</h2>
-      <Chart options={options} series={series} type="line" width="100%" height="90%" />
+      <Chart options={options} series={series} type="line" width="100%" height="80%" />
     </div>
   );
 };

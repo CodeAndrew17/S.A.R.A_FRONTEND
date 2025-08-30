@@ -158,7 +158,7 @@ const MenuItem = styled.button`
   background: ${({ $respondido }) =>
     $respondido ? 'rgba(0, 200, 100, 0.15)' : 'rgba(255, 255, 255, 0.05)'};
   color: ${({ $respondido }) => ($respondido ? '#a8f0c6' : '#f0f9ff')};
-  font-size: 1rem;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -236,13 +236,13 @@ const Footer = styled.footer`
 
 const ToggleButton = styled.button`
   position: fixed;
-  top: 20px;
+  top: 40px;
   right: 15px;
   z-index: 1100;
   background: rgba(16, 78, 139, 0.9);
   border: none;
   color: white;
-  padding: 10px;
+
   border-radius: 8px;
   cursor: pointer;
 
@@ -253,9 +253,10 @@ const ToggleButton = styled.button`
   @media (max-width: 768px) {
     display: block;
     right: 20px;
-    top: 25px;
-    width: 50px;
-    height: 50px;
+    top: 18px;
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
   }
 `;
 

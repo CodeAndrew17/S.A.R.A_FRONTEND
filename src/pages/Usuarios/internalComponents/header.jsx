@@ -17,6 +17,10 @@ const TitleText = styled.h1`
   font-size: 32px;
   line-height: 1.2; /* Mucho mejor que usar pixeles fijos */
   margin: 0;
+
+  @media (max-width: 500px) {
+    font-size: 25px;
+  }
 `;
 const Header = () => {
   return (

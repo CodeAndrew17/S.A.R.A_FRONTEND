@@ -448,19 +448,19 @@ function FormsView() {
             >
               <InfoLine>
                 <ListTodo size={18} color="#10B981" />
-                <strong>Cuestionario •</strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
+                <strong>Cuestionario -</strong> {diccionaryCuestionario[planFiltrado?.cuestionario]}
               </InfoLine>
               <InfoLine>
                 <CarFront size={18} color="#3B82F6" />
-                <strong>Tipo de vehículo •</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
+                <strong>Tipo de vehículo -</strong> {diccionaryVehicleType[planFiltrado?.id_tipo_vehiculo]}
               </InfoLine>
               <InfoLine>
                 <ClipboardList size={18} color="#10B981" />
-                <strong>Formularios principales •</strong> {conteoPrincipales}
+                <strong>Formularios principales -</strong> {conteoPrincipales}
               </InfoLine>
               <InfoLine>
                 <FileText size={18} color="#3B82F6" />
-                <strong>Formularios adicionales •</strong> {conteoAdicionales}
+                <strong>Formularios adicionales -</strong> {conteoAdicionales}
               </InfoLine>
             </GlassCardPro>
           </Column>
@@ -478,23 +478,23 @@ function FormsView() {
     <div style={{ flex: "1" }}>
       <InfoLine>
         <Handshake size={18} color="#10B981" />
-        <strong>Convenio •</strong> {convenio}
+        <strong>Convenio -</strong> {convenio}
       </InfoLine>
       <InfoLine>
         <Building size={18} color="#3B82F6" />
-        <strong>Sucursal •</strong> {sucursal}
+        <strong>Sucursal -</strong> {sucursal}
       </InfoLine>
       <InfoLine>
         <CarFront size={18} color="#10B981" />
-        <strong>Tipo de vehículo •</strong> {diccionaryVehicleType[tipo_vehiculo]}
+        <strong>Tipo de vehículo -</strong> {diccionaryVehicleType[tipo_vehiculo]}
       </InfoLine>
       <InfoLine>
         <Calendar size={18} color="#3B82F6" style={{ marginRight: "6px" }} />
-        <strong>Fecha de creación •</strong> {fecha}
+        <strong>Fecha de creación -</strong> {fecha}
       </InfoLine>
       <InfoLine>
         <Phone size={18} color="#10B981" style={{ marginRight: "6px" }} />
-        <strong>Teléfono •</strong> {telefono}
+        <strong>Teléfono -</strong> {telefono}
       </InfoLine>
 
       <Divider style={{ margin: "12px 0" }} />

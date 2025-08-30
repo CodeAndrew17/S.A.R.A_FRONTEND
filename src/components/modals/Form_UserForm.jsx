@@ -64,8 +64,8 @@ const FormContainer = styled.div`
 
 const LogoContainer = styled.div`
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 30px;
+  left: 30px;
   width: 50px;
   height: 50px;
   
@@ -73,6 +73,11 @@ const LogoContainer = styled.div`
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+
+    @media (max-width: 500px) {
+      width: 40px;
+      height: 40px;
   }
 `;
 
@@ -89,6 +94,12 @@ const Title = styled.h1`
   padding: 0;
   margin-bottom: 15px;
   font-size: 24px;
+
+  @media (max-width: 500px) {
+    font-size: 25px;
+    white-space: pre-wrap;
+    margin-top: -5px;
+  }
 `;
 
 const Separator = styled.div`
@@ -114,7 +125,7 @@ const FormContent = styled.div`
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   grid-column: ${({ $fullWidth }) => $fullWidth ? '1 / -1' : 'auto'};
 `;
 

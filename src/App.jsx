@@ -25,6 +25,8 @@ const GlobalStyle = createGlobalStyle`
     font-size: 12px;
     scroll-behavior: smooth;
 
+    translate: no;
+
     &::-webkit-scrollbar {
       width: 6px;
     }

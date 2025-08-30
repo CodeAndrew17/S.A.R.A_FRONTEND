@@ -69,6 +69,11 @@ const LogoContainer = styled.div`
     height: 100%;
     object-fit: contain;
   }
+
+    @media (max-width: 500px) {
+      width: 40px;
+      height: 40px;
+  }
 `;
 
 const FormHeader = styled.div`
@@ -84,6 +89,11 @@ const Title = styled.h1`
   padding: 0;
   margin-bottom: 15px;
   font-size: 24px;
+
+  @media (max-width: 500px) {
+    font-size: 18px;
+    white-space: pre-wrap;
+  }
 `;
 
 const Separator = styled.div`

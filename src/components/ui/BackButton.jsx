@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const BackSquareButton = styled.button`
-  background-color: rgb(76, 240, 171);
+  background-color: #20B993;
   border: none;
   border-radius: 12px;
   width: 48px;

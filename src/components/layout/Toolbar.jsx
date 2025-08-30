@@ -93,6 +93,7 @@ const ContainerToolbar = styled.div`
       width: 100%;
       justify-content: center;
       margin-top: -15px;
+      height: 10px;
     }
   }
 

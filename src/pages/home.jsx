@@ -14,7 +14,8 @@ import {getPlans} from '../api/api_Admin';
 import { getBranches, getAgreement } from '../api/api_Convenios';
 import {getRequest} from '../api/api_Solicitudes';
 import { getUsers } from '../api/api_Usuarios';
-import { Building2, Handshake, Folder, NotebookPen, UserStar, KeyRound, ShieldCheck, FileDown, AlarmClock   } from 'lucide-react';
+import { Building2, Handshake, Folder, NotebookPen, UserStar,FileSliders, KeyRound,FileSpreadsheet, ShieldCheck, FileDown, AlarmClock, SquareUser   } from 'lucide-react';
+import { handleAxiosError } from '../utils/alertUnauthorized';
 
 const GeneralContainer = styled.div`
     display: grid;
@@ -23,18 +24,95 @@ const GeneralContainer = styled.div`
     max-height: 100vh;
     padding-left: 95px;
     padding-right: 20px;
+    margin-top: 15px;
+
+    @media (max-width: 800px) {
+        margin-top: 90px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
 `;
 
-// const Card = styled.div`
-//     background: #fff;         /* fondo blanco (luego puedes cambiarlo) */
-//     border: 1px solid #ddd;   /* borde ligero */
-//     border-radius: 8px;       /* esquinas redondeadas */
-//     padding: 16px;            /* espacio interno */
-//     display: flex;            /* para alinear contenido dentro */
-//     flex-direction: column;   /* contenido en columna */
-//     justify-content: center;
-//     align-items: center;
-// `;
+const RankingWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 5px;
+`;
+
+const RankingItem = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #00b4d8, #48cae4);
+    color: #fff;
+    font-weight: 500;
+    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+`;
+
+const CardHeader = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    color: #333;
+`;
+
+const FooterInfo = styled.div`
+    margin-top: 15px;
+    padding: 10px;
+    background: #d4f5dd;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+    display: flex;   
+    align-items: center;
+    gap: 6px;
+`;
+
+// —— estilos KPI —— 
+const KPIWrapper = styled.div`
+  position: relative;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e6fffa, #ebf8ff);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
+const KPIIconsRow = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
+
+const KPIValue = styled.div`
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a202c;
+  margin-bottom: 6px;
+`;
+
+const KPITitle = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5568;
+`;
 
 
 export function Inicio() {
@@ -46,35 +124,46 @@ export function Inicio() {
     const [rankingData, setRankingData] = useState([]);
     const [activeUsers, setActiveUsers] = useState(0);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const totalBranches = await getBranches();
-                // console.log("total sucursales: ", totalBranches.length);
-                setTotalBranches(totalBranches.length);
-                const totalAgreements = await getAgreement();
-                // console.log("total convenios: ", totalAgreements.length);
-                setTotalAgreements(totalAgreements.length);
-                const plansData = await getPlans();
-                // console.log("datos de los planes: ", plansData.length);
-                setTotalPlans(plansData.length);
-                const totalRequests = await getRequest();
-                // console.log("total solicitudes: ", totalRequests.length);
-                setTotalRequests(totalRequests.length);
-                const userData = await getUsers();
-                const filterUsersActive = userData.filter(u => u.estado === "AC");
-                console.log("usuarios activos: ", filterUsersActive.length);
-                setActiveUsers(filterUsersActive.length);
-                const rankingData = await getRankingUsers();
-                // console.log("datos del ranking de usuarios: ", rankingData);
-                
-            } catch (error) {
-                console.error("Error al obtener el ranking de usuarios: ", error);
-            }
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                const [
+                    branches,
+                    agreements,
+                    plans,
+                    requests,
+                    users,
+                    ranking
+                ] = await Promise.all([ //ejecutamos todas las peticiones para eficientizar tiempo al momento de recibir las respuestas 
+                    getBranches(),
+                    getAgreement(),
+                    getPlans(),
+                    getRequest(),
+                    getUsers(),
+                    getRankingUsers()
+                ]);
+
+                setTotalBranches(branches.length);
+                setTotalAgreements(agreements.length);
+                setTotalPlans(plans.length);
+                setTotalRequests(requests.length);
+                setRankingData(ranking);
+
+                const activeUsers = users.filter(u => u.estado === "AC"); //solo traemos los usuarios activos en el aplicativo 
+                setActiveUsers(activeUsers.length);
+
+                console.log("usuarios activos:", activeUsers.length);
+                console.log("ranking:", ranking);
+
+                } catch (error) {
+                    console.error("Error al obtener los datos:", error);
+                    handleAxiosError(error)
+                }
         };
 
-        fetchData(); 
+    fetchData();
     }, []);
+
 
     const handleClickReport = async () => {
         try {
@@ -90,6 +179,7 @@ export function Inicio() {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Error al descargar el reporte: ", error);
+            handleAxiosError(error)
         }
     }
 
@@ -99,25 +189,98 @@ export function Inicio() {
             <Sidebar />
             <GeneralContainer>
                 <Card gridColumn="span 4"><AlarmClock />Tiempo de respuesta</Card>
-                <Card gridColumn="span 4"><Building2 /> <Handshake />total sucursales: {totalBranches} & convenios: {totalAgreements}</Card>
-                <Card gridColumn="span 4"><NotebookPen /> <Folder />Total planes: {totalPlans} & solicitudes: {totalRequests}</Card>
+
+                <Card gridColumn="span 4">
+                <KPIWrapper>
+                    <KPIIconsRow>
+                    <Building2 size={22}  />
+                    <Handshake size={22}  />
+                    </KPIIconsRow>
+
+                    <KPIValue>
+                    {totalBranches} · {totalAgreements}
+                    </KPIValue>
+
+                    <KPITitle>Sucursales & Convenios</KPITitle>
+                </KPIWrapper>
+                </Card>
+
+                <Card gridColumn="span 4">
+                <KPIWrapper>
+                    <KPIIconsRow>
+                    <NotebookPen size={22}/>
+                    <Folder size={22} />
+                    </KPIIconsRow>
+
+                    <KPIValue>
+                    {totalPlans} · {totalRequests}
+                    </KPIValue>
+
+                    <KPITitle>Planes & Solicitudes</KPITitle>
+                </KPIWrapper>
+                </Card>
                 
 
                 <Card gridColumn="span 9">
                     <SalesChart />
                 </Card>
-                <Card gridColumn="span 3"><UserStar />Ranking top users y usuarios(ya lo tengo) y usuarios activos: {activeUsers} <ShieldCheck /></Card>
+
+                <Card gridColumn="span 3">
+                    <CardHeader>
+                        <UserStar size={18} /> Ranking top usuarios
+                    </CardHeader>
+
+                    <RankingWrapper>
+                        {Object.entries(rankingData).map(([name, count], i) => (
+                        <RankingItem key={i}>
+                            <span>{i + 1+" #"}. {name}</span>
+                            <span>{count}</span>
+                        </RankingItem>
+                        ))}
+                    </RankingWrapper>
+
+                    <FooterInfo>
+                        <ShieldCheck size={16} />
+                        Usuarios activos: {activeUsers}
+                    </FooterInfo>
+                </Card>
 
 
-                <Card gridColumn="span 7"><SalesChart2 /> 
-                </Card>
-                <Card gridColumn="span 5"><FileDown />
-                    Descarga reportes generales
-                    <CustomButton
-                    onClick={handleClickReport}
-                    >
-                        Descargar</CustomButton>
-                </Card>
+                <Card gridColumn="span 7"><SalesChart2 /> </Card>
+
+                <Card gridColumn="span 5">
+                    <CardHeader>
+                        <FileDown size={20} /> Descarga reportes generales
+                    </CardHeader>
+
+
+                        <CustomButton
+                        onClick={handleClickReport}
+                        bgColor={'#38B2AC'}
+                        hoverColor={'#319795'}
+                        icon={FileSpreadsheet}
+                        >
+                        Informe Convenios
+                        </CustomButton>
+
+                        <CustomButton
+                        onClick={handleClickReport}
+                        bgColor={'#4299E1'}
+                        hoverColor={'#3182CE'}
+                        icon={FileSliders}
+                        >
+                        Informe Sucursales
+                        </CustomButton>
+
+                        <CustomButton
+                        onClick={handleClickReport}
+                        bgColor={'#5A7C95'}
+                        hoverColor={'#486577'}
+                        icon={SquareUser}
+                        >
+                        Informe Usuarios
+                        </CustomButton>
+                    </Card>
 
             </GeneralContainer>
         </>

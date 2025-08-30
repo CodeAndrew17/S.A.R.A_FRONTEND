@@ -63,7 +63,7 @@ const PlansTreemap = () => {
         options={options}
         series={series}
         type="treemap"
-        height="140%"
+        height="120%"
         width="100%"
       />
     </div>

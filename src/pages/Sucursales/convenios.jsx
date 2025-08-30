@@ -1,6 +1,6 @@
 // ConveniosPanel.jsx
 import Table from '../../components/tables/table';
-import Toolbar from '../../components/layout/toolbar';
+import Toolbar from '../../components/layout/Toolbar';
 import styled from 'styled-components';
 import columnsAgreement from './TableAgreement/columnsAgreement';
 import UserForm from '../../components/modals/userForm';
