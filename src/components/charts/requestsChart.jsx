@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { getRequestYear } from "../../api/api_Dashboard";
+import { FileSpreadsheet } from "lucide-react";
+import CustomButton from "../ui/button"; 
 
-const SalesChart = () => {
+const SalesChart = ({ handleClickReport }) => {
   const [series, setSeries] = useState([]);
 
   const monthsOrder = [
@@ -16,8 +18,6 @@ const SalesChart = () => {
       const data = response.data; 
       console.log(data);
 
-      // Hasta agosto tenemos valores, después rellenamos con ceros
-      
       const activas = monthsOrder.map(m => data[m]?.solicitudes_activas || 0); 
       const canceladas = monthsOrder.map(m => data[m]?.solicitudes_canceladas || 0); 
       const progreso = monthsOrder.map(m => data[m]?.solicitudes_progreso || 0); 
@@ -42,9 +42,32 @@ const SalesChart = () => {
   };
 
   return (
-    <div style={{ background: "#fff", padding: "16px", borderRadius: "8px", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
-      <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>Solicitudes</h2>
-      <Chart options={options} series={series} type="line" width="100%" height="80%" />
+    <div
+      style={{
+        background: "#fff",
+        padding: "1px",
+        borderRadius: "8px",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px"
+      }}
+    >
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h2 style={{ fontSize: "18px", fontWeight: "600" }}>Solicitudes</h2>
+        <CustomButton
+          onClick={() => handleClickReport("solicitud")}
+          bgColor={"#38B2AC"}
+          hoverColor={"#319795"}
+          icon={FileSpreadsheet}
+        >
+          Informe Solicitudes
+        </CustomButton>
+      </div>
+
+
+      <Chart options={options} series={series} type="line" width="100%" height="180" />
     </div>
   );
 };

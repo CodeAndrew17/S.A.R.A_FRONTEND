@@ -59,6 +59,17 @@ const uploadImage = async (formData) => {
         return await axiosWithAuth("/result/api/subirimagen/post/", "POST", formData);
     } catch (error) {
         console.error("error al subir la imagen", error);
+        throw error; 
+    }
+}
+
+//ruta para obtener la imagen 
+const getImage = async (id_request) => {
+    try {
+        return await axiosWithAuth(`/result/api/imagen/get/${id_request}/`, "GET")
+    } catch (error) {
+        console.error("Error al obtener la imagen", error);
+        throw error;
     }
 }
 
@@ -72,4 +83,4 @@ const finishRequest = async (id_solicitud) => {
     }
 }
 
-export {getFormItems, getCategoryOptions, addAnswers, getAnswers, editAnswers, uploadImage, finishRequest}
+export {getFormItems, getCategoryOptions, addAnswers, getAnswers, editAnswers, uploadImage, finishRequest, getImage}

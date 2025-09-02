@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getPlans, getForms } from '../../api/api_Admin';
 import { useLocation } from 'react-router-dom';
-import CustomButton from '../../components/modals/userForm';
+import CustomButton from '../../components/forms/userForm';
 
 
 

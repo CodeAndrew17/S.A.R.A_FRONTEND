@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from "../../components/layout/sidebarForms";
 import MiComponente from './formsManager';
 import { useLocation } from 'react-router-dom';
-import UserForm from '../../components/modals/Form_UserForm';
+import UserForm from '../../components/forms/Form_UserForm';
 import { getCategoryOptions, getFormItems, addAnswers, getAnswers, editAnswers, finishRequest ,uploadImage } from '../../api/api_Forms';
 import CustomButton from '../../components/ui/button';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,7 @@ import ProgressBar from '../../components/ui/ProgressBar';
 import {InfoLine,SideAndContent,ObservationNote,Divider,Head,Content,Body,Column} from './styles'; 
 import { BackSquareButton } from '../../components/ui/BackButton'; 
 import { handleAxiosError } from '../../utils/alertUnauthorized';
+import { API_URL } from '../../api/api_Manager';
 
 function FormsView() {
   const [selected, setSelected] = useState(null);
@@ -431,10 +432,11 @@ function FormsView() {
           />
         </Head>
 
+        {/* IMPORTANTE NOTA: recordar cambiar el cuerpo o base  de la url al momento de subir a produccion   */}
         <Body>
           <Column>
             <UploadImageForm
-              endpoint={`http://localhost:8000/result/api/subirimagen/post/`}
+              endpoint={`${API_URL}/result/api/subirimagen/post/`}
               id_solicitud={solicitud_id}
               >
             </UploadImageForm>

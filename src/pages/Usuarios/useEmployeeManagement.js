@@ -33,11 +33,15 @@ const useEmployeeManagement = () => {
                     id_usuario_real: user ?  user.id : 'No asignado',
                     nombre_usuario: user ? user.usuario : 'No asignado',
                     rol_usuario: user ? user.rol : 'No asignado',
-                    estado_usuario: user ? user.estado : 'No asignado'
+                    estado_usuario: user ? user.estado : 'No asignado',
+                    last_register: user?.last_login ?? 'Sin registro' //evaluamos directamente el atributo no a user
                 }
             })
             setEmployees(employeesComplete);
             setBranches(branchesData);
+            setUsers(usersData);
+            console.log("usuarios: ", users)
+            console.log("usuario con infomracion completa: ", employeesComplete)
         } catch (error) {
             handleAxiosError(error);
         }

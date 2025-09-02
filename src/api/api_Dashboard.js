@@ -31,9 +31,9 @@ const getPlans = async () => {
     }
 }
 
-const getReport = async () => {
+const getReport = async (model) => {
     try {
-        return await axiosWithAuthFile("/api/reportesexcel/?model=usuarios", "GET"); //#http://localhost:8000/statistic/reporte/?model=convenio&year_start=2024&month_start=6&year_end=2025&month_end=7&state=IN
+        return await axiosWithAuthFile(`/statistic/api/reportesexcel/?model=${model}`, "GET"); //#http://localhost:8000/statistic/reporte/?model=convenio&year_start=2024&month_start=6&year_end=2025&month_end=7&state=IN
     } catch (error) {
         console.error("Error al obtener el reporte", error);
     }
@@ -49,4 +49,12 @@ const getRankingUsers = async () => {
 
 //hacer la peticion para obtener el reporte usar la otra variante de axioswithAuth para archivos blob osea xlsx
 
-export {getRequestYear, getRequestMonth, getPlans, getReport, getRankingUsers}
+const getTimeSolution = async () => {
+    try {
+        return await axiosWithAuth("/statistic/prueba/", "GET")
+    } catch (error) {
+        console.error("Error al obtener el tiempo de solucion", error)
+    }
+}
+
+export {getRequestYear, getRequestMonth, getPlans, getReport, getRankingUsers, getTimeSolution}

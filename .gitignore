@@ -6,6 +6,12 @@ yarn-debug.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+#archivo local de pc 
+.desktop.ini
+
+#build produccion 
+
+
 # Dependencias y builds
 node_modules/
 dist/
@@ -28,3 +34,4 @@ dist-ssr/
 *.sln
 *.sw?
 .vite/
+.vercel

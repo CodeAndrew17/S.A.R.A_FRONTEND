@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import Swal from 'sweetalert2';
-import UserForm from '../../components/modals/userForm';
+import UserForm from '../../components/forms/userForm';
 import Header from './internalComponents/header';
 import Sidebar from '../../components/layout/sidebar';
 import Toolbar from '../../components/layout/Toolbar';
@@ -8,7 +8,7 @@ import Table from '../../components/tables/table'
 import useEmployeeManagement from './useEmployeeManagement';
 import {columnsEmployees} from './columnsEmployees'; 
 import CustomButton from '../../components/ui/button';
-import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft, UserPen, ToggleRight, Info } from "lucide-react";
+import { Pencil, UserMinus, UserRoundPen, User, SquareUserRound, ToggleLeft, UserPen, ToggleRight, Info, KeySquare, UserIcon } from "lucide-react";
 import filterData from '../../utils/unitySearch';
 import getOrderRegister from '../../utils/getLastRegister';
 import { ImTextColor } from 'react-icons/im';
@@ -67,13 +67,15 @@ const renderUserDetails = (row) => {
   return (
     <div style={{ 
       padding: '10px', 
+      paddingLeft: '30px',
+      paddingRight: '30px',
       background: 'linear-gradient(135deg, #f9fafb, #f3f4f6)',
       border: '1px solid #e5e7eb',
       borderRadius: '14px',
       boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
       marginTop: '10px',
       transition: 'all 0.3s ease',
-      cursor: 'default'
+      cursor: 'default',
     }}>
       
       {/* Encabezado */}
@@ -85,15 +87,24 @@ const renderUserDetails = (row) => {
         borderBottom: '1px solid #e5e7eb',
         paddingBottom: '10px'
       }}>
-        <div style={{ 
-          color:'#1e40af',
-          fontWeight: '700',
-          fontSize: '16px',
-          letterSpacing: '0.3px'
-        }}>
-          <strong> Información de Usuario</strong> 
-          {/* <Info />  */}
-        </div>
+      <div
+        style={{
+          backgroundColor: '#f0f4ff', 
+          padding: '5px ',
+          borderRadius: '6px',
+          color: '#1d4ed8', 
+          fontWeight: 600,
+          fontSize: '15px',
+          letterSpacing: '0.2px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <Info size={16} color="#1d4ed8" />
+        <span>Usuario asignado a:  <strong>{row.nombres}</strong></span>
+      </div>
+
       </div>
 
       {/* Grid con info */}
@@ -104,8 +115,8 @@ const renderUserDetails = (row) => {
       }}>
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: '1fr 1fr 1fr', 
-          marginLeft: '90px'
+          gridTemplateColumns: '1fr 1fr 1fr 1fr', 
+          marginLeft: '10px'
         }}>
           {/* Usuario */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#374151' }}>
@@ -113,7 +124,7 @@ const renderUserDetails = (row) => {
             <span><strong>Usuario:</strong> {row.nombre_usuario || 'No asignado'}</span>
           </div>
 
-          {/* Estado con ícono */}
+          {/* Estado con icono */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -137,13 +148,20 @@ const renderUserDetails = (row) => {
             <SquareUserRound size={20} style={{ color: '#2563eb' }} />
             <span><strong>Rol:</strong> {roles[row.rol_usuario] || 'No disponible'}</span>
           </div>
+
+          {/* Ultimo registro */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#374151' }}>
+            <KeySquare size={20} style={{ color: '#065f46' }} />
+            <span><strong>Último acceso:</strong> {row.last_register || 'No disponible'}</span>
+          </div>
         </div>
 
     <div style={{ 
       display: 'flex', 
       flexDirection: 'column',
       justifyContent: 'center',
-      gap: '10px'
+      gap: '10px',
+      paddingRight: '20px'
     }}>
       <CustomButton
         bgColor="#3b82f6"

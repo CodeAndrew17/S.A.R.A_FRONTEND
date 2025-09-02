@@ -3,7 +3,7 @@ import Table from '../../components/tables/table';
 import Toolbar from '../../components/layout/Toolbar';
 import styled from 'styled-components';
 import columnsAgreement from './TableAgreement/columnsAgreement';
-import UserForm from '../../components/modals/userForm';
+import UserForm from '../../components/forms/userForm';
 import { useState, useEffect } from 'react';
 import useAgreementManagement from './TableAgreement/convenioManagement';
 

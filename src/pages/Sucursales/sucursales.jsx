@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Trash, Plus, Building, Building2, Handshake  } from 'lucide-react';
 import Toolbar from '../../components/layout/Toolbar';
 import Table from '../../components/tables/table';
-import UserForm from '../../components/modals/userForm';
+import UserForm from '../../components/forms/userForm';
 import TabsContainer from '../../components/ui/TabContainer';
 
 import columnsBranch from './TableBranches/columnsBranches';

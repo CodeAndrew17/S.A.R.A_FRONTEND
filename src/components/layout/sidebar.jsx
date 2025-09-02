@@ -143,7 +143,7 @@ const ImageWrapper = styled.div`
   display: flex;
   align-items: center;
   position: absolute;
-  top: 20px;
+  top: 25px;
   right: ${({ $isOpen }) => ($isOpen ? '25px' : '-45px')};
   z-index: 1001;
   transition: right 0.3s ease;
@@ -154,7 +154,7 @@ const ImageWrapper = styled.div`
   }
 
   img:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 `;
 

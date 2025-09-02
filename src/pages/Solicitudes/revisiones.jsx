@@ -5,7 +5,7 @@ import Table from "../../components/tables/tableRevis";
 import ColumnsRequest from "./TableRequest/columnsRequest";
 import Toolbar from "../../components/layout/Toolbar";
 import useRequestManage from "./TableRequest/requestManagement";
-import UserForm from "../../components/modals/userForm";
+import UserForm from "../../components/forms/userForm";
 import Swal from "sweetalert2";
 import DateDropdown from "../../components/ui/dateDropdown";
 import CustomButton from "../../components/ui/button";
@@ -18,7 +18,7 @@ import { handleAxiosError } from "../../utils/alertUnauthorized";
 const CustomButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: -80px;
+  margin-top: -73px;
   padding-right: 40px;
   flex-wrap: wrap;
 

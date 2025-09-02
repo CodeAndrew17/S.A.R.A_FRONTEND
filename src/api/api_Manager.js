@@ -7,6 +7,8 @@ import axios from 'axios';
 // const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
 const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
+// const API_URL = `https://sara-production.onrender.com`;
+
 // Función de login para obtener el token de access
 const login = async (usuario, password) => {
     try {
@@ -195,4 +197,4 @@ const logout = () => {
 
 }
 
-export { login, axiosWithAuth, refreshToken, solicitarPassword, logout, axiosWithAuthFile};
+export { login, axiosWithAuth, refreshToken, solicitarPassword, logout, axiosWithAuthFile, API_URL};

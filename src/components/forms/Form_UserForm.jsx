@@ -26,19 +26,22 @@ const fadeIn = keyframes`
 
 
 const ModalContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: ${fadeIn} 0.3s ease-out forwards;
-  opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Opacidad mas oscura para mejor efecto */
+    backdrop-filter: blur(6px);  /* Aplica el desenfoque */
+    -webkit-backdrop-filter: blur(6px); /* Compatibilidad con Safari */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: ${fadeIn} 0.3s ease-out forwards;
+    opacity: 0;
 `;
+
 
 
 const FormContainer = styled.div`

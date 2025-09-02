@@ -6,7 +6,7 @@ import Card from '../components/ui/CardHome';
 import iconForm from '../assets/images/iconForm.png';
 import SalesChart from '../components/charts/requestsChart';
 import SalesChart2 from '../components/charts/planChart';
-import { getReport, getRankingUsers } from '../api/api_Dashboard';
+import { getReport, getRankingUsers, getTimeSolution } from '../api/api_Dashboard';
 import CustomButton  from '../components/ui/button';
 import { useState, useEffect } from 'react';
 import { use } from 'react';
@@ -16,6 +16,7 @@ import {getRequest} from '../api/api_Solicitudes';
 import { getUsers } from '../api/api_Usuarios';
 import { Building2, Handshake, Folder, NotebookPen, UserStar,FileSliders, KeyRound,FileSpreadsheet, ShieldCheck, FileDown, AlarmClock, SquareUser   } from 'lucide-react';
 import { handleAxiosError } from '../utils/alertUnauthorized';
+import { getTime } from 'date-fns';
 
 const GeneralContainer = styled.div`
     display: grid;
@@ -98,7 +99,8 @@ const KPIIconsRow = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
+
+  height: 1px;
 `;
 
 const KPIValue = styled.div`
@@ -114,6 +116,26 @@ const KPITitle = styled.div`
   color: #4a5568;
 `;
 
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* en móviles, una sola columna */
+  }
+`;
+
+// Header con icono alineado
+const CardHeaderStyled = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 12px 16px;
+`;
 
 export function Inicio() {
     // const username = sessionStorage.getItem('username') || "Invitado";
@@ -123,6 +145,7 @@ export function Inicio() {
     const [totalRequests, setTotalRequests] = useState(0);  
     const [rankingData, setRankingData] = useState([]);
     const [activeUsers, setActiveUsers] = useState(0);
+    const [tiempoSolucion, setTiempoSolucion] = useState("")
 
         useEffect(() => {
             const fetchData = async () => {
@@ -133,14 +156,16 @@ export function Inicio() {
                     plans,
                     requests,
                     users,
-                    ranking
+                    ranking,
+                    timeSolution
                 ] = await Promise.all([ //ejecutamos todas las peticiones para eficientizar tiempo al momento de recibir las respuestas 
                     getBranches(),
                     getAgreement(),
                     getPlans(),
                     getRequest(),
                     getUsers(),
-                    getRankingUsers()
+                    getRankingUsers(),
+                    getTimeSolution()
                 ]);
 
                 setTotalBranches(branches.length);
@@ -148,12 +173,14 @@ export function Inicio() {
                 setTotalPlans(plans.length);
                 setTotalRequests(requests.length);
                 setRankingData(ranking);
+                setTiempoSolucion(timeSolution); 
 
                 const activeUsers = users.filter(u => u.estado === "AC"); //solo traemos los usuarios activos en el aplicativo 
                 setActiveUsers(activeUsers.length);
 
                 console.log("usuarios activos:", activeUsers.length);
                 console.log("ranking:", ranking);
+                console.log("tiempo solucion :", timeSolution);
 
                 } catch (error) {
                     console.error("Error al obtener los datos:", error);
@@ -165,17 +192,20 @@ export function Inicio() {
     }, []);
 
 
-    const handleClickReport = async () => {
+    // const modelo = ""
+
+    const handleClickReport = async (modelo) => {
         try {
-            const response = await getReport();
+            const response = await getReport(modelo);
             const url = window.URL.createObjectURL(new Blob([response.data]));
 
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('dowland', 'reporte_general.xlsx');
-            document.body.appendchild(link);
+            link.setAttribute('download', `reporte_${modelo}s.xlsx`);
+            document.body.appendChild(link);
+
             link.click();
-            link.remove();
+            document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Error al descargar el reporte: ", error);
@@ -188,7 +218,15 @@ export function Inicio() {
         <>
             <Sidebar />
             <GeneralContainer>
-                <Card gridColumn="span 4"><AlarmClock />Tiempo de respuesta</Card>
+                <Card gridColumn="span 4">
+          <KPIWrapper>
+            <KPIIconsRow>
+              <AlarmClock size={22} />
+            </KPIIconsRow>
+            <KPIValue>{tiempoSolucion.promedio_duracion || '0 días, 0 horas'}</KPIValue>
+            <KPITitle>Promedio de respuesta</KPITitle>
+          </KPIWrapper>
+        </Card>
 
                 <Card gridColumn="span 4">
                 <KPIWrapper>
@@ -222,8 +260,13 @@ export function Inicio() {
                 
 
                 <Card gridColumn="span 9">
-                    <SalesChart />
+                
+
+                <div style={{ padding: "0 16px 16px 16px" }}>
+                    <SalesChart handleClickReport={handleClickReport}/>
+                </div>
                 </Card>
+
 
                 <Card gridColumn="span 3">
                     <CardHeader>
@@ -243,44 +286,62 @@ export function Inicio() {
                         <ShieldCheck size={16} />
                         Usuarios activos: {activeUsers}
                     </FooterInfo>
+                    <CustomButton
+                    onClick={() => handleClickReport("usuario")}
+                    bgColor={"#5A7C95"}
+                    hoverColor={"#486577"}
+                    icon={SquareUser}
+                    >
+                    Informe Usuarios
+                    </CustomButton>
                 </Card>
 
 
                 <Card gridColumn="span 7"><SalesChart2 /> </Card>
 
                 <Card gridColumn="span 5">
-                    <CardHeader>
-                        <FileDown size={20} /> Descarga reportes generales
-                    </CardHeader>
+                <CardHeaderStyled>
+                    <FileDown size={20} /> Descarga de reportes generales
+                </CardHeaderStyled>
 
+                <GridContainer>
+                    <CustomButton
+                    onClick={() => handleClickReport("convenio")}
+                    bgColor={"#38B2AC"}
+                    hoverColor={"#319795"}
+                    icon={FileSpreadsheet}
+                    >
+                    Informe Convenios
+                    </CustomButton>
 
-                        <CustomButton
-                        onClick={handleClickReport}
-                        bgColor={'#38B2AC'}
-                        hoverColor={'#319795'}
-                        icon={FileSpreadsheet}
-                        >
-                        Informe Convenios
-                        </CustomButton>
+                    <CustomButton
+                    onClick={() => handleClickReport("sucursal")}
+                    bgColor={"#4299E1"}
+                    hoverColor={"#3182CE"}
+                    icon={FileSliders}
+                    >
+                    Informe Sucursales
+                    </CustomButton>
 
-                        <CustomButton
-                        onClick={handleClickReport}
-                        bgColor={'#4299E1'}
-                        hoverColor={'#3182CE'}
-                        icon={FileSliders}
-                        >
-                        Informe Sucursales
-                        </CustomButton>
+                    <CustomButton
+                    onClick={() => handleClickReport("empleado")}
+                    bgColor={"#5A7C95"}
+                    hoverColor={"#486577"}
+                    icon={SquareUser}
+                    >
+                    Informe Empleados
+                    </CustomButton>
 
-                        <CustomButton
-                        onClick={handleClickReport}
-                        bgColor={'#5A7C95'}
-                        hoverColor={'#486577'}
-                        icon={SquareUser}
-                        >
-                        Informe Usuarios
-                        </CustomButton>
-                    </Card>
+                    <CustomButton
+                    onClick={() => handleClickReport("usuario")}
+                    bgColor={"#5A7C95"}
+                    hoverColor={"#486577"}
+                    icon={SquareUser}
+                    >
+                    Informe Usuarios
+                    </CustomButton>
+                </GridContainer>
+                </Card>
 
             </GeneralContainer>
         </>

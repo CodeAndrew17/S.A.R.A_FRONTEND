@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { ImageUp, Image as ImageIcon } from "lucide-react"; //<ImageUp />
 import Swal from "sweetalert2";
 import { handleAxiosError } from "../../utils/alertUnauthorized";
+import { getImage } from "../../api/api_Forms";
 
 const FormContainer = styled.form`
   display: flex;
@@ -108,6 +109,26 @@ const UploadImageForm = ({ endpoint, onSuccess, id_solicitud }) => {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect( () =>  {
+    const fetchExistImage = async () => {
+      try {
+        const data = await getImage(id_solicitud); 
+        if (data?.imageUrl) { //verificamos que exista el atributo correcto para obtener la imagen 
+          setPreviewUrl(data.imageUrl)
+          console.log("que tengo en la repsuesta de la imagen get ",data)
+        }
+      } catch (error) {
+        handleAxiosError(error);
+        throw error; 
+      }
+    }; 
+
+    fetchExistImage(); 
+
+  }, [id_solicitud])
+
+  console.log("que hay en el set de previwUrl", previewUrl)
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];

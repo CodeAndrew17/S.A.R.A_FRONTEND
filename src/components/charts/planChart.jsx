@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
 import { getPlans } from "../../api/api_Dashboard";
+import { FileSpreadsheet } from "lucide-react";
+import CustomButton from "../ui/button"; 
 
-const PlansTreemap = () => {
+const PlansTreemap = ({ handleClickReport }) => {
   const [series, setSeries] = useState([]);
 
   useEffect(() => {
@@ -11,10 +13,9 @@ const PlansTreemap = () => {
       const data = response.data;
       console.log("planes me los trae?", data);
 
-      // Transformamos el objeto { plan: cantidad } en formato treemap
       const formattedData = Object.entries(data).map(([name, value]) => ({
-        x: name, // nombre del plan
-        y: value // cantidad
+        x: name,
+        y: value,
       }));
 
       setSeries([{ data: formattedData }]);
@@ -27,15 +28,7 @@ const PlansTreemap = () => {
       type: "treemap",
     },
     legend: {
-      show: false, 
-    },
-    title: {
-      text: "Planes con Solicitudes",
-      align: "left",
-      style: {
-        fontSize: "16px",
-        fontWeight: "600",
-      },
+      show: false,
     },
     tooltip: {
       y: {
@@ -44,7 +37,7 @@ const PlansTreemap = () => {
     },
     plotOptions: {
       treemap: {
-        distributed: true, // colores distintos por plan
+        distributed: true,
         enableShades: true,
       },
     },
@@ -57,15 +50,34 @@ const PlansTreemap = () => {
         padding: "16px",
         borderRadius: "8px",
         boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
       }}
     >
-      <Chart
-        options={options}
-        series={series}
-        type="treemap"
-        height="120%"
-        width="100%"
-      />
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 style={{ fontSize: "18px", fontWeight: "600" }}>
+          Planes con Solicitudes
+        </h2>
+        <CustomButton
+          onClick={() => handleClickReport("plan")}
+          bgColor={"#4299E1"}
+          hoverColor={"#3182CE"}
+          icon={FileSpreadsheet}
+        >
+          Informe Planes
+        </CustomButton>
+      </div>
+
+
+      <Chart options={options} series={series} type="treemap" height="150" width="100%" />
     </div>
   );
 };

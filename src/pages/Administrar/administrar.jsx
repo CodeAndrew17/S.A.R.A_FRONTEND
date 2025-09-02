@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Table from "../../components/tables/table";
 import { useColumnsManage } from "./columnsAdmin";
 import Toolbar from "../../components/layout/Toolbar";
-import UserForm from "../../components/modals/userForm";
+import UserForm from "../../components/forms/userForm";
 import usePlansandVehicles from "./adminManager";
 import { toast } from "react-toastify";
 import Swal from 'sweetalert2';

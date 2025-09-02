@@ -26,18 +26,20 @@ const fadeIn = keyframes`
 
 
 const ModalContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: ${fadeIn} 0.3s ease-out forwards;
-  opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Opacidad mas oscura para mejor efecto */
+    backdrop-filter: blur(6px);  /* Aplica el desenfoque */
+    -webkit-backdrop-filter: blur(6px); /* Compatibilidad con Safari */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: ${fadeIn} 0.3s ease-out forwards;
+    opacity: 0;
 `;
 
 
@@ -414,6 +416,7 @@ const UserForm = ({
   const isNumericField = field.name === "cedula" || field.name === "telefono";
   const isAlphaField = ["nombre", "nombre_plan", "nombres", "apellidos"].includes(field.name);
   const isPlacaField = field.name === "placa";
+  const isPassword = field.name === "password"; 
 
   // helper para actualizar formData + callback externo
   const updateValue = (name, value) => {
@@ -451,6 +454,7 @@ const UserForm = ({
   let valid = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (valid.length > 6) valid = valid.slice(0, 6);
 
+
   if (raw.toUpperCase() !== valid) {
     setErrors(prev => ({ ...prev, [field.name]: "Solo letras y números (máx. 6 caracteres)" }));
   } else if (valid.length < 6 && valid.length > 0) {
@@ -462,6 +466,44 @@ const UserForm = ({
   updateValue(field.name, valid);
 };
 
+  const handlePasswordChange = (e) => {
+    const raw = e.target.value;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[{\]};:,.<>?/|~])[A-Za-z\d!@#$%^&*()_\-+=\[{\]};:,.<>?/|~]{8,}$/;
+
+    const isValid = passwordRegex.test(raw);
+
+    if (!isValid && raw.length > 0 ) {
+      setErrors(prev =>  ({ ...prev, password: "Debe tener mayúscula, minúscula, número y caracter especial (mín. 8)" }));
+    } else {
+      setErrors(prev => ({ ...prev, password: "" }));
+    }
+
+    updateValue("password", raw)
+    
+  };
+
+  const handleUsuarioChange = (e) => {
+    const raw = e.target.value;
+    const minLength = 6; 
+
+    const userNameRegex = /^[a-zA-Z0-9_]+$/;
+
+    if (raw.length < minLength) {
+      setErrors(prev => ({
+        ...prev, 
+        usuario: `El usuario debe tener al menos ${minLength} caracteres`
+      }));
+    } else if (!userNameRegex.test(raw)) {
+      setErrors(prev => ({
+      ...prev,
+      usuario: "Solo se permiten letras, números y guiones bajos"
+    }));
+    } else {
+      setErrors(prev => ({ ...prev, usuario: ""}));
+    }
+    updateValue("usuario", raw);
+  }
+
   return (
     <InputGroup $fullWidth={field.fullWidth}>
       <label style={{ marginBottom: "8px", fontWeight: "500", color: "#555", fontSize: "14px" }}>
@@ -469,7 +511,7 @@ const UserForm = ({
         {field.required && <span style={{ color: "red" }}> *</span>}
       </label>
       <Input
-        type="text"
+        type={isPassword ? "password" : "text"}
         name={field.name}
         placeholder={field.placeholder}
         value={formData[field.name] ?? ""}
@@ -480,6 +522,10 @@ const UserForm = ({
             ? handleAlphaChange
             : isPlacaField
             ? handlePlacaChange
+            : isPassword
+            ? handlePasswordChange
+            : field.name === "usuario"
+            ? handleUsuarioChange
             : (e) => updateValue(field.name, e.target.value)
         }
         required={field.required}

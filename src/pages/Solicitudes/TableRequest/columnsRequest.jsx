@@ -2,9 +2,12 @@ import CustomButton from "../../../components/ui/button";
 import { Download, FolderCog } from "lucide-react"; //<Download />
 import {downloadRequest} from "../../../api/api_Solicitudes";  //llamamos la funcion de descarga, lista para usarl al momento de descagrar visualmente el archivo para el usuaorio 
 import { handleAxiosError } from "../../../utils/alertUnauthorized";
+import { useState } from "react";
 
 
 const columnsRequest=({navigate})=> {
+
+  const [placa, setPlaca] = useState(undefined);
   
   //funciona para signarle al boton de cada fila que este en estaod FIN lo cual descarga el odf de esa solicitud seleccionada 
   const handleDownload = async (id) => { //recibimos el id como parametro para la peticion get 
@@ -14,7 +17,7 @@ const columnsRequest=({navigate})=> {
       //creamos dinamicamente un elemnto <a> ancla  
       const link = document.createElement('a'); //elemento html anchorage para los enlaces de descarga en este caso
       link.href = url; //asigna la url que se creo anteriormente como destino de enlace 
-      link.setAttribute('download', `informe_solicitud_${id}.pdf`) // nombre del archivo identificandolo por el id 
+      link.setAttribute('download', `informe_solicitud_${placa}.pdf`) // nombre del archivo identificandolo por el id 
       document.body.appendChild(link); //inserta el <a> dinamico al dom (lo hacemos para que sea compatible y funcione el click en diferentes navegadores)
       link.click(); //disparamos el clic simulandolo activando la descarga 
 
@@ -71,6 +74,8 @@ const columnsRequest=({navigate})=> {
         key: 'actions',
         title: <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Acciones</span>,
     render: (_, record) => {
+
+      setPlaca(record.placa)
 
         const isDisabled = record.estado !== "PRO" //desabilitar si no es pro osea en progreso
         let color = '#0000'
