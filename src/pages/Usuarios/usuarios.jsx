@@ -216,14 +216,14 @@ const renderUserDetails = (row) => {
     if (selectedRows.length === 0) {
       Swal.fire({
             icon: 'warning',
-            title: 'Seleccion inválida',
+            title: 'Selección inválida',
             text: 'Selecciona un Empleado para editar.',
         });
     }
     else if (selectedRows.length >= 2) {
             Swal.fire({
             icon: 'warning',
-            title: 'Seleccion inválida',
+            title: 'Selección inválida',
             text: 'Selecciona un solo Empleado para editar.',
         });
     } else {
@@ -311,7 +311,7 @@ const renderUserDetails = (row) => {
     if (selectedRows.length === 0) {
     Swal.fire({
             icon: 'warning',
-            title: 'Seleccion inválida',
+            title: 'Selección inválida',
             text: 'Selecciona por lo menos un Empleado para eliminar.',
         });
     } else {

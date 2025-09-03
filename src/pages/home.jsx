@@ -4,8 +4,8 @@ import Sidebar from '../components/layout/sidebar';
 import styled from 'styled-components'; 
 import Card from '../components/ui/CardHome';
 import iconForm from '../assets/images/iconForm.png';
-import SalesChart from '../components/charts/requestsChart';
-import SalesChart2 from '../components/charts/planChart';
+import RequestChart from '../components/charts/requestsChart';
+import PlanChart from '../components/charts/planChart';
 import { getReport, getRankingUsers, getTimeSolution } from '../api/api_Dashboard';
 import CustomButton  from '../components/ui/button';
 import { useState, useEffect } from 'react';
@@ -263,7 +263,7 @@ export function Inicio() {
                 
 
                 <div style={{ padding: "0 16px 16px 16px" }}>
-                    <SalesChart handleClickReport={handleClickReport}/>
+                    <RequestChart handleClickReport={handleClickReport}/>
                 </div>
                 </Card>
 
@@ -286,18 +286,11 @@ export function Inicio() {
                         <ShieldCheck size={16} />
                         Usuarios activos: {activeUsers}
                     </FooterInfo>
-                    <CustomButton
-                    onClick={() => handleClickReport("usuario")}
-                    bgColor={"#5A7C95"}
-                    hoverColor={"#486577"}
-                    icon={SquareUser}
-                    >
-                    Informe Usuarios
-                    </CustomButton>
+                    
                 </Card>
 
 
-                <Card gridColumn="span 7"><SalesChart2 /> </Card>
+                <Card gridColumn="span 7"><PlanChart handleClickReport={handleClickReport}/> </Card>
 
                 <Card gridColumn="span 5">
                 <CardHeaderStyled>

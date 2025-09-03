@@ -76,7 +76,7 @@ const handleDeleteBranches = async (selectedIDs, setConvenios, setSucursalesConv
     if (selectedIDs.length === 0) {
         await Swal.fire({
             icon: 'warning',
-            title: 'Seleccion inválida',
+            title: 'Selección inválida',
             text: 'Selecciona por lo menos una Sucursal para eliminar.',
         });
         return { success: false };

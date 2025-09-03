@@ -215,7 +215,7 @@ function Revisiones() {
     } else {
       Swal.fire({
             icon: 'warning',
-            title: 'Seleccion inválida',
+            title: 'Selección inválida',
             text: 'Selecciona exactamente una Solicitud para editar.',
       });
     }

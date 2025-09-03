@@ -18,10 +18,10 @@ const SalesChart = ({ handleClickReport }) => {
       const data = response.data; 
       console.log(data);
 
-      const activas = monthsOrder.map(m => data[m]?.solicitudes_activas || 0); 
-      const canceladas = monthsOrder.map(m => data[m]?.solicitudes_canceladas || 0); 
+      const activas = monthsOrder.map(m => data[m]?.solicitudes_activo || 0); 
+      const canceladas = monthsOrder.map(m => data[m]?.solicitudes_cancelado || 0); 
       const progreso = monthsOrder.map(m => data[m]?.solicitudes_progreso || 0); 
-      const finalizadas = monthsOrder.map(m => data[m]?.solicitudes_finalizadas || 0); 
+      const finalizadas = monthsOrder.map(m => data[m]?.solicitudes_finalizado || 0); 
 
       setSeries([
         { name: "Activas", data: activas },
