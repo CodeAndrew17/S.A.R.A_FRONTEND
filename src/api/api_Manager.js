@@ -5,9 +5,9 @@ import axios from 'axios';
 // endpoint={`http://localhost:8000/result/api/subirimagen/post/`} 
 
 // const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
-const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
+// const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
-// const API_URL = `https://sara-production.onrender.com`;
+const API_URL = `https://sara-production.onrender.com`;
 
 // Función de login para obtener el token de access
 const login = async (usuario, password) => {
@@ -186,6 +186,15 @@ const solicitarPassword = async (usuario,correo) => {
         throw error.response?.data?.detail || 'Error al solicitar restablecer contraseña';
     }
 };
+
+const ResetPassword = async (tokenOne, tokenTwo) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/restablecerpassword/${tokenOne}/${tokenTwo}/`)
+    } catch (error) {
+        console.error("error al enviar los datos en el reestablecimiento de password")
+        throw error; 
+    }
+}
 
 const logout = () => {
     sessionStorage.removeItem("access");

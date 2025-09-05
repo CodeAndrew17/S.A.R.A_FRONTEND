@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {logout} from '../../api/api_Manager';
 import { FaHome, FaUsers, FaCog, FaBars, FaFileAlt, FaChartBar, FaTools, FaClipboardList, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { User, House, NotepadText, Users, NotebookPen, Folder, Logs } from "lucide-react";
+import { User, House, NotepadText, Users, NotebookPen, Folder, Logs, Settings2 } from "lucide-react";
 import Logo from '../../assets/images/logo.png';
 
 
@@ -330,6 +330,7 @@ useEffect(() => {
     { icon: <Users />, text: "Usuarios", path: "/usuarios" },
     { icon: <NotebookPen />, text: "Solicitudes", path: "/revisiones" },
     { icon: <Folder />, text: "Planes", path: "/administrar" },
+    // { icon: <Settings2 />, text: "Configuración", path: "/configuracion" },
   ];
 
   return (

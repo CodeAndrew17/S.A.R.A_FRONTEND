@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import RestorePassword from './pages/login/restorePassword';
+import RestorePassword from './pages/Login/restorePassword';
 import { Inicio } from './pages/home';
 import Login from './pages/Login/login';
 import { createGlobalStyle } from 'styled-components';
@@ -8,6 +8,7 @@ import Administrar from './pages/Administrar/administrar';
 import ResetPassword from './pages/Login/resetPassword';
 import Sucursales from './pages/Sucursales/sucursales';
 import Revisiones from './pages/Solicitudes/revisiones';
+import { Configuracion } from './pages/Configuracion/Config';
 import FormView from './pages/Forms/forms';
 import { AnimatePresence } from 'framer-motion'; 
 import '@fontsource-variable/inter';
@@ -47,6 +48,11 @@ function ProtectedRoute({ children }) {
   return token ? children : <Navigate to="/" />;
 }
 
+//funcion especial protected route para el reestablecimiento de contraseña (los tokens son distintos a los de refresh y acces)
+function ProtectedResetPassword ({children}) {
+  const token = sessionStorage.getItmem('nombre que le tenga el backend  ') //cambiar despues por el nombre real de los tokens (los dos )
+}
+
 function AppRoutes() {
   const location = useLocation(); 
 
@@ -58,7 +64,8 @@ function AppRoutes() {
         <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
         <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
         <Route path="/sucursales" element={<ProtectedRoute><Sucursales /></ProtectedRoute>} />
-        <Route path="/reset" element={<ProtectedRoute><ResetPassword /></ProtectedRoute>} />
+        <Route path="/configuracion" element={<ProtectedRoute><Configuracion /></ProtectedRoute>} />
+        <Route path="/reset" element={<ResetPassword />} />
         <Route path="/administrar" element={<ProtectedRoute><Administrar /></ProtectedRoute>} />
         <Route path="/revisiones" element={<ProtectedRoute><Revisiones /></ProtectedRoute>} />
         <Route path="/forms" element={<ProtectedRoute><FormView /></ProtectedRoute>} />
