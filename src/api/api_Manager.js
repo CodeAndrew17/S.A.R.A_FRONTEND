@@ -3,7 +3,7 @@ import axios from 'axios';
 // const API_URL = "http://192.168.1.24:8000";  // IP de tu PC (servidor Django) sirve para celular samsung y redmi 
 
 // const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
- const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
+//const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
 const API_URL = `https://api-662551806039.us-east1.run.app`;
 
