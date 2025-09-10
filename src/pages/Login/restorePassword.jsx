@@ -111,8 +111,15 @@ const RestorePassword = () => {
 
     const onSubmit = async (data) => {
         try {
-            await solicitarPassword(data.usuario, data.correo);
+            const respuesta = await solicitarPassword(data.usuario, data.correo);//llamado api 
+
+            console.log("respuesta del back despues de enviar usuario y correo");
+
+            localStorage.setItem('resetToken', respuesta.data.token);//guardamos los tos tokens para ser accedidos en la otra vista 
+            localStorage.setItem('resetUid', respuesta.data.uid);
+
             toast.success('Correo enviado con éxito. Revisa tu bandeja de entrada.');
+            console.log("respuesta del backend en solicitar password", respuesta)
             reset();
         } catch (error) {
         if (error.response) {

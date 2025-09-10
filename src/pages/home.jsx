@@ -31,6 +31,7 @@ const GeneralContainer = styled.div`
         margin-top: 90px;
         padding-left: 5px;
         padding-right: 5px;
+        grid-template-columns: 1fr; 
     }
 `;
 
@@ -39,6 +40,7 @@ const RankingWrapper = styled.div`
     flex-direction: column;
     gap: 10px;
     margin-top: 5px;
+    min-width: 200px;
 `;
 
 const RankingItem = styled.div`
@@ -67,6 +69,7 @@ const CardHeader = styled.div`
     font-weight: bold;
     font-size: 15px;
     color: #333;
+    min-width: 300px;
 `;
 
 const FooterInfo = styled.div`

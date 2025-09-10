@@ -10,6 +10,7 @@ const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 200px;
 
   /* CLAVE: permite que los hijos (el chart) ocupen todo el ancho */
   align-items: stretch;   /* o simplemente quita align-items y justify-content */

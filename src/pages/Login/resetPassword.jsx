@@ -1,10 +1,11 @@
 //vista para reestablecer la contraseña 
 import { useForm } from 'react-hook-form';
-import { solicitarPassword } from '../../api/api_Manager';  
-import { useNavigate } from 'react-router-dom';
+import { resetPassword } from '../../api/api_Manager';  
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import styled from 'styled-components';
 import { User,Mail, Info, Lock } from 'lucide-react'; 
+import { useEffect } from 'react';
 
 const ContainerRestore = styled.div`
     display: flex;
@@ -107,33 +108,66 @@ const Title = styled.h1`
 `;
 
 const ResetPassword = () => {
+
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();//esto dejarlo para cuando el backend pase los tokens por url como parametros y porder obetenrlos 
+
+
+    useEffect(() => {
+        
+        const token = localStorage.getItem('resetToken');
+        const uid = localStorage.getItem('resetUid');
+
+        console.log("primer token recibido y guardado en el local storage",token)
+        console.log("segundo token uid recibido y guardado en el local storage",uid)
+
+        if (!token || !uid)  {
+            toast.error('No se encontro informacion de reestablecimiento. Solicite nuevamente. ')
+        }
+    }, [navigate]);
 
     const onSubmit = async (data) => {
-        try {
-            //await solicitarPassword(data.usuario, data.correo);
+            //await solicitarPassword(data.usuario, data.corrñleo);
             //toast.success('Correo enviado con éxito. Revisa tu bandeja de entrada.');
             if (data.password !== data.confirmPassword) {
                 toast.error('Las contraseñas ingresadas no coinciden.')
+                reset();
             }
-            reset();
-        } catch (error) {
-        if (error.response) {
-            if (error.response.status == 400) {
-                toast.error('Usuario o correo incorrecto.'); //cambiar los mensajes porque no se que arrojaria el backend 
-            } else {
-                toast.error('Error al procesar la solicitud. Inténtelo de nuevo más tarde.');
-            }
-        } else if (error.request) {
-            toast.error('Error al conectar con el servidor.');
-        } else {
-            toast.error('Credenciales incorrectas. Verifique e intente de nuevo.');
-        }
-    }
-    };
 
-    const handleCancel = () => navigate('/');
+            try {
+                //obtenemos tokens 
+                const token = localStorage.getItem('resetToken');
+                const uid = localStorage.getItem('resetUid');
+
+                await resetPassword(token, uid, data.password);
+
+                toast.success('Contraseña reestablecida con exito');
+
+                //limpiamos para no dejar nada en session Storage 
+                localStorage.removeItem('resetToken');
+                localStorage.removeItem('resetUid');
+
+                navigate('/'); //redirigimos al login 
+
+            } catch (error) {
+                if (error.response) {
+                    if (error.response.status == 400) {
+                        toast.error('Token invalido. Solicite nuevamente.'); //cambiar los mensajes porque no se que arrojaria el backend 
+                    } else {
+                        toast.error('Error al procesar la solicitud. Inténtelo de nuevo más tarde.');
+                    }
+                } else {
+                    toast.error('Error al conectar con el servidor.');
+                }
+            }
+        };
+
+    const handleCancel = () => {
+        localStorage.removeItem('resetToken');
+        localStorage.removeItem('resetUid');
+        navigate('/')
+    };
 
     return (
         <ContainerRestore>
@@ -152,7 +186,6 @@ const ResetPassword = () => {
                                     <Info size={15} />
                                     <h4 style={{ fontWeight: '400', color: '#333' }}>Por seguridad, ingresa tu nueva contraseña dos veces..</h4>
                                 </article>
-
                     <InputGroup>
                         <label htmlFor="password">Nueva Contraseña</label>
                         <InputContainer $error={errors.usuario}>
@@ -164,7 +197,13 @@ const ResetPassword = () => {
                                 id="password"
                                 placeholder="********"
                                 $error={errors.usuario}
-                                {...register("password", { required: "Este campo es obligatorio." })}
+                                {...register("password", { required: "Este campo es obligatorio.",
+                                    minLength : {value: 8, message: "Debe contener minimo 8 carcateres"},
+                                    pattern : {
+                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                                        message : "Debe contener mayúsculas, minúsculas y números"
+                                    }
+                                })}
                             />
                         </InputContainer>
                         {errors.password && <ErrorText>{errors.password.message}</ErrorText>}

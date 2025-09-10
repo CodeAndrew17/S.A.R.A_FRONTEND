@@ -2,8 +2,6 @@ import axios from 'axios';
 
 // const API_URL = "http://192.168.1.24:8000";  // IP de tu PC (servidor Django) sirve para celular samsung y redmi 
 
-// endpoint={`http://localhost:8000/result/api/subirimagen/post/`} 
-
 // const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
 // const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
@@ -176,7 +174,6 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
 const solicitarPassword = async (usuario,correo) => {
     try {
         const response = await axios.post(`${API_URL}/access/api/solicitarpassword/`, { //endpoind para enviar el correo
-
             usuario,
             correo,  //cuerpo de la solicitud en formato json
         });
@@ -187,9 +184,9 @@ const solicitarPassword = async (usuario,correo) => {
     }
 };
 
-const ResetPassword = async (tokenOne, tokenTwo) => {
+const resetPassword = async (tokenOne, tokenTwo, newPassword) => {
     try {
-        const response = await axios.post(`${API_URL}/api/restablecerpassword/${tokenOne}/${tokenTwo}/`)
+        const response = await axios.post(`${API_URL}/api/restablecerpassword/${tokenOne}/${tokenTwo}/`, newPassword)
     } catch (error) {
         console.error("error al enviar los datos en el reestablecimiento de password")
         throw error; 
@@ -206,4 +203,4 @@ const logout = () => {
 
 }
 
-export { login, axiosWithAuth, refreshToken, solicitarPassword, logout, axiosWithAuthFile, API_URL};
+export { login, axiosWithAuth, refreshToken, solicitarPassword, logout, axiosWithAuthFile, API_URL, resetPassword};
