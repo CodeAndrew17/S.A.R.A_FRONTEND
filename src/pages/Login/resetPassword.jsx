@@ -140,7 +140,9 @@ const ResetPassword = () => {
                 const token = localStorage.getItem('resetToken');
                 const uid = localStorage.getItem('resetUid');
 
-                await resetPassword(token, uid, data.password);
+                console.log("primer token", typeof(token))
+
+                await resetPassword(uid, token, data.password);
 
                 toast.success('Contraseña reestablecida con exito');
 
