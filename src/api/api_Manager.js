@@ -106,17 +106,19 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
             token = await refreshToken(); //renovamos el token antes de la peticion 
         } catch (error) {
             Swal.fire({
-            icon: 'warning',
-            title: 'Sesión expirada',
-            text: 'Tu sesión ha caducado. Por favor, inicia sesión nuevamente.',
-            confirmButtonText: 'Ir al login',
-            confirmButtonColor: '#3085d6',
-            allowOutsideClick: false,
-            allowEscapeKey: false
-        }).then(() => {
-            logout();  // redirige al login
-            return; //cortamos ejecucion 
-        });
+                icon: 'warning',
+                title: 'Sesión expirada',
+                text: 'Tu sesión ha caducado. Redirigiendo al login...',
+                timer: 4000, // 4 segundos para explicar que paso al usuario 
+                timerProgressBar: true,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didClose: () => {
+                    logout(); // redirige al login
+                    return; 
+                }
+            });
         }
     }
 
