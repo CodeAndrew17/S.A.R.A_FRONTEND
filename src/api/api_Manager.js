@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 // const API_URL = "http://192.168.1.24:8000";  // IP de tu PC (servidor Django) sirve para celular samsung y redmi 
 
@@ -104,7 +105,18 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
         try{
             token = await refreshToken(); //renovamos el token antes de la peticion 
         } catch (error) {
-            throw new Error('Sesion expirada. Inicia sesion nuevamente.'); // si no se puede renovar el token 
+            Swal.fire({
+            icon: 'warning',
+            title: 'Sesión expirada',
+            text: 'Tu sesión ha caducado. Por favor, inicia sesión nuevamente.',
+            confirmButtonText: 'Ir al login',
+            confirmButtonColor: '#3085d6',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then(() => {
+            logout();  // redirige al login
+            return; //cortamos ejecucion 
+        });
         }
     }
 
@@ -124,10 +136,19 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
         const response = await axios(config);
         return response.data;
     }catch (error) {
-        if(error.response && error.response.status === 401) {
-            console.warn('Sesion expirada. Redirigiendo al login...');
-            logout();
-            return;
+
+        if (error.response) {
+            const { status, config } = error.response;
+
+            // Detecta expiración de token
+            if (
+                status === 401 || 
+                (status === 400 && config?.url?.includes("/token/refresh/"))
+            ) {
+                console.warn('Sesión expirada. Redirigiendo al login...');
+                logout();
+                return;
+            }
         }
         throw error;
     }
