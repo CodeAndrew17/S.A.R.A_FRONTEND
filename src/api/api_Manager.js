@@ -198,7 +198,7 @@ const logout = () => {
     sessionStorage.removeItem("refresh");
     sessionStorage.removeItem("username");
 
-    window.location.replace = "/";
+    window.location.replace("/");
 
 
 }
