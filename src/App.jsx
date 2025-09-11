@@ -48,10 +48,6 @@ function ProtectedRoute({ children }) {
   return token ? children : <Navigate to="/" />;
 }
 
-//funcion especial protected route para el reestablecimiento de contraseña (los tokens son distintos a los de refresh y acces)
-function ProtectedResetPassword ({children}) {
-  const token = sessionStorage.getItmem('nombre que le tenga el backend  ') //cambiar despues por el nombre real de los tokens (los dos )
-}
 
 function AppRoutes() {
   const location = useLocation(); 
