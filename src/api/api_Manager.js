@@ -4,9 +4,9 @@ import Swal from 'sweetalert2';
 // const API_URL = "http://192.168.1.24:8000";  // IP de tu PC (servidor Django) sirve para celular samsung y redmi 
 
 // const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
-//const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
+const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
-const API_URL = `https://api-662551806039.us-east1.run.app`;
+// const API_URL = `https://api-662551806039.us-east1.run.app`;
 
 // Función de login para obtener el token de access
 const login = async (usuario, password) => {
@@ -109,7 +109,7 @@ const axiosWithAuth = async (url, method = 'GET', body = null) => {
                 icon: 'warning',
                 title: 'Sesión expirada',
                 text: 'Tu sesión ha caducado. Redirigiendo al login...',
-                timer: 4000, // 4 segundos para explicar que paso al usuario 
+                timer: 5000, // 5 segundos para explicar que paso al usuario 
                 timerProgressBar: true,
                 showConfirmButton: false,
                 allowOutsideClick: false,

@@ -146,7 +146,7 @@ export function Inicio() {
     const [totalAgreements, setTotalAgreements] = useState(0);
     const [totalPlans, setTotalPlans] = useState(0);
     const [totalRequests, setTotalRequests] = useState(0);  
-    const [rankingData, setRankingData] = useState([]);
+    const [rankingData, setRankingData] = useState({});
     const [activeUsers, setActiveUsers] = useState(0);
     const [tiempoSolucion, setTiempoSolucion] = useState("")
 
@@ -171,12 +171,18 @@ export function Inicio() {
                     getTimeSolution()
                 ]);
 
-                setTotalBranches(branches.length);
-                setTotalAgreements(agreements.length);
-                setTotalPlans(plans.length);
-                setTotalRequests(requests.length);
-                setRankingData(ranking);
-                setTiempoSolucion(timeSolution); 
+                setTotalBranches(Array.isArray(branches) ? branches.length : 0);
+                setTotalAgreements(Array.isArray(agreements) ? agreements.length : 0);
+                setTotalPlans(Array.isArray(plans) ? plans.length : 0);
+                setTotalRequests(Array.isArray(requests) ? requests.length : 0);
+                setRankingData(ranking && typeof ranking === 'object' ? ranking : {});
+                // setTiempoSolucion(timeSolution); 
+                if (!timeSolution || typeof timeSolution !== "object") {
+                    setTiempoSolucion({ promedio_duracion: "Sin Datos" });
+                } else {
+                    setTiempoSolucion(timeSolution);
+                }
+
 
                 const activeUsers = users.filter(u => u.estado === "AC"); //solo traemos los usuarios activos en el aplicativo 
                 setActiveUsers(activeUsers.length);
@@ -186,7 +192,7 @@ export function Inicio() {
                 console.log("tiempo solucion :", timeSolution);
 
                 } catch (error) {
-                    console.error("Error al obtener los datos:", error);
+                    console.error("Error al fastidiar los datos:", error);
                     handleAxiosError(error)
                 }
         };
@@ -226,7 +232,7 @@ export function Inicio() {
             <KPIIconsRow>
               <AlarmClock size={22} />
             </KPIIconsRow>
-            <KPIValue>{tiempoSolucion.promedio_duracion || '0 días, 0 horas'}</KPIValue>
+            <KPIValue>{tiempoSolucion?.promedio_duracion || '0 días, 0 horas'}</KPIValue>
             <KPITitle>Promedio de respuesta</KPITitle>
           </KPIWrapper>
         </Card>
