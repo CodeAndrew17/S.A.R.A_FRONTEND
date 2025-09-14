@@ -3,12 +3,21 @@ import { axiosWithAuth } from './api_Manager';
 //Funcion para obtener todos los usuarios
 const getEmployees = async () => {
     try {
-        return await axiosWithAuth("/access/api/empleado/get/", "GET");
+        return await axiosWithAuth("/api/empleado/get/", "GET");
     } catch(error) {
         console.error("Error al obtener usuarios:", error);
         throw error;
     }
 };
+
+const getEmployeesAccess = async() => {
+        try {
+        return await axiosWithAuth("/access/api/empleado/get/", "GET");
+    } catch(error) {
+        console.error("Error al obtener usuarios:", error);
+        throw error;
+    }
+}
 
 const deleteEmployees = async (id) => {
     try {
@@ -85,4 +94,4 @@ const editUsers = async (id, updateDataUser) => {
 };
 
 
-export {getEmployees, deleteEmployees, editEmployees, addEmployees, getBranches, getUsers, addUsers, deleteUsers, editUsers};
+export {getEmployees, deleteEmployees, editEmployees, addEmployees, getBranches, getUsers, addUsers, deleteUsers, editUsers, getEmployeesAccess};

@@ -1,4 +1,4 @@
-import { getEmployees, 
+import { getEmployeesAccess, 
     deleteEmployees, 
     editEmployees, 
     addEmployees, 
@@ -18,7 +18,7 @@ const useEmployeeManagement = () => {
     const fetchAll = async () => {
         try {
             const [employeesData, branchesData, usersData] = await Promise.all([
-                getEmployees(), //obtenemos empleado
+                getEmployeesAccess(), //obtenemos empleado
                 getBranches(),// obtenemos sucursales
                 getUsers() //obtenemos usuarios todo paar armarlo en un mismo paquete
             ])
