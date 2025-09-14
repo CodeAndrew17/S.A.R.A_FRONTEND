@@ -24,7 +24,7 @@ const FormContainer = styled.form`
   max-height: 265px;
 
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.20);
   }
 

@@ -107,7 +107,10 @@ const columnsRequest=({navigate})=> {
             hoverColor="#1CA187"
             width="100px"
             height="35px"
-            disabled={record.estado !== 'PRO'} //desabilitar si no es pro osea en progreso
+            disabled={
+              record.estado !== 'PRO' ||
+              (sessionStorage.getItem("rol") !== "AD" && sessionStorage.getItem("rol") !== "PR")
+            }
             onClick={() =>
               navigate("/forms", {
                 state: {

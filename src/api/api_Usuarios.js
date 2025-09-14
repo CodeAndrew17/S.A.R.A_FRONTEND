@@ -3,7 +3,7 @@ import { axiosWithAuth } from './api_Manager';
 //Funcion para obtener todos los usuarios
 const getEmployees = async () => {
     try {
-        return await axiosWithAuth("/api/empleado/get/", "GET");
+        return await axiosWithAuth("/access/api/empleado/get/", "GET");
     } catch(error) {
         console.error("Error al obtener usuarios:", error);
         throw error;
