@@ -17,7 +17,7 @@ const GlassWrapper = styled.div`
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 
   &:hover {
-    transform: translateY(-4px) scale(1.01);
+    transform: translateY(-2px) scale(1.01);
     background: rgba(255, 255, 255, 0.65);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
   }
