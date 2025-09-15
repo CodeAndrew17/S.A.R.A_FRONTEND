@@ -9,66 +9,66 @@ import { getImage } from "../../api/api_Forms";
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
   width: auto;
   max-width: 475px;
-  padding: 1.5rem;
+  padding: 2rem;
 
-  background: rgba(250, 250, 250, 0.75); /* Blanco translúcido */
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid rgba(102, 204, 204, 0.7); /* Verde menta suave que resalta */
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(95, 184, 214, 0.5);
+  border-radius: 18px;
 
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
   max-height: 265px;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.20);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
   }
 
   @media (max-width: 500px) {
     max-width: 90%;
+    padding: 1.5rem;
   }
 `;
 
-
-
 const InputFile = styled.input`
-  padding: 0.5rem;
-  border: 1px solid #90a4ae;
-  border-radius: 4px;
+  padding: 0.6rem;
+  border: 1px solid rgba(95, 184, 214, 0.6);
+  border-radius: 10px;
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
 
   &:hover {
-    border-color: #78909c;
-  }
-
-  @media (max-width: 500px) {
-    max-width: 270px;
+    border-color: #5fb8d6;
+    background: rgba(95, 184, 214, 0.08);
   }
 `;
 
 const SubmitButton = styled.button`
-  padding: 0.8rem;
-  background-color: #5fb8d6;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, #5fb8d6, #4aa3c0);
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   color: white;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+
+  transition: background 0.2s, box-shadow 0.25s, transform 0.25s;
 
   &:hover {
-    background-color: #48a2bf;
-    box-shadow: 0 4px 12px rgba(72, 162, 191, 0.3);
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, #4aa3c0, #3b90a9);
+    box-shadow: 0 6px 16px rgba(95, 184, 214, 0.4);
+    transform: translateY(-3px);
   }
 
   &:disabled {
@@ -80,30 +80,38 @@ const SubmitButton = styled.button`
 const PreviewBox = styled.div`
   width: 100%;
   height: 200px;
-  border: 1px dashed #90a4ae;
-  border-radius: 4px;
+  border: 2px dashed rgba(95, 184, 214, 0.4);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+
   background: rgba(95, 184, 214, 0.05);
+  transition: border-color 0.25s ease;
+
+  &:hover {
+    border-color: rgba(95, 184, 214, 0.7);
+  }
 `;
 
 const ImagePreview = styled.img`
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: 10px;
 `;
 
 const Placeholder = styled.div`
-  color: #999;
-  font-size: 0.9rem;
+  color: #666;
+  font-size: 0.95rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  opacity: 0.7;
 `;
+
 
 const UploadImageForm = ({ endpoint, onSuccess, id_solicitud }) => {
   const [file, setFile] = useState(null);

@@ -34,12 +34,12 @@ const SidebarContainer = styled.div`
   }
 `;
 
-
-const LogoImage = styled.img`
+//mejorar este compnente en un futuro
+const LogoImage = styled.img` 
   width: 80%;
   max-width: 180px;
-  margin: 0 auto 1.5rem auto;
-  padding-bottom: 1.5rem;
+  padding-bottom: 20px;
+  margin-left: 20px; 
   display: block;
   object-fit: contain;
 

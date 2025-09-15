@@ -468,107 +468,105 @@ function FormsView() {
           </Column>
 
           <Column>
-<GlassCardPro
-  title="Solicitud:"
-  badgeText={placa}
-  icon={Car}
-  minHeight={"485px"}
-  headerBg="rgba(143, 251, 255, 0.6)"
-  borderColor="rgba(0, 102, 255, 0.3)"
->
-  <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-    <div style={{ flex: "1" }}>
-      <InfoLine>
-        <Handshake size={18} color="#10B981" />
-        <strong>Convenio -</strong> {convenio}
-      </InfoLine>
-      <InfoLine>
-        <Building size={18} color="#3B82F6" />
-        <strong>Sucursal -</strong> {sucursal}
-      </InfoLine>
-      <InfoLine>
-        <CarFront size={18} color="#10B981" />
-        <strong>Tipo de vehículo -</strong> {diccionaryVehicleType[tipo_vehiculo]}
-      </InfoLine>
-      <InfoLine>
-        <Calendar size={18} color="#3B82F6" style={{ marginRight: "6px" }} />
-        <strong>Fecha de creación -</strong> {fecha}
-      </InfoLine>
-      <InfoLine>
-        <Phone size={18} color="#10B981" style={{ marginRight: "6px" }} />
-        <strong>Teléfono -</strong> {telefono}
-      </InfoLine>
+            <GlassCardPro
+              title="Solicitud:"
+              badgeText={placa}
+              icon={Car}
+              minHeight={"485px"}
+              headerBg="rgba(143, 251, 255, 0.6)"
+              borderColor="rgba(0, 102, 255, 0.3)"
+            >
+              <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                <div style={{ flex: "1" }}>
+                  <InfoLine>
+                    <Handshake size={18} color="#10B981" />
+                    <strong>Convenio -</strong> {convenio}
+                  </InfoLine>
+                  <InfoLine>
+                    <Building size={18} color="#3B82F6" />
+                    <strong>Sucursal -</strong> {sucursal}
+                  </InfoLine>
+                  <InfoLine>
+                    <CarFront size={18} color="#10B981" />
+                    <strong>Tipo de vehículo -</strong> {diccionaryVehicleType[tipo_vehiculo]}
+                  </InfoLine>
+                  <InfoLine>
+                    <Calendar size={18} color="#3B82F6" style={{ marginRight: "6px" }} />
+                    <strong>Fecha de creación -</strong> {fecha}
+                  </InfoLine>
+                  <InfoLine>
+                    <Phone size={18} color="#10B981" style={{ marginRight: "6px" }} />
+                    <strong>Teléfono -</strong> {telefono}
+                  </InfoLine>
 
-      <Divider style={{ margin: "12px 0" }} />
+                  <Divider style={{ margin: "12px 0" }} />
 
-      {/* Observaciones */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          background: "rgba(240, 240, 240, 0.5)",
-          borderRadius: "12px",
-          padding: "12px",
-          border: "1px dashed rgba(0,0,0,0.1)",
-          minHeight: "110px", // << más alto que antes
-        }}
-      >
-        <StickyNote
-          size={22}
-          color="#555"
-          style={{ marginRight: "10px", marginTop: "2px" }}
-        />
-        <div>
-          <strong>Observaciones:</strong>
-          <p style={{ margin: "4px 0 0 0", color: "#444", fontSize: "14px" }}>
-            {observacionesPlan || "No hay observaciones"}
-          </p>
-        </div>
-      </div>
+                  {/* Observaciones */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      background: "rgba(240, 240, 240, 0.5)",
+                      borderRadius: "12px",
+                      padding: "12px",
+                      border: "1px dashed rgba(0,0,0,0.1)",
+                      minHeight: "110px", // << más alto que antes
+                    }}
+                  >
+                    <StickyNote
+                      size={22}
+                      color="#555"
+                      style={{ marginRight: "10px", marginTop: "2px" }}
+                    />
+                    <div>
+                      <strong>Observaciones:</strong>
+                      <p style={{ margin: "4px 0 0 0", color: "#444", fontSize: "14px" }}>
+                        {observacionesPlan || "No hay observaciones"}
+                      </p>
+                    </div>
+                  </div>
 
-      {/* Texto auxiliar */}
-      <p
-        style={{
-          marginTop: "8px",
-          fontSize: "12px",
-          color: "#6B7280",
-          fontStyle: "italic",
-          textAlign: "center",
-        }}
-      >
-        <Info
-          size={18}
-          style={{ position: "relative", top: "5px", marginRight: "3px" }}
-        /> Completa todos los formularios y sube la imagen del vehículo para
-        finalizar esta solicitud.
-      </p>
-    </div>
+                  {/* Texto auxiliar */}
+                  <p
+                    style={{
+                      marginTop: "8px",
+                      fontSize: "12px",
+                      color: "#6B7280",
+                      fontStyle: "italic",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Info
+                      size={18}
+                      style={{ position: "relative", top: "5px", marginRight: "3px" }}
+                    /> Completa todos los formularios y sube la imagen del vehículo para
+                    finalizar esta solicitud.
+                  </p>
+                </div>
 
-    {/* Botón fijo abajo */}
-    <CustomButton
-      width="100%"
-      bgColor=""
-      hoverColor="#48A2BF"
-      onClick={handleFinishRequest}
-      disabled={
-        !(
-          conteoPrincipales > 0 &&
-          formulariosRespondidos.length === (conteoPrincipales + (conteoAdicionales || 0)) //formularios respondido con la opsibilidad de q no existan adicionales
-        )
-      }
-      disableMessage="No puedes finalizar la solicitud hasta que respondas todos los formularios." //esta prop no sirve
-      style={{
-        marginTop: "20px",
-        borderRadius: "12px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-      }}
-    >
-      <ClipboardCheck style={{ marginRight: "6px" }} /> Finalizar
-    </CustomButton>
-  </div>
-</GlassCardPro>
-
-
+                {/* Botón fijo abajo */}
+                <CustomButton
+                  width="100%"
+                  bgColor=""
+                  hoverColor="#48A2BF"
+                  onClick={handleFinishRequest}
+                  disabled={
+                    !(
+                      conteoPrincipales > 0 &&
+                      formulariosRespondidos.length === (conteoPrincipales + (conteoAdicionales || 0)) //formularios respondido con la opsibilidad de q no existan adicionales
+                    )
+                  }
+                  disableMessage="No puedes finalizar la solicitud hasta que respondas todos los formularios." //esta prop no sirve
+                  style={{
+                    marginTop: "20px",
+                    borderRadius: "12px",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                  }}
+                >
+                  <ClipboardCheck style={{ marginRight: "6px" }} /> Finalizar
+                </CustomButton>
+              </div>
+            </GlassCardPro>
           </Column>
         </Body>
 
