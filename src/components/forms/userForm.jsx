@@ -535,8 +535,6 @@ const UserForm = ({
             ? "[0-9]*"
             : isAlphaField
             ? "[A-Za-zÁÉÍÓÚáéíóúÑñ ]*"
-            : isPlacaField
-            ? "^[A-Z]{3}[0-9]{3}$"
             : undefined
         }
         maxLength={
