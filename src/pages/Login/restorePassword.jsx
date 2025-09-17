@@ -121,6 +121,7 @@ const RestorePassword = () => {
             toast.success('Correo enviado con éxito. Revisa tu bandeja de entrada.');
             console.log("respuesta del backend en solicitar password", respuesta)
             reset();
+            handleCancel();
         } catch (error) {
         if (error.response) {
             if (error.response.status == 400) {
