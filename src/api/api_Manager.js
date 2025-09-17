@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 // const API_URL = "http://192.168.1.24:8000";  // IP de tu PC (servidor Django) sirve para celular samsung y redmi 
 
 // const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
-// const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
+//const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
 const API_URL = `https://api-662551806039.us-east1.run.app`;
 
@@ -215,7 +215,7 @@ const resetPassword = async (tokenUid, token, newPassword, confirmPassword) => {
                 password_conf : confirmPassword
             })
     } catch (error) {
-        console.error("error al enviar los datos en el reestablecimiento de password")
+        console.error("error al enviar los datos en el reestablecimiento de password", error)
         throw error; 
     }
 }

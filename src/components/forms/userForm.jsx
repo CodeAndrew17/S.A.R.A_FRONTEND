@@ -451,7 +451,7 @@ const UserForm = ({
   // placa limita a 6 caracteres 
   const handlePlacaChange = (e) => {
   const raw = e.target.value;
-  let valid = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  let valid = raw.toUpperCase().replace(/^(?:[A-Z]{3}[0-9]{3}|[A-Z]{3}[0-9]{2}[A-Z])$/g, "");
   if (valid.length > 6) valid = valid.slice(0, 6);
 
 
