@@ -4,9 +4,9 @@ import Swal from 'sweetalert2';
 // const API_URL = "http://192.168.1.24:8000";  // IP de tu PC (servidor Django) sirve para celular samsung y redmi 
 
 // const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
-// const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
+const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
-const API_URL = `https://api-662551806039.us-east1.run.app`;
+// const API_URL = `https://api-662551806039.us-east1.run.app`;
 
 // Función de login para obtener el token de access
 const login = async (usuario, password) => {
@@ -207,9 +207,13 @@ const solicitarPassword = async (usuario,correo) => {
     }
 };
 
-const resetPassword = async (tokenOne, tokenTwo, newPassword) => {
+const resetPassword = async (tokenUid, token, newPassword, confirmPassword) => {
     try {
-        const response = await axios.post(`${API_URL}/access/api/restablecerpassword/${tokenOne}/${tokenTwo}/`, newPassword)
+        const response = await axios.post(`${API_URL}/access/api/restablecerpassword/${tokenUid}/${token}/`, 
+            {
+                password : newPassword,
+                password_conf : confirmPassword
+            })
     } catch (error) {
         console.error("error al enviar los datos en el reestablecimiento de password")
         throw error; 

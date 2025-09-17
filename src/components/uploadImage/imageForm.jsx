@@ -22,7 +22,7 @@ const FormContainer = styled.form`
 
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
-  max-height: 265px;
+  max-height: 247px;
 
   &:hover {
     transform: translateY(-2px);

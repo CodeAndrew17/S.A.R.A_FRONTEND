@@ -133,6 +133,7 @@ const ResetPassword = () => {
             if (data.password !== data.confirmPassword) {
                 toast.error('Las contraseñas ingresadas no coinciden.')
                 reset();
+                return; //cortamos ejecucion 
             }
 
             try {
@@ -142,7 +143,7 @@ const ResetPassword = () => {
 
                 console.log("primer token", typeof(token))
 
-                await resetPassword(uid, token, data.password);
+                await resetPassword(uid, token, data.password, data.confirmPassword);
 
                 toast.success('Contraseña reestablecida con exito');
 
