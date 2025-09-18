@@ -310,7 +310,7 @@ function Revisiones() {
 
       <Table
         columns={ColumnsRequest({navigate})}
-        data={orderData}
+        data={filteredRevisions}
         selectable={true}
         onSelectionChange={(selectedIds) => {
           const selectedItems = originalRequest.filter((item) =>
