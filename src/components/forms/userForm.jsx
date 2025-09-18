@@ -451,7 +451,7 @@ const UserForm = ({
   // placa limita a 6 caracteres 
   const handlePlacaChange = (e) => {
   const raw = e.target.value;
-  let valid = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  let valid = raw.toUpperCase().replace(/[^A-Z0-9-A-Z][A-Z]?/g, "");
   if (valid.length > 6) valid = valid.slice(0, 6);
 
 
@@ -535,8 +535,6 @@ const UserForm = ({
             ? "[0-9]*"
             : isAlphaField
             ? "[A-Za-zÁÉÍÓÚáéíóúÑñ ]*"
-            : isPlacaField
-            ? "^[A-Z]{3}[0-9]{3}$"
             : undefined
         }
         maxLength={
