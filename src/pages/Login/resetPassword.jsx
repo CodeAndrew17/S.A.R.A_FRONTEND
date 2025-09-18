@@ -177,7 +177,7 @@ const ResetPassword = () => {
             <RequestPassword>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Header>
-                        <Title>Crea tu nueva contraseña</Title>
+                        <Title>Crea tu nueva contraseña</Title> 
                     </Header>
                     <hr style={{ 
                                 border: '1px solid #ccc', 
