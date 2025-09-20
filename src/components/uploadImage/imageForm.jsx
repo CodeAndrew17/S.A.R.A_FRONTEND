@@ -30,7 +30,7 @@ const FormContainer = styled.form`
   }
 
   @media (max-width: 500px) {
-    max-width: 90%;
+    max-width: 300px;
     padding: 1.5rem;
   }
 `;

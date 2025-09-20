@@ -253,7 +253,7 @@ const ToggleButton = styled.button`
   @media (max-width: 768px) {
     display: block;
     right: 20px;
-    top: 18px;
+    top: 45px;
     border-radius: 12px;
     width: 48px;
     height: 48px;
