@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 // const API_URL = "http://192.168.1.24:8000";  // vista local movil samsung
 //const API_URL = 'http://127.0.0.1:8000'; //vista dev pc
 
-const API_URL = `https://api-662551806039.us-east1.run.app`;
+const API_URL = `https://sarap-662551806039.us-east1.run.app`;
 
 // Función de login para obtener el token de access
 const login = async (usuario, password) => {
