@@ -11,7 +11,7 @@ const FormContainer = styled.form`
   flex-direction: column;
   gap: 1.2rem;
   width: auto;
-  max-width: 475px;
+  max-width: 455px;
   padding: 2rem;
 
   background: rgba(255, 255, 255, 0.55);

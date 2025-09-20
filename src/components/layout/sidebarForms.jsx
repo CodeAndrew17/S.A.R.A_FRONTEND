@@ -306,7 +306,7 @@ const Sidebar = ({
     </ToggleButton>
     <SidebarContainer ref={sidebarRef} $open={open}>
       <ContentWrapper>
-        <LogoImage src={autosef} alt="Autosef logo" />
+        {/* <LogoImage src={autosef} alt="Autosef logo" /> */}
         <InfoBox><PlacaHeading>{placa.slice(0, 3) + ' · ' + placa.slice(3)}</PlacaHeading></InfoBox>
 
         <SectionTitle><ClipboardList size={16} /> FORMULARIOS PRINCIPALES</SectionTitle>
